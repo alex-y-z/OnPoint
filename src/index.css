@@ -1,3 +1,5 @@
+/* Dartboard */
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif;
@@ -13,4 +15,25 @@ svg {
 path:hover {
 	fill: rgb(11, 241, 111);
 	transition: 0.3s;
+}
+
+/* Scoreboard */
+
+table {
+  width: 500px;
+  height: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid gray;
+}
+
+thead {
+  height: 5%;
+  background-color: gray;
+}
+
+td {
+  width: 5%;
+  text-align: center;
+  
 }
