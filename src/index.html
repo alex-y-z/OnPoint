@@ -6,8 +6,11 @@
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
-    <section>
+
+    <!--LEFT PANEL: Dartboard-->
+    <div id="left-panel">
       <svg
+        id="dartboard"
         width="auto"
         height="auto"
         viewBox="0 0 158.75 158.75"
@@ -38,55 +41,62 @@
               onclick="alert('Bottom right region selected.')" />
         </g>
       </svg>
-    </section>
+    </div>
 
-    <table id="scoreboard">
-      <caption>
-        SCOREBOARD
-      </caption>
-      <thead>
-        <!--HEADER-->
-          <tr>
-              <th scope="col">Match:</th>     
-              <th scope="col">Player 1:</th>        <!--Add User's Input-->
-              <th scope="col">Player 2:</th>        <!--Add User's Input-->
-          </tr>
-      </thead>
-      <tbody>
-          <!--Row 1-->
-          <!--TODO: Add dynamic rows for user selected # of legs-->
-          <tr>
-            <td>Leg 1:</td>   
-            <td></td>           <!--Insert Player 1 Score-->
-            <td></td>           <!--Insert Player 2 Score-->
-          </tr>
-
-          <!--Row 2-->
-          <tr>
-              <td>Leg 2:</td>   
+    <!--RIGHT PANEL: Scoreboard & Statistics-->
+    <div id="right-panel">
+      <table id="scoreboard">
+        <caption>
+          SCOREBOARD
+        </caption>
+        <thead>
+          <!--HEADER-->
+            <tr>
+                <th scope="col">Match:</th>     
+                <th scope="col">Player 1:</th>        <!--Add User's Input-->
+                <th scope="col">Player 2:</th>        <!--Add User's Input-->
+            </tr>
+        </thead>
+        <tbody>
+            <!--Row 1-->
+            <!--TODO: Add dynamic rows for user selected # of legs-->
+            <tr>
+              <td>Leg 1:</td>   
               <td></td>           <!--Insert Player 1 Score-->
               <td></td>           <!--Insert Player 2 Score-->
-          </tr>
+            </tr>
 
-          <!--Row 3-->
-          <tr>
-            <td>Leg 3:</td>   
-            <td></td>           <!--Insert Player 1 Score-->
-            <td></td>           <!--Insert Player 2 Score-->
-          </tr>
+            <!--Row 2-->
+            <tr>
+                <td>Leg 2:</td>   
+                <td></td>           <!--Insert Player 1 Score-->
+                <td></td>           <!--Insert Player 2 Score-->
+            </tr>
 
-          <!--Row 4-->
-          <tr>
-            <td>Match Total:</td>   
-            <td></td>           <!--Insert Player 1 Score-->
-            <td></td>           <!--Insert Player 2 Score-->
-          </tr>
+            <!--Row 3-->
+            <tr>
+              <td>Leg 3:</td>   
+              <td></td>           <!--Insert Player 1 Score-->
+              <td></td>           <!--Insert Player 2 Score-->
+            </tr>
 
-      </tbody>
-    </table>
+            <!--Row 4-->
+            <tr>
+              <td>Match Total:</td>   
+              <td></td>           <!--Insert Player 1 Score-->
+              <td></td>           <!--Insert Player 2 Score-->
+            </tr>
 
-  <!--Add JavaScript Source-->
-  <script src="classes.js"></script>
-    
-</body>
+        </tbody>
+      </table>
+
+      <div id="statistics">
+        <h2>Statistics</h2>
+      </div>
+    </div>
+
+    <!--Add JavaScript Source-->
+    <script src="classes.js"></script>
+
+  </body>
 </html>
