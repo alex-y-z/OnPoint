@@ -52,7 +52,7 @@ table {
 
 thead {
   width: auto;
-  color: white;
+  color: rgb(0, 176, 141);
   background-color: rgb(0, 0, 0);
 }
 
@@ -60,7 +60,8 @@ td {
   padding: 20px;
   width: auto;
   text-align: center;
-  background-color: #FFFDD0;
+  color: white;
+  background-color: #343434;
 }
 
 /* Statistics */

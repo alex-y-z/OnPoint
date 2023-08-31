@@ -23,6 +23,11 @@ class Player {
 
    
 
+    // JS command to send to HTML
+    // var playerName = ...
+    // var name = document.getElementById('player1');
+    // name.innerHTML = playerName;
+
 
 }
 
