@@ -23,13 +23,9 @@ body {
   overflow: hidden;
 }
 
-#dartboard {
-	fill: rgb(255, 0, 89);
-}
-
-path:hover {
-	fill: rgb(11, 241, 111);
-	transition: 0.3s;
+.board-region>path:hover, circle.board-region:hover {
+	fill: rgb(255, 210, 11);
+	transition: 0.1s;
 }
 
 /* Right Panel (score + stats) */
