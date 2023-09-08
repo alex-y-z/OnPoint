@@ -1,4 +1,4 @@
-const { app, screen, BrowserWindow } = require('electron');
+const { app, screen, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -15,16 +15,29 @@ const createWindows = () => {
     width: width/2,
     height: height,
     x: 0,
-    y: 0
+    y: 0,
+    webPreferences: {
+      preload: path.join(__dirname, 'scorer-preload.js')
+    }
   });
 
   const spectatorWindow = new BrowserWindow({
     width: width/2,
     height: height,
     x: width/2,
-    y: 0
+    y: 0,
+    webPreferences: {
+      preload: path.join(__dirname, 'spectator-preload.js')
+    }
   });
 
+  // Replication event handlers
+  ipcMain.on('add-dart', (event, regionId, posX, posY) => {
+    console.log(regionId, posX, posY);
+    spectatorWindow.webContents.send('dart-added', regionId, posX, posY);
+  });
+
+  // Load HTML
   scorerWindow.loadFile(path.join(__dirname, 'index.html'));
   spectatorWindow.loadFile(path.join(__dirname, 'spectator.html'));
 };
