@@ -478,6 +478,78 @@
         </g>
       </svg>
     </div>
+
+     <!--RIGHT PANEL: Scoreboard & Statistics-->
+     <div id="right-panel">
+      <table id="scoreboard">
+        <caption>
+          SCOREBOARD
+        </caption>
+        <thead>
+          <!--HEADER-->
+            <tr>
+                <th scope="col" colspan="2">Name</th>     
+                <th scope="col">Legs</th>
+                <th scope="col" id="numOfLegs">(x)</th>        
+                <th scope="col">Score</th>        
+            </tr>
+        </thead>
+        <tbody>
+            <!--Row 1-->
+            <tr>
+              <td colspan="2" id="player1">player1</td>   
+              <td colspan="2" id="player1LegsWon">legs won</td>          
+              <td id="player1Score">score</td>           
+            </tr>
+
+            <!--Row 2-->
+            <tr>
+                <td colspan="2" id="player2">player2</td>   
+                <td colspan="2" id="player2LegsWon">legs won</td>           
+                <td id="player2Score">score</td>          
+            </tr>
+
+        </tbody>
+      </table>
+
+      <div id="statistics">
+        <table id="statistics">
+          <caption>In-Process Statistics</caption>
+          <thead>
+            <!--HEADER-->
+            <tr>
+              <th scope="col" colspan="2">Match Statistics</th>
+              <th scope="col" colspan=2>Player 1 Statistics</th>
+              <th scope="col" colspan="2">Player 2 Statistics</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--Row 1-->
+            <tr>
+              <td colspan="2"></td>
+              <td colspan="2"></td>
+              <td colspan="2"></td>
+            </tr>
+
+            <!--Row 2-->
+            <tr>
+              <td colspan="2"></td>
+              <td colspan="2"></td>
+              <td colspan="2"></td>
+            </tr>
+
+            <!--Row 3-->
+            <tr>
+              <td colspan="2"></td>
+              <td colspan="2"></td>
+              <td colspan="2"></td>
+            </tr>
+
+          </tbody>
+      </table>
+    </div>
+  </div>
+
     <script src="spectator.js"></script>
   </body>
 </html>

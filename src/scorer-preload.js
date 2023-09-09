@@ -4,3 +4,5 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('replication', {
     addDart: (regionId, posX, posY) => ipcRenderer.send('add-dart', regionId, posX, posY)
 });
+
+// Events for Statistics
