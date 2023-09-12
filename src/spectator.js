@@ -12,3 +12,8 @@ window.replication.onBoardResized((event, width) => {
   console.log(`RECEIVED ${width}`);
   leftPanel.style.width = width;
 });
+
+// Display Statistic Scorer Selected
+window.replication.onStatSelected((event, stat_type, category) => {
+
+});
