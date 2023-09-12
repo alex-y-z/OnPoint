@@ -5,7 +5,7 @@ body {
   Arial, sans-serif;
   margin: auto;
   width: auto;
-  height: 800px;
+  height: 100%;
   padding: 2rem;
   display: flex;
   background-color: rgb(0, 81, 44);
@@ -14,11 +14,13 @@ body {
 /* Left Panel (dartboard) */
 
 #left-panel {
-  min-width: 20%;
-  max-width: 48%;
-  height: 100%;
+  min-width: 30%;
+  max-width: 50%;
+  height: 800px;
+  padding: 0 10px;
+  margin-right: 1rem;
   background-color: rgb(230, 230, 230);
-  border: 1px solid;
+  border-radius: 10px;
   resize: horizontal;
   overflow: hidden;
 }
@@ -34,8 +36,10 @@ body {
   flex: 50%;
   display: flex;
   flex-direction: column;
+  height: 800px;
   background-color: #343434;
-  border: 1px solid rgb(0, 0, 0);
+  border: 1px solid black;
+  border-radius: 10px;
 }
 
 /* Scoreboard */
@@ -46,18 +50,17 @@ table {
   flex: 60%;
   border-collapse: collapse;
   color: white;
-  border: 1px solid rgb(0, 0, 0);
 }
 
 thead {
   width: auto;
   color: rgba(255, 20, 20, 0.781);
-  background-color: rgb(0, 0, 0);
+  background-color: black;
 }
 
 td {
-  padding: 20px;
   width: auto;
+  padding: 20px;
   text-align: center;
   color: white;
   background-color: #343434;
@@ -69,13 +72,16 @@ td {
   width: auto;
   flex: 40%;
   padding: 20px;
-  color: white;
-  background-color: #343434;
-  border: 1px solid rgb(0, 0, 0);
+  margin: auto;
+  border-top: 1px solid black
 }
 
- /* Dropdown Button */
- .dropbtn {
+#statistics-table {
+  border: 1px solid black
+}
+
+/* Dropdown Button */
+.dropbtn {
   background-color:  rgb(9, 88, 53);
   color: white;
   padding: 16px;
@@ -95,8 +101,12 @@ td {
   position: absolute;
   background-color: #f1f1f1;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
+
+  /* Options are aligned to the top right */
+  bottom: 100%;
+  right: 0;
 }
 
 /* Links inside the dropdown */

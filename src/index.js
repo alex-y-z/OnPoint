@@ -32,9 +32,12 @@ const createWindows = () => {
   });
 
   // Replication event handlers
-  ipcMain.on('add-dart', (event, regionId, posX, posY) => {
-    console.log(regionId, posX, posY);
-    spectatorWindow.webContents.send('dart-added', regionId, posX, posY);
+  // This forwards information from scorer to spectator
+  const channels = ['add-dart', 'resize-board'];
+  channels.forEach(channel => {
+    ipcMain.on(channel, (event, ...args) => {
+      spectatorWindow.webContents.send(channel, ...args);
+    });
   });
 
   // Load HTML
