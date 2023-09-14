@@ -41,7 +41,7 @@ const createWindows = () => {
   });
 
   // Load HTML
-  scorerWindow.loadFile(path.join(__dirname, 'index.html'));
+  scorerWindow.loadFile(path.join(__dirname, 'scorer.html'));
   spectatorWindow.loadFile(path.join(__dirname, 'spectator.html'));
 };
 

@@ -1,9 +1,9 @@
 {
-  "name": "my-app",
-  "productName": "my-app",
+  "name": "dartboard",
+  "productName": "dartboard",
   "version": "1.0.0",
-  "description": "My Electron application description",
-  "main": "src/index.js",
+  "description": "A responsive interface for visualizing and recording Premier League dart matches.",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
