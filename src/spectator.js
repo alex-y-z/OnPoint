@@ -1,16 +1,18 @@
-const leftPanel = document.getElementById('left-panel');
-const dartboard = document.getElementById('dartboard-svg');
+const leftPanel = $('#left-panel');
+const dartboard = $('#dartboard-svg');
 
 // Replicate scorer input
 window.replication.onDartAdded((event, regionId, posX, posY) => {
-  const region = dartboard.getElementById(regionId)
-  region.style.fill = 'rgb(0, 238, 255';
+  const region = dartboard.find(`#${regionId}`);
+  region.css('fill', 'rgb(0, 238, 255');
+
+  const value = parseInt(region.attr('data-value'));
+  console.log(value);
 });
 
 // Replicate left panel width
 window.replication.onBoardResized((event, width) => {
-  console.log(`RECEIVED ${width}`);
-  leftPanel.style.width = width;
+  leftPanel.css('width', width);
 });
 
 // Display Statistic Scorer Selected

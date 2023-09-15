@@ -1,20 +1,20 @@
-const leftPanel = document.getElementById('left-panel');
-const dartboard = document.getElementById('dartboard-svg');
-const regions = dartboard.querySelectorAll('g.board-region > path, circle.board-region');
+const leftPanel = $('#left-panel');
+const dartboard = $('#dartboard-svg');
+const regions = $('g.board-region > path, circle.board-region');
 
 // Attach a click listener to each board region
-regions.forEach((region) => {
-  region.addEventListener('click', (event) => {
-    region.style.fill = 'rgb(0, 238, 255';
+regions.each(function(index, region) {
+  $(region).on('click', function(event) {
+    $(region).css('fill', 'rgb(0, 238, 255');
 
     // Replicate the selected region to the spectator
-    window.replication.addDart(region.getAttribute('id'), event.clientX, event.clientY);
+    window.replication.addDart($(region).attr('id'), event.clientX, event.clientY);
   });
 });
 
 // Resize the spectator view to match the scorer view
 const resizeObserver = new ResizeObserver(() => {
-  window.replication.resizeBoard(leftPanel.style.width);
+  window.replication.resizeBoard(leftPanel.css('width'));
 });
 
-resizeObserver.observe(leftPanel);
+resizeObserver.observe(leftPanel.get(0));

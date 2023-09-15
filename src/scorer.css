@@ -25,6 +25,11 @@ body {
   overflow: hidden;
 }
 
+#dartboard-svg {
+  width: 100%;
+  height: 100%;
+}
+
 .board-region>path:hover, circle.board-region:hover {
 	fill: rgb(255, 210, 11);
 	transition: 0.1s;
