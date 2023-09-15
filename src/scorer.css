@@ -3,12 +3,47 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
   Arial, sans-serif;
-  margin: auto;
   width: auto;
   height: 100%;
   padding: 2rem;
+  margin: auto;
   display: flex;
   background-color: rgb(0, 81, 44);
+}
+
+/* Bottom Panel (controls) */
+
+#bottom-panel {
+  width: calc(100% - 4rem - 20px);
+  height: calc(100% - 800px - 5rem);
+  min-height: 80px;
+  background-color: rgb(230, 230, 230);
+  border-radius: 10px;
+  position: fixed;
+  bottom: 2rem;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.control-button {
+  width: 15%;
+  max-width: 200px;
+  height: 60%;
+  margin: 10px;
+  line-height: 60%;
+  background-color: black;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  cursor:pointer;
+}
+
+.control-button:hover {
+  background-color: rgb(255, 198, 11);
+  color: black;
 }
 
 /* Left Panel (dartboard) */
@@ -31,7 +66,7 @@ body {
 }
 
 .board-region>path:hover, circle.board-region:hover {
-	fill: rgb(255, 210, 11);
+	fill: rgb(255, 198, 11);
 	transition: 0.1s;
 }
 
