@@ -6,5 +6,3 @@ contextBridge.exposeInMainWorld('replication', {
     onBoardResized: (width) => ipcRenderer.on('resize-board', width),
     onStatSelected: (stat_type, category) => ipcRenderer.on('stat-select', stat_type, category)
 });
-
-
