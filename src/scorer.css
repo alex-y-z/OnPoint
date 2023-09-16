@@ -55,13 +55,17 @@ body {
 /* Throw Dropdown */
 
 .throw-dropdown {
-  display: inline-block;
   position: relative;
   flex: 1;
   max-width: 200px;
   height: 60%;
   margin: 10px;
-  line-height: 60%;
+  text-align: center;
+}
+
+.throw-dropdown > button {
+  width: 100%;
+  height: 100%;
   background-color: black;
   border: none;
   font-size: 24px;
@@ -85,9 +89,8 @@ body {
   color: black;
   border: 1px solid black;
   border-bottom: none;
-  padding: 16px;
+  padding: 10px;
   font-weight: bold;
-  cursor: pointer;
 }
 
 .throw-dropdown-content > option:hover {
@@ -228,7 +231,6 @@ td {
   max-width: 200px;
   height: 60%;
   margin: 10px;
-  line-height: 60%;
   background-color: black;
   border-radius: 6px;
   border: none;
