@@ -40,6 +40,10 @@ body {
 	fill: rgb(255, 198, 11);
 }
 
+.selected-region {
+  fill: rgb(0, 238, 255);
+}
+
 /* Throw Panel */
 
 #throw-panel {
