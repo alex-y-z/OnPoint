@@ -5,6 +5,17 @@ const throwPanel = $('#throw-panel');
 const throwOptions = $('.throw-dropdown-content > option');
 
 var throws = [];
+var currentThrow = 0;
+var settingThrow = false;
+
+// Remove dart
+function removeDart(region) {
+
+  // Remove highlight if throw is associated with a region
+  if (typeof region === 'object') {
+    region.removeClass('selected-region');
+  }
+}
 
 // Attach a click listener to each board region
 regions.on('click', (event) => {
@@ -17,9 +28,11 @@ regions.on('click', (event) => {
   region.addClass('selected-region');
 
   // Set throw label
-  throws.push(region.attr('id'));
-  const throwLabel = throwPanel.find(`#throw-label-${throws.length}`);
+  throws.splice(currentThrow, 0, region);
+  const throwLabel = throwPanel.find(`#throw-label-${currentThrow}`);
   throwLabel.find('button').text(region.attr('name'));
+  currentThrow++;
+  settingThrow = false;
 
   // Replicate the selected region to the spectator
   window.replication.addDart(region.attr('id'), event.clientX, event.clientY);
@@ -28,14 +41,29 @@ regions.on('click', (event) => {
 // Listen to throw dropdowns to explicitly set a throw value
 throwOptions.on('click', (event) => {
   const option = $(event.target);
-  const button = option.parent().parent().find('button')
+  const dropdown = option.parent().parent();
+  const button = dropdown.find('button');
+  const index = parseInt(dropdown.attr('data-slot'));
+  const region = throws[index];
 
+  // Change an existing dart
   if (option.text() == 'CHANGE') {
+    if (settingThrow || typeof throws[index] === 'undefined') {
+      return; // Already setting or there is no throw to change
+    }
+
     button.text('');
+    removeDart(region);
+    throws.splice(index, 1);
+    currentThrow = index;
+    settingThrow = true;
     return;
   }
 
+  // Miss, bounce, or foul
   button.text(option.text());
+  removeDart(region);
+  throws[index] = option.text();
 });
 
 // Resize the spectator view to match the scorer view
@@ -47,12 +75,10 @@ resizeObserver.observe(leftPanel.get(0));
 
 // Clear board and throw panel
 $('#next-turn-button').on('click', (event) => {
-  var throwNum = 1;
-  for (regionId of throws) {
-    const region = $(`#${regionId}`);
-    region.removeClass('selected-region');
-    throwPanel.find(`#throw-label-${throwNum}>button`).text('');
-    throwNum++;
+  for (index in throws) {
+    removeDart(throws[index]);
+    throwPanel.find(`#throw-label-${index}>button`).text('');
   }
   throws = [];
+  currentThrow = 0;
 });

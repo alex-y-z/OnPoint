@@ -65,6 +65,7 @@ body {
   height: 60%;
   margin: 10px;
   text-align: center;
+  cursor: pointer;
 }
 
 .throw-dropdown > button {
@@ -75,7 +76,6 @@ body {
   font-size: 24px;
   font-weight: bold;
   color: white;
-  cursor: pointer;
 }
 
 .throw-dropdown-content {
@@ -113,7 +113,7 @@ body {
   position: absolute;
   bottom: 100%;
   right: 0;
-  padding: 16px;
+  padding: 10px;
   background-color: rgb(255, 198, 11);
   color: black;
   font-size: 24px;
