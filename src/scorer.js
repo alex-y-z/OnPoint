@@ -82,3 +82,6 @@ $('#next-turn-button').on('click', (event) => {
   throws = [];
   currentThrow = 0;
 });
+
+
+
