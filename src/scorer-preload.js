@@ -4,5 +4,5 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('replication', {
     addDart: (regionId, posX, posY) => ipcRenderer.send('add-dart', regionId, posX, posY),
     resizeBoard: (width) => ipcRenderer.send('resize-board', width),
-    statSelect: (stat_type, category) => ipcRenderer.send('stat-select', stat_type, category)
+    statSelect: (stat_type) => ipcRenderer.send('stat-select', stat_type)
 });

@@ -3,6 +3,7 @@ const dartboard = $('#dartboard-svg');
 const regions = $('g.board-region > path, circle.board-region');
 const throwPanel = $('#throw-panel');
 const throwOptions = $('.throw-dropdown-content > option');
+const stats = $('#statistics')
 
 var throws = [];
 var markers = [];
@@ -123,4 +124,9 @@ $('#next-turn-button').on('click', (event) => {
 });
 
 
+// Add listener event to statistics table
+stats.find('.dropdown-content>option').on('click', (event) => {
+  const option = $(event.target);
+  window.replication.statSelect(option.attr('value'));
+});
 

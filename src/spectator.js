@@ -16,64 +16,53 @@ window.replication.onBoardResized((event, width) => {
 });
 
 // Display Statistic Scorer Selected
-// category can be match, p1, or p2
-// stat_type can be any keyword associated with the category
-window.replication.onStatSelected((event, stat_type, category) => {
-  if (category == "match") {
-    switch(stat_type) {
-      case "avgTurn":
-        // Execute for average turn score
-        break;
-      case "numOf180":
-        // Execute for number of 180s in match
-        break;
-      case "lowTurn":
-        // Execute for lowest turn score
-        break;
-      case "numOfBE":
-        // Execute for number of bull's eyes in match
-        break;
-      case "numOfDouble":
-        // Execute for number of doubles in match
-        break;
-    }
-  }
-  else if (category == "p1") {
-    switch(stat_type) {
-      case "rank":
-        // Execute for current league rank
-        break;
-      case "lastWin":
-        // Execute for last match win
-        break;
-      case "avgScore":
-        // Execute for average league score for the season
-        break;
-      case "numOf180":
-        // Execute for number of 180s in season
-        break;
-      case "winPercent":
-        // Execute for overall win percentage
-        break;
-    }
-  }
-  else {
-    switch(stat_type) {
-      case "rank":
-        // Execute for current league rank
-        break;
-      case "lastWin":
-        // Execute for last match win
-        break;
-      case "avgScore":
-        // Execute for average league score for the season
-        break;
-      case "numOf180":
-        // Execute for number of 180s in season
-        break;
-      case "winPercent":
-        // Execute for overall win percentage
-        break;
-    }
+// stat_type can be any keyword associated in the option list (scorer.html)
+window.replication.onStatSelected((event, stat_type) => {
+  switch(stat_type) {
+    case "avgTurn":
+      // Execute for average turn score
+      break;
+    case "numOf180":
+      // Execute for number of 180s in match
+      break;
+    case "lowTurn":
+      // Execute for lowest turn score
+      break;
+    case "numOfBE":
+      // Execute for number of bull's eyes in match
+      break;
+    case "numOfDouble":
+      // Execute for number of doubles in match
+      break;
+    case "p1-rank":
+      // Execute for player 1's current league rank
+      break;
+    case "p1-lastWin":
+      // Execute for player 1's last match win
+      break;
+    case "p1-avgScore":
+      // Execute for player 1's average league score for the season
+      break; 
+    case "p1-180":
+      // Execute for player 1's number of 180s in the season
+      break; 
+    case "p1-winPercent":
+      // Execute for Player 1's overall win percentage
+      break; 
+    case "p2-rank":
+      // Execute for player 2's current league rank
+      break;
+    case "p2-lastWin":
+      // Execute for player 2's last match win
+      break;
+    case "p2-avgScore":
+      // Execute for player 2's average league score for the season
+      break; 
+    case "p2-180":
+      // Execute for player 2's number of 180s in the season
+      break; 
+    case "p2-winPercent":
+      // Execute for Player 2's overall win percentage
+      break; 
   }
 });
