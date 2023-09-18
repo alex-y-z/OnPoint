@@ -123,6 +123,10 @@ $('#next-turn-button').on('click', (event) => {
   currentThrow = 0;
 });
 
+// Open New Game page when new game button is pressed
+$('#new-game-button').on('click', (event) => {
+
+});
 
 // Add listener event to statistics table
 stats.find('.dropdown-content>option').on('click', (event) => {
