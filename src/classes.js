@@ -1,4 +1,6 @@
+import allowed_throws from "./winning_move"
 
+throws = new Map(Array.from(allowed_throws, a => a.reverse()))
 
 // A class to represent each player in the game.
 class Player {
