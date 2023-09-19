@@ -34,6 +34,8 @@ window.replication.onStatSelected((event, stat_type) => {
     case "numOfDouble":
       // Execute for number of doubles in match
       break;
+
+    // Get p1 name from New Game submission or database
     case "p1-rank":
       // Execute for player 1's current league rank
       break;
@@ -49,6 +51,8 @@ window.replication.onStatSelected((event, stat_type) => {
     case "p1-winPercent":
       // Execute for Player 1's overall win percentage
       break; 
+
+    // Get p2 name from New Game submission or database  
     case "p2-rank":
       // Execute for player 2's current league rank
       break;
