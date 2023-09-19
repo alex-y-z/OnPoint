@@ -126,6 +126,14 @@ $('#next-turn-button').on('click', (event) => {
 // Display new game modal
 $('#new-game-button').on('click', (event) => {
   let modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
+
+  modal.on('load', () => {
+    let newGameDoc = modal.contents();
+    newGameDoc.find('#submit-button').on('click', () => {
+      modal.remove();
+    });
+  });
+  
   $('body').append(modal);
 });
 
