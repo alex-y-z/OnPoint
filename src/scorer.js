@@ -3,7 +3,7 @@ const dartboard = $('#dartboard-svg');
 const regions = $('g.board-region > path, circle.board-region');
 const throwPanel = $('#throw-panel');
 const throwOptions = $('.throw-dropdown-content > option');
-const stats = $('#statistics')
+const stats = $('#statistics');
 
 var throws = [];
 var markers = [];
@@ -123,9 +123,10 @@ $('#next-turn-button').on('click', (event) => {
   currentThrow = 0;
 });
 
-// Open New Game page when new game button is pressed
+// Display new game modal
 $('#new-game-button').on('click', (event) => {
-
+  let modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
+  $('body').append(modal);
 });
 
 // Add listener event to statistics table
@@ -133,4 +134,3 @@ stats.find('.dropdown-content>option').on('click', (event) => {
   const option = $(event.target);
   window.replication.statSelect(option.attr('value'));
 });
-

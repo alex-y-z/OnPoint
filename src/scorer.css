@@ -265,3 +265,12 @@ td {
   background-color: rgb(255, 198, 11);
   color: black;
 }
+
+/* New Game Modal */
+#new-game-modal {
+  width: 40%;
+  height: 60%;
+  position: absolute;
+  top: 20%;
+  left: 30%;
+}
