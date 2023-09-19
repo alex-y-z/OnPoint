@@ -15,5 +15,6 @@ input[type=text] {
 }
 
 input[type=radio] {
-    width: 100%;
+    width: auto;
+    padding: auto;
 }
