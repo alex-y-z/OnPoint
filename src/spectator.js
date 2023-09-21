@@ -17,14 +17,12 @@ window.replication.onBoardResized((event, width) => {
 });
 
 // Set the scoreboard info from the new game form
-window.replication.getFormInfo((legNum, name1, name2, score) => {
-  console.log(legNum, name1, name2, score);
-  
+window.replication.getFormInfo((event, legNum, name1, name2, score) => {
   scoreboard.find('#numOfLegs').text(legNum);
   scoreboard.find('#p1').text(name1);
   scoreboard.find('#p2').text(name2);
-  scoreboard.find('p1Score').text(score);
-  scoreboard.find('p2Score').text(score);
+  scoreboard.find('#p1Score').text(score);
+  scoreboard.find('#p2Score').text(score);
 });
 
 // Display Statistic Scorer Selected
