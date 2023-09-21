@@ -3,6 +3,7 @@ const dartboard = $('#dartboard-svg');
 const regions = $('g.board-region > path, circle.board-region');
 const throwPanel = $('#throw-panel');
 const throwOptions = $('.throw-dropdown-content > option');
+const scoreboard = $('scoreboard');
 const stats = $('#statistics');
 
 var throws = [];
@@ -129,7 +130,17 @@ $('#new-game-button').on('click', (event) => {
 
   modal.on('load', () => {
     let newGameDoc = modal.contents();
+    //var msg = document.getElementById('theInput').innerHTML;
+
     newGameDoc.find('#submit-button').on('click', () => {
+      let legNum = newGameDoc.find('#numOfLeg').val(); 
+      let name1 = newGameDoc.find('#p1').val(); 
+      let name2 = newGameDoc.find('#p2').val(); 
+      let score = newGameDoc.find('input[type=radio]:checked').val(); 
+
+      console.log(legNum, name1, name2, score);
+      
+      window.replication.getFormInfo(legNum, name1, name2, score);
       modal.remove();
     });
   });

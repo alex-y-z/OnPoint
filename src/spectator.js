@@ -1,5 +1,6 @@
 const leftPanel = $('#left-panel');
 const dartboard = $('#dartboard-svg');
+const scoreboard = $('#scoreboard');
 
 // Replicate scorer input
 window.replication.onDartAdded((event, regionId, posX, posY) => {
@@ -13,6 +14,17 @@ window.replication.onDartAdded((event, regionId, posX, posY) => {
 // Replicate left panel width
 window.replication.onBoardResized((event, width) => {
   leftPanel.css('width', width);
+});
+
+// Set the scoreboard info from the new game form
+window.replication.getFormInfo((legNum, name1, name2, score) => {
+  console.log(legNum, name1, name2, score);
+  
+  scoreboard.find('#numOfLegs').text(legNum);
+  scoreboard.find('#p1').text(name1);
+  scoreboard.find('#p2').text(name2);
+  scoreboard.find('p1Score').text(score);
+  scoreboard.find('p2Score').text(score);
 });
 
 // Display Statistic Scorer Selected

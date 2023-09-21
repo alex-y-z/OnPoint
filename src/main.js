@@ -49,7 +49,7 @@ const createWindows = () => {
 
   // Replication event handlers
   // This forwards information from scorer to spectator
-  const channels = ['add-dart', 'resize-board', 'stat-select'];
+  const channels = ['add-dart', 'resize-board', 'getFormInfo', 'stat-select'];
   channels.forEach(channel => {
     ipcMain.on(channel, (event, ...args) => {
       spectatorWindow.webContents.send(channel, ...args);
