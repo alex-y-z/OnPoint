@@ -1,14 +1,47 @@
 const leftPanel = $('#left-panel');
-const dartboard = $('#dartboard-svg');
+const dartboard = $('#board-box');
+const throwPanel = $('#throw-panel');
 const scoreboard = $('#scoreboard');
 
-// Replicate scorer input
-window.replication.onDartAdded((event, regionId, posX, posY) => {
+// Add, change, and remove darts
+window.replication.onDartAdded((event, regionId, index, posX, posY) => {
+  // Highlight region
   const region = dartboard.find(`#${regionId}`);
-  region.css('fill', 'rgb(0, 238, 255');
+  region.addClass('selected-region');
+  region.attr('data-darts', (_, value) => (value === undefined) && 1 || parseInt(value) + 1);
 
-  const value = parseInt(region.attr('data-value'));
-  console.log(value);
+  // Add marker
+  const marker = $(`<span id="marker-${index}" class="dart-marker"></span>`);
+  marker.css('top', posY);
+  marker.css('left', posX);
+  dartboard.append(marker);
+  marker.fadeIn(100);
+
+  // Set throw label
+  const throwLabel = throwPanel.find(`#throw-label-${index}`);
+  throwLabel.text(region.attr('name'));
+});
+
+window.replication.onDartChanged((event, index, labelText) => {
+  throwPanel.find(`#throw-label-${index}`).text(labelText);
+});
+
+window.replication.onDartRemoved((event, index, regionId, isRegionEmpty) => {
+  if (isRegionEmpty) {
+    dartboard.find(`#${regionId}`).removeClass('selected-region');
+  }
+  dartboard.find(`#marker-${index}`).fadeOut(100, function() {
+    $(this).remove();
+  })
+});
+
+// Clear the board and update score
+window.replication.onNextTurn((event, playerNum, deltaScore) => {
+  dartboard.find('.selected-region').removeClass('selected-region');
+  dartboard.find('.dart-marker').fadeOut(100, function() {
+    $(this).remove();
+  });
+  throwPanel.find('.throw-label').text('');
 });
 
 // Replicate left panel width
