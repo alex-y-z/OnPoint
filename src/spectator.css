@@ -104,7 +104,7 @@ body {
 /* Scoreboard */
 
 #scoreboard {
-  flex: 50%;
+  flex: 30%;
 }
 
 table {
@@ -128,13 +128,13 @@ td {
 /* Statistics */
 
 #statistics {
-  flex: 40%;
+  flex: 70%;
   padding: 1em;
   border-top: 1px solid black;
 }
 
 #statistics-table {
   width: 100%;
-  height: 80%;
+  height: 90%;
   border: 1px solid black;
 }
