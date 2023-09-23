@@ -159,5 +159,8 @@ function setUpScoreboard(legNum, name1, name2, score) {
 // Add listener event to statistics table
 stats.find('.dropdown-content>option').on('click', (event) => {
   const option = $(event.target);
-  window.replication.statSelect(option.attr('value'));
+
+  //$('#your_button_id').text();
+  //let loc = option.parent().parent().attr('name');
+  window.replication.statSelect(option.parent().parent().attr('name'), option.attr('value'));
 });
