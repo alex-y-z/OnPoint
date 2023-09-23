@@ -62,8 +62,6 @@ window.replication.getFormInfo((event, legNum, name1, name2, score) => {
 // Display Statistic Scorer Selected
 // stat_type can be any keyword associated in the option list (scorer.html)
 window.replication.onStatSelected((event, loc, stat_type) => {
-  console.log(loc);
-  
   switch(stat_type) {
     case "avgTurn":
       // Execute for average turn score
