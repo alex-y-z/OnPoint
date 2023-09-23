@@ -8,5 +8,5 @@ contextBridge.exposeInMainWorld('replication', {
     onNextTurn: (...args) => ipcRenderer.on('next-turn', ...args),
     onBoardResized: (...args) => ipcRenderer.on('resize-board', ...args),
     getFormInfo: (legNum, name1, name2, score) => ipcRenderer.on('getFormInfo', legNum, name1, name2, score),
-    onStatSelected: (stat_type) => ipcRenderer.on('stat-select', loc, stat_type)
+    onStatSelected: (loc, stat_type) => ipcRenderer.on('stat-select', loc, stat_type)
 });
