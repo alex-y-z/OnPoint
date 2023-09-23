@@ -142,6 +142,11 @@ $('#new-game-button').on('click', (event) => {
       window.replication.getFormInfo(legNum, name1, name2, score);
       modal.remove();
     });
+
+    newGameDoc.find('#cancel-button').on('click', () => {
+      modal.remove();
+    });
+
   });
   
   $('body').append(modal);
