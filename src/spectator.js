@@ -60,6 +60,7 @@ window.replication.getFormInfo((event, legNum, name1, name2, score) => {
 });
 
 // Display Statistic Scorer Selected
+// Search through the database for player/match history to calculate statistic
 // stat_type can be any keyword associated in the option list (scorer.html)
 window.replication.onStatSelected((event, loc, stat_type) => {
   switch(stat_type) {
