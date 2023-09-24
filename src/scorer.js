@@ -164,6 +164,39 @@ $('#new-game-button').on('click', (event) => {
   $('body').append(modal);
 });
 
+// Validate Form Text Input
+// Returns false if text is out of bounds
+function validateText(text) {
+  if (text.length > 150 ) {
+    return false;
+  }
+  else {
+    return true;
+  }
+};
+
+// Validate Form Number Input
+// Returns false if number is out of bounds
+function validateLegNum(num) {
+  if (num < 3 || num > 29) {
+    return false
+  }
+  else {
+    return true;
+  }
+};
+
+// Validate Form Number Input
+// Returns false if number is out of bounds
+function validateSetNum(num) {
+  if (num < 1 || num > 9) {
+    return false
+  }
+  else {
+    return true;
+  }
+};
+
 // Populate Scorer Scoreboard with New Game Info
 function setUpScoreboard(legNum, setNum, name1, name2, score) {
   scoreboard.find('#numOfLegs').text('(' + legNum + ')');
