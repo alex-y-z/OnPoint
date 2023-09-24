@@ -155,8 +155,8 @@ $('#new-game-button').on('click', (event) => {
 
 // Populate Scorer Scoreboard with New Game Info
 function setUpScoreboard(legNum, setNum, name1, name2, score) {
-  scoreboard.find('#numOfLegs').text(legNum);
-  scoreboard.find('#numOfSets').text(setNum);
+  scoreboard.find('#numOfLegs').text('(' + legNum + ')');
+  scoreboard.find('#numOfSets').text('(' + setNum + ')');
   scoreboard.find('#p1').text(name1);
   scoreboard.find('#p2').text(name2);
   scoreboard.find('#p1Score').text(score);
