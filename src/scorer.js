@@ -133,13 +133,14 @@ $('#new-game-button').on('click', (event) => {
     const newGameDoc = modal.contents();
 
     newGameDoc.find('#submit-button').on('click', () => {
-      let legNum = newGameDoc.find('#numOfLeg').val(); 
+      let legNum = newGameDoc.find('#numOfLegs').val();
+      let setNum = newGameDoc.find('#numOfSets').val(); 
       let name1 = newGameDoc.find('#p1').val(); 
       let name2 = newGameDoc.find('#p2').val(); 
       let score = newGameDoc.find('input[type=radio]:checked').val(); 
       
-      setUpScoreboard(legNum, name1, name2, score);
-      window.replication.getFormInfo(legNum, name1, name2, score);
+      setUpScoreboard(legNum, setNum, name1, name2, score);
+      window.replication.getFormInfo(legNum, setNum, name1, name2, score);
       modal.remove();
     });
 
@@ -153,8 +154,9 @@ $('#new-game-button').on('click', (event) => {
 });
 
 // Populate Scorer Scoreboard with New Game Info
-function setUpScoreboard(legNum, name1, name2, score) {
+function setUpScoreboard(legNum, setNum, name1, name2, score) {
   scoreboard.find('#numOfLegs').text(legNum);
+  scoreboard.find('#numOfSets').text(setNum);
   scoreboard.find('#p1').text(name1);
   scoreboard.find('#p2').text(name2);
   scoreboard.find('#p1Score').text(score);
