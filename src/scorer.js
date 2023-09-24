@@ -179,7 +179,7 @@ function validateText(text) {
 // Returns false if number is out of bounds
 function validateLegNum(num) {
   if (num < 3 || num > 29) {
-    return false
+    return false;
   }
   else {
     return true;
@@ -190,7 +190,7 @@ function validateLegNum(num) {
 // Returns false if number is out of bounds
 function validateSetNum(num) {
   if (num < 1 || num > 9) {
-    return false
+    return false;
   }
   else {
     return true;
