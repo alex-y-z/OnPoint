@@ -126,6 +126,17 @@ $('#next-turn-button').on('click', (event) => {
 });
 
 // Display new game modal
+/*
+Keywords in newGame.html
+p1
+p2
+official
+location
+date
+startScore
+numOfLegs
+numOfSets
+*/
 $('#new-game-button').on('click', (event) => {
   const modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
 

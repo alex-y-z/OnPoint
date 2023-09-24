@@ -18,18 +18,22 @@
     -->
     <form database="">  <!-- Insert link to database -->
       <label for="p1">Player 1 Name: </label>
-      <input type="text" id="p1" name="p1"><br><br>
+      <input type="text" id="p1" name="p1" max="150" required><br><br>
+
       <label for="p2">Player 2 Name: </label>
-      <input type="text" id="p2" name="p2"><br><br>
+      <input type="text" id="p2" name="p2" max="150" required><br><br>
+
+      <label for="Official's Name">Location: </label>
+      <input type="text" id="official" name="official" max="150" required><br><br>
 
       <label for="location">Location: </label>
-      <input type="text" id="location" name="location"><br><br>
+      <input type="text" id="location" name="location" max="150" required><br><br>
 
       <label for="date">Date of Match: </label>
-      <input type="date" id="date" name="date"><br><br>
+      <input type="date" id="date" name="date" required><br><br>
 
       <label for="startScore">Please Select Starting Score Value: </label><br>
-      <input type="radio" id="1101" name="startScore" value="1101">
+      <input type="radio" id="1101" name="startScore" value="1101" required>
       <label for="1101">1101</label><br>
       <input type="radio" id="801" name="startScore" value="801">
       <label for="801">801</label><br>
@@ -39,10 +43,10 @@
       <label for="301">301</label><br><br>
 
       <label for="numOfLegs">Number of Legs: </label>
-      <input type="text" id="numOfLegs" name="numOfLegs"><br><br>
+      <input type="text" id="numOfLegs" name="numOfLegs" pattern="[3-29]" min="3" max="29" required><br><br>
 
       <label for="numOfSets">Number of Matches: </label>
-      <input type="text" id="numOfSets" name="numOfSets"><br><br>
+      <input type="text" id="numOfSets" name="numOfSets" pattern="[1-9]" min="1" max="9" required><br><br>
       
       <input id="submit-button" type="submit" value="Submit">
       
