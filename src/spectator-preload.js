@@ -7,6 +7,6 @@ contextBridge.exposeInMainWorld('replication', {
     onDartRemoved: (...args) => ipcRenderer.on('remove-dart', ...args),
     onNextTurn: (...args) => ipcRenderer.on('next-turn', ...args),
     onBoardResized: (...args) => ipcRenderer.on('resize-board', ...args),
-    getFormInfo: (legNum, name1, name2, score) => ipcRenderer.on('getFormInfo', legNum, name1, name2, score),
-    onStatSelected: (loc, stat_type) => ipcRenderer.on('stat-select', loc, stat_type)
+    onGetFormInfo: (...args) => ipcRenderer.on('getFormInfo', ...args),
+    onStatSelected: (...args) => ipcRenderer.on('stat-select', ...args)
 });

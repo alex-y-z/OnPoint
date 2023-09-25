@@ -126,35 +126,76 @@ $('#next-turn-button').on('click', (event) => {
 });
 
 // Display new game modal
+/*
+Keywords in newGame.html
+p1
+p2
+official
+location
+date
+startScore
+numOfLegs
+numOfSets
+*/
 $('#new-game-button').on('click', (event) => {
   const modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
 
   modal.on('load', () => {
     const newGameDoc = modal.contents();
+    const gameForm = newGameDoc.find('#game-form');
 
-    newGameDoc.find('#submit-button').on('click', () => {
-      let legNum = newGameDoc.find('#numOfLeg').val(); 
-      let name1 = newGameDoc.find('#p1').val(); 
-      let name2 = newGameDoc.find('#p2').val(); 
-      let score = newGameDoc.find('input[type=radio]:checked').val(); 
-      
-      setUpScoreboard(legNum, name1, name2, score);
-      window.replication.getFormInfo(legNum, name1, name2, score);
+    gameForm.on('submit', () => {
+      const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
+      setUpScoreboard(...formData.values());
+      window.replication.getFormInfo(...formData.values());
       modal.remove();
     });
 
     newGameDoc.find('#cancel-button').on('click', () => {
       modal.remove();
     });
-
   });
   
   $('body').append(modal);
 });
 
+// Validate Form Text Input
+// Returns false if text is out of bounds
+function validateText(text) {
+  if (text.length > 150 ) {
+    return false;
+  }
+  else {
+    return true;
+  }
+};
+
+// Validate Form Number Input
+// Returns false if number is out of bounds
+function validateLegNum(num) {
+  if (num < 3 || num > 29) {
+    return false;
+  }
+  else {
+    return true;
+  }
+};
+
+// Validate Form Number Input
+// Returns false if number is out of bounds
+function validateSetNum(num) {
+  if (num < 1 || num > 9) {
+    return false;
+  }
+  else {
+    return true;
+  }
+};
+
 // Populate Scorer Scoreboard with New Game Info
-function setUpScoreboard(legNum, name1, name2, score) {
-  scoreboard.find('#numOfLegs').text(legNum);
+function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum) {
+  scoreboard.find('#numOfLegs').text('(' + legNum + ')');
+  scoreboard.find('#numOfSets').text('(' + setNum + ')');
   scoreboard.find('#p1').text(name1);
   scoreboard.find('#p2').text(name2);
   scoreboard.find('#p1Score').text(score);
