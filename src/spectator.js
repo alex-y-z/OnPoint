@@ -51,7 +51,7 @@ window.replication.onBoardResized((event, width) => {
 });
 
 // Set the scoreboard info from the new game form
-window.replication.onGetFormInfo((event, legNum, setNum, name1, name2, score) => {
+window.replication.onGetFormInfo((event, name1, name2, offName, loc, date, score, legNum, setNum) => {
   scoreboard.find('#numOfLegs').text('(' + legNum + ')');
   scoreboard.find('#numOfSets').text('(' + setNum + ')');
   scoreboard.find('#p1').text(name1);
