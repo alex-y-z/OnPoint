@@ -37,7 +37,11 @@ window.replication.onDartRemoved((event, index, regionId, isRegionEmpty) => {
 });
 
 // Clear the board and update score
-window.replication.onNextTurn((event, playerNum, deltaScore) => {
+window.replication.onNextTurn((event, playerNum, newScore) => {
+  // Update score
+  scoreboard.find(`#p${playerNum}Score`).text(newScore);
+
+  // Clear board
   dartboard.find('.selected-region').removeClass('selected-region');
   dartboard.find('.dart-marker').fadeOut(100, function() {
     $(this).remove();
@@ -58,6 +62,10 @@ window.replication.onGetFormInfo((event, name1, name2, offName, loc, date, score
   scoreboard.find('#p2').text(name2);
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
+  scoreboard.find('#p1SetsWon').text('0');
+  scoreboard.find('#p2SetsWon').text('0');
+  scoreboard.find('#p1LegsWon').text('0');
+  scoreboard.find('#p2LegsWon').text('0');
 });
 
 // Display Statistic Scorer Selected
