@@ -6,8 +6,10 @@ const throwOptions = $('.throw-dropdown-content > option');
 const scoreboard = $('#scoreboard');
 const stats = $('#statistics');
 
+const scores = [0, 0];
 var throws = [];
 var currentThrow = 0;
+var currentPlayer = 1;
 var changingThrow = null;
 
 // Remove dart
@@ -115,14 +117,29 @@ const resizeObserver = new ResizeObserver(() => {
 
 resizeObserver.observe(leftPanel.get(0));
 
-// Clear board and throw panel
+// Update scores and reset
 $('#next-turn-button').on('click', (event) => {
+  // Calculate turn score
+  let turnScore = 0;
+  for (const region of throws) {
+    if (typeof region === 'object') {
+      turnScore += parseInt(region.attr('data-value'));
+    }
+  }
+  console.log(turnScore);
+  scores[currentPlayer - 1] -= turnScore;
+  scoreboard.find(`#p${currentPlayer}Score`).text(scores[currentPlayer - 1]);
+  
+  // Reset for next turn
+  throws = [];
+  currentThrow = 0;
+  window.replication.nextTurn(currentPlayer, scores[currentPlayer - 1]);
+  currentPlayer = (currentPlayer % 2) + 1;
+
+  // Clear board
   dartboard.find('.selected-region').removeClass('selected-region');
   dartboard.find('.dart-marker').remove();
   throwPanel.find('.throw-dropdown-button').text('');
-  throws = [];
-  currentThrow = 0;
-  window.replication.nextTurn();
 });
 
 // Display new game modal
@@ -200,6 +217,12 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   scoreboard.find('#p2').text(name2);
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
+  scoreboard.find('#p1SetsWon').text('0');
+  scoreboard.find('#p2SetsWon').text('0');
+  scoreboard.find('#p1LegsWon').text('0');
+  scoreboard.find('#p2LegsWon').text('0');
+  scores[0] = parseInt(score);
+  scores[1] = parseInt(score);
 };
 
 
