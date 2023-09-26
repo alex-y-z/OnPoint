@@ -7,6 +7,6 @@ contextBridge.exposeInMainWorld('replication', {
     removeDart: (...args) => ipcRenderer.send('remove-dart', ...args),
     nextTurn: (...args) => ipcRenderer.send('next-turn', ...args),
     resizeBoard: (...args) => ipcRenderer.send('resize-board', ...args),
-    getFormInfo: (legNum, name1, name2, score) => ipcRenderer.send('getFormInfo', legNum, name1, name2, score),
-    statSelect: (loc, stat_type) => ipcRenderer.send('stat-select', loc, stat_type)
+    getFormInfo: (...args) => ipcRenderer.send('getFormInfo', ...args),
+    statSelect: (...args) => ipcRenderer.send('stat-select', ...args)
 });
