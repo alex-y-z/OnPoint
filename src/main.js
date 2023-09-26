@@ -1,12 +1,9 @@
 const { app, screen, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const sqlite = require('sqlite3').verbose();
+const {Player, Leg, Match, Game} = require('./classes');
+const {db, update_player, request_players} = require("./database");
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
-
-let db = new sqlite.Database('./DartsDatabase.db', (err) => {
-  console.log(err)
-});
 
 player_1 = null;
 player_2 = null;
@@ -50,6 +47,7 @@ const createWindows = () => {
   db.run("CREATE TABLE IF NOT EXISTS Matches (mid INTEGER PRIMARY KEY AUTOINCREMENT, winner INTEGER, leg_1 INTEGER NOT NULL, leg_2 INTEGER NOT NULL, leg_3 INTEGER NOT NULL, leg_4 INTEGER NOT NULL, leg_5 INTEGER NOT NULL, leg_6 INTEGER NOT NULL, leg_7 INTEGER NOT NULL, leg_8 INTEGER NOT NULL, leg_9 INTEGER NOT NULL, leg_10 INTEGER NOT NULL, leg_11 INTEGER NOT NULL,leg_12 INTEGER NOT NULL, leg_13 INTEGER NOT NULL, leg_14 INTEGER NOT NULL, Foreign Key(winner) references Players(pid), Foreign KEY(leg_1) references Legs(lid), Foreign KEY(leg_2) references Legs(lid),Foreign KEY(leg_3) references Legs(lid), Foreign KEY(leg_4) references Legs(lid), Foreign KEY(leg_5) references Legs(lid), Foreign KEY(leg_6) references Legs(lid), Foreign KEY(leg_7) references Legs(lid), Foreign KEY(leg_8) references Legs(lid), Foreign KEY(leg_9) references Legs(lid), Foreign KEY(leg_10) references Legs(lid), Foreign KEY(leg_11) references Legs(lid), Foreign KEY(leg_12) references Legs(lid), Foreign KEY(leg_13) references Legs(lid), Foreign KEY(leg_14) references Legs(lid))")
   // Matches
   db.run("CREATE TABLE IF NOT EXISTS Games (gid INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, player_1 INTEGER NOT NULL, player_2 INTEGER NOT NULL, winner INTEGER, match_1 INTEGER NOT NULL, match_2 INTEGER NOT NULL, match_3 INTEGER NOT NULL, match_4 INTEGER NOT NULL, match_5 INTEGER NOT NULL, match_6 INTEGER NOT NULL, match_7 INTEGER NOT NULL, Foreign Key(player_1) references Players(pid), Foreign Key(player_2) references Players(pid), Foreign key(winner) references Players(pid) Foreign Key(match_1) references Matches(mid),  Foreign Key(match_2) references Matches(mid), Foreign Key(match_3) references Matches(mid), Foreign Key(match_4) references Matches(mid), Foreign Key(match_5) references Matches(mid), Foreign Key(match_6) references Matches(mid), Foreign Key(match_7) references Matches(mid))")
+  
 
   // Replication event handlers
   // This forwards information from scorer to spectator

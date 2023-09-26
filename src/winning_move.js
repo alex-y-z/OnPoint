@@ -1,4 +1,4 @@
-known_checkouts = new Map([
+let known_checkouts = new Map([
     [170, ["T20", "T20", "B50"]],
     [167, ["T20", "T19", "B50"]],
     [164, ["T20", "T18", "B50"]],
@@ -19,7 +19,7 @@ known_checkouts = new Map([
     [146, ["T20", "T18", "D16"]],
 ])
 
-winning_throws = new Map(
+let winning_throws = new Map(
     [
         [2, "D1"],
         [4, "D2"],
@@ -45,7 +45,7 @@ winning_throws = new Map(
 
     ]
 )
-allowed_throws = new Map(
+let allowed_throws = new Map(
     [
         [1, "S1"], 
         [2, "S2"], 

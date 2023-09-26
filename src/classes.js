@@ -1,5 +1,5 @@
-import allowed_throws from "./winning_move"
-import db from "./main"
+const {allowed_throws} = require("./winning_move");
+const {db} = require("./database");
 
 throws = new Map(Array.from(allowed_throws, a => a.reverse()))
 
@@ -24,7 +24,7 @@ class Player {
             last_win: this.last_win,
             total_thrown: this.total_thrown,
             num_180s: this.num_180s,
-            win_percent: db.all(`Select * from Matches where player_1 = ${this.player_id} or player_2 = ${this.player_id}`,[], (err, result) => {
+            win_percent: db.all(`Select * from Matches where player_1 = ? or player_2 = ?`,[this.player_id, this.player_id], (err, result) => {
                 if(err) {
                     return 0;
                 }
@@ -75,7 +75,7 @@ class Leg {
     Parameters:
     Returns:
     */
-    calculateScore = () => {
+    calculateScore = (throw_1, throw_2, throw_3) => {
         
     };
 
@@ -106,3 +106,5 @@ class Game {
     
 
 }
+
+module.exports = {Player, Leg, Match, Game};
