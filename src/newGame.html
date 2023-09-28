@@ -9,10 +9,10 @@
     <h1>New Game Setup</h1>
     <form id="game-form" database="">  <!-- Insert link to database -->
       <label for="p1">Player 1 Name: </label>
-      <input type="text" id="p1" onkeyup="filterSearch(p1)" placeholder="Search for names.." title="Type in a name">
+      <input type="text" id="p1" onkeyup="filterSearch(p1)" placeholder="Search for players.." title="Type in a name">
 
       <label for="p2">Player 2 Name: </label>
-      <input type="text" id="p2" onkeyup="filterSearch(p2)" placeholder="Search for names.." title="Type in a name">
+      <input type="text" id="p2" onkeyup="filterSearch(p2)" placeholder="Search for players.." title="Type in a name"><br><br>
 
       <table id="playerTable">
         <tr class="header">
@@ -28,7 +28,7 @@
         <tr>
           <td colspan="3" id="addPlayer">Add Player</td>
         </tr>
-      </table>
+      </table><br><br>
 
       <!--  OLD METHOD
 
@@ -93,6 +93,22 @@
             }
           }       
         }
+      }
+    </script>
+
+    <!-- Function to pull players from the database and fill the table with the information -->
+    <!-- Inserts players to the top of table -->
+    <!-- If alphabetical insert, go backwards (insert Z-A) -->
+    <script>
+      function addRows() {
+        var table = document.getElementById("playerTable");
+        var row = table.insertRow(0);
+        var first = row.insertCell(0);
+        var last = row.insertCell(1);
+        var num = row.insertCell(2);
+        first.innerHTML = "NEW CELL1";
+        last.innerHTML = "NEW CELL2";
+        num.innerHTML = "NEW CELL3";
       }
     </script>
 

@@ -4,12 +4,13 @@ body {
     margin: auto;
     max-width: 38rem;
     padding: 2rem;
-    background-color: rgb(0, 81, 44);
+    background-color: #e0dbd3;
 }
 
 #p1, #p2 {
-    background-image: url(../images/searchIcon.png);
-    background-position: 10px 10px;
+    background-image: url(images/searchIcon.png);
+    background-size: auto 60%;
+    background-position: 5px;
     background-repeat: no-repeat;
     width: 100%;
     font-size: 16px;
@@ -45,31 +46,34 @@ body {
 
 
 input[type=text] {
-    width: 90%;
-    padding: 6px 20px;
+    width: 100%;
+    padding: 12px 20px 12px 40px;
     margin: 8px 0;
     box-sizing: border-box;
+    border: 1px solid #ddd;
 }
 
 input[type=date] {
-    width: 90%;
-    padding: 6px 20px;
+    width: 100%;
+    padding: 12px 20px 12px 40px;
     margin: 8px 0;
     box-sizing: border-box;
+    border: 1px solid #ddd;
 }
 
 input[type=number] {
-    width: 90%;
-    padding: 6px 20px;
+    width: 100%;
+    padding: 12px 20px 12px 40px;
     margin: 8px 0;
     box-sizing: border-box;
+    border: 1px solid #ddd;
 }
 
 input[type=radio] {
     width: auto;
-    padding: auto;
+    padding: 12px 20px 12px 40px;
 }
 
 .cancel-button {
-    margin-left: 45px;
+    margin-left: 60%;
 }
