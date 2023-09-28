@@ -281,9 +281,9 @@ td {
 
 /* New Game Modal */
 #new-game-modal {
-  width: 40%;
-  height: 60%;
+  width: 60%;
+  height: 80%;
   position: absolute;
-  top: 20%;
-  left: 30%;
+  top: 5%;
+  left: 20%;
 }

@@ -8,7 +8,7 @@ body {
 }
 
 #p1, #p2 {
-    background-image: url('images/searchIcon.png');
+    background-image: url(../images/searchIcon.png);
     background-position: 10px 10px;
     background-repeat: no-repeat;
     width: 100%;
