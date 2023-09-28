@@ -123,6 +123,11 @@ $('#next-turn-button').on('click', (event) => {
   throws = [];
   currentThrow = 0;
   window.replication.nextTurn();
+
+  // Update Player Emphasis each time button is clicked
+  // scoreboard id: p1; id: p2
+  // Yellow border or underline or change font color
+
 });
 
 // Display new game modal
