@@ -7,8 +7,8 @@ body {
     background-color: rgb(0, 81, 44);
 }
 
-#p1 #p2 {
-    /*background-image: url('/css/searchicon.png');*/
+#p1, #p2 {
+    background-image: url('images/searchIcon.png');
     background-position: 10px 10px;
     background-repeat: no-repeat;
     width: 100%;
@@ -18,23 +18,23 @@ body {
     margin-bottom: 12px;
   }
   
-  #myTable {
+  #playerTable {
     border-collapse: collapse;
     width: 100%;
     border: 1px solid #ddd;
     font-size: 18px;
   }
   
-  #myTable th, #myTable td {
+  #playerTable th, #playerTable td {
     text-align: left;
     padding: 12px;
   }
   
-  #myTable tr {
+  #playerTable tr {
     border-bottom: 1px solid #ddd;
   }
   
-  #myTable tr.header, #myTable tr:hover {
+  #playerTable tr.header, #playerTable tr:hover {
     background-color: #f1f1f1;
   }
 

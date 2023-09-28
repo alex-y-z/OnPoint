@@ -7,21 +7,28 @@
   </head>
   <body>
     <h1>New Game Setup</h1>
-    <!--Add Options For:
-            Location
-            Number of Matches
-            Number of Legs
-            Leg Start Value: 801, 501, 301, ...
-            Player 1 Name
-            Player 2 Name
-            Select Game History
-    -->
     <form id="game-form" database="">  <!-- Insert link to database -->
       <label for="p1">Player 1 Name: </label>
-      <input type="text" id="p1" onkeyup="filterSearch1()" placeholder="Search for names.." title="Type in a name">
+      <input type="text" id="p1" onkeyup="filterSearch(p1)" placeholder="Search for names.." title="Type in a name">
 
       <label for="p2">Player 2 Name: </label>
-      <input type="text" id="p2" onkeyup="filterSearch2()" placeholder="Search for names.." title="Type in a name">
+      <input type="text" id="p2" onkeyup="filterSearch(p2)" placeholder="Search for names.." title="Type in a name">
+
+      <table id="playerTable">
+        <tr class="header">
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Player ID</th>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td colspan="3" id="addPlayer">Add Player</td>
+        </tr>
+      </table>
 
       <!--  OLD METHOD
 
@@ -64,34 +71,17 @@
     </form>
 
     <!-- Function for user to search through player names-->
+    <!--Change tr[i].getElementsByTagName('td')[0] to [1] to search for "Last Name" (index 1) instead of "First Name" (index 0).-->
     <script>
-      function filterSearch1() {
+      function filterSearch(player) {
         var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("p1");
+        input = document.getElementById(`${player}`);
         filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
+        table = document.getElementById("playerTable");
         tr = table.getElementsByTagName("tr");
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td")[0];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }       
-        }
-      }
-    </script>
 
-    <script>
-      function filterSearch2() {
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("p2");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
+        // Loop through all rows
+        // Hide ones that don't match
         for (i = 0; i < tr.length; i++) {
           td = tr[i].getElementsByTagName("td")[0];
           if (td) {
