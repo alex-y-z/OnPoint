@@ -64,85 +64,76 @@ window.replication.onGetFormInfo((event, name1, name2, offName, loc, date, score
 // Search through the database for player/match history to calculate statistic
 // stat_type can be any keyword associated in the option list (scorer.html)
 window.replication.onStatSelected((event, loc, stat_type) => {
+  // Get stats object from database
+  let p1Stats = player1.getStats();
+  let p2Stats = player2.getStats();
+  let matchStats = match.getStats();
+
+  // Decide which stat to display and where
   switch(stat_type) {
     case "avgTurn":
       // Execute for average turn score
-
-      stats.find(`#${loc}`).text("AVG Turn Score: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("AVG Turn Score: " + matchStats.avgTurn) // Place stat in .text("Blah blah blah" + *here*)
       break;
     case "numOf180":
       // Execute for number of 180s in match
-
-      stats.find(`#${loc}`).text("180s in Match: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("180s in Match: " + matchStats.numOf180) // Place stat in .text("Blah blah blah" + *here*)
       break;
     case "lowTurn":
       // Execute for lowest turn score
-
-      stats.find(`#${loc}`).text("Lowest Turn Score: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("Lowest Turn Score: " + matchStats.lowTurn) // Place stat in .text("Blah blah blah" + *here*)
       break;
     case "numOfBE":
       // Execute for number of bull's eyes in match
-
-      stats.find(`#${loc}`).text("# of Bull's Eyes: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("# of Bull's Eyes: " + matchStats.numOfBE) // Place stat in .text("Blah blah blah" + *here*)
       break;
     case "numOfDouble":
       // Execute for number of doubles in match
-
-      stats.find(`#${loc}`).text("Doubles in Match: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("Doubles in Match: " + matchStats.numOfDouble) // Place stat in .text("Blah blah blah" + *here*)
       break;
 
     // Get p1 name from New Game submission or database
     case "p1-rank":
       // Execute for player 1's current league rank
-
-      stats.find(`#${loc}`).text("Rank: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("Rank: " + p1Stats.p1-rank) // Place stat in .text("Blah blah blah" + *here*)
       break;
     case "p1-lastWin":
       // Execute for player 1's last match win
-
-      stats.find(`#${loc}`).text("Last Match Win: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("Last Match Win: " + p1Stats.p1-lastWin) // Place stat in .text("Blah blah blah" + *here*)
       break;
     case "p1-avgScore":
       // Execute for player 1's average league score for the season
-
-      stats.find(`#${loc}`).text("AVG Score in Season: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("AVG Score in Season: " + p1Stats.p1-avgScore) // Place stat in .text("Blah blah blah" + *here*)
       break; 
     case "p1-180":
       // Execute for player 1's number of 180s in the season
-
-      stats.find(`#${loc}`).text("180s in Season: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("180s in Season: " + p1Stats.p1-180) // Place stat in .text("Blah blah blah" + *here*)
       break; 
     case "p1-winPercent":
       // Execute for Player 1's overall win percentage
-
-      stats.find(`#${loc}`).text("Win Percentage: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("Win Percentage: " + p1Stats.p1-winPercent) // Place stat in .text("Blah blah blah" + *here*)
       break; 
 
     // Get p2 name from New Game submission or database  
     case "p2-rank":
       // Execute for player 2's current league rank
-
-      stats.find(`#${loc}`).text("Rank: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("Rank: " + p2Stats.p2-rank) // Place stat in .text("Blah blah blah" + *here*)
       break;
     case "p2-lastWin":
       // Execute for player 2's last match win
-
-      stats.find(`#${loc}`).text("Last Match Win: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("Last Match Win: " + p2Stats.p2-lastWin) // Place stat in .text("Blah blah blah" + *here*)
       break;
     case "p2-avgScore":
       // Execute for player 2's average league score for the season
-
-      stats.find(`#${loc}`).text("AVG Score in Season: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("AVG Score in Season: " + p2Stats.p2-avgScore) // Place stat in .text("Blah blah blah" + *here*)
       break; 
     case "p2-180":
       // Execute for player 2's number of 180s in the season
-
-      stats.find(`#${loc}`).text("180s in Season: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("180s in Season: " + p2Stats.p2-180) // Place stat in .text("Blah blah blah" + *here*)
       break; 
     case "p2-winPercent":
       // Execute for Player 2's overall win percentage
-
-      stats.find(`#${loc}`).text("Win Percentage: ") // Place stat in .text("Blah blah blah" + *here*)
+      stats.find(`#${loc}`).text("Win Percentage: " + p2Stats.p2-winPercent) // Place stat in .text("Blah blah blah" + *here*)
       break; 
   }
 });
