@@ -8,5 +8,7 @@ contextBridge.exposeInMainWorld('replication', {
     nextTurn: (...args) => ipcRenderer.send('next-turn', ...args),
     resizeBoard: (...args) => ipcRenderer.send('resize-board', ...args),
     getFormInfo: (...args) => ipcRenderer.send('getFormInfo', ...args),
-    statSelect: (...args) => ipcRenderer.send('stat-select', ...args)
+    statSelect: (...args) => ipcRenderer.send('stat-select', ...args),
+    getWinningMoves: (...args) => ipcRenderer.invoke('get-winning-moves', ...args),
+    changeCombo: (...args) => ipcRenderer.send('change-combo', ...args)
 });
