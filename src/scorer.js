@@ -3,11 +3,14 @@ const dartboard = $('#board-box');
 const regions = $('g.board-region > path, circle.board-region');
 const throwPanel = $('#throw-panel');
 const throwOptions = $('.throw-dropdown-content > option');
+const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
 const stats = $('#statistics');
 
+const scores = [0, 0];
 var throws = [];
 var currentThrow = 0;
+var currentPlayer = 1;
 var changingThrow = null;
 
 // Remove dart
@@ -25,6 +28,49 @@ function removeDart(index) {
     if (isRegionEmpty) { // Remove highlight
       region.removeClass('selected-region');
     }
+  }
+}
+
+// Check for winning combos
+async function checkCombos() {
+
+  // Hide the label from the previous turn
+  const remaining_throws = 3 - throws.length;
+  if (remaining_throws < 3) {
+    throwPanel.find(`#throw-label-${currentThrow - 1} > .winning-throw-label`).slideUp('fast');
+    window.replication.changeCombo(currentThrow - 1);
+    if (remaining_throws == 0) {
+      return;
+    }
+  }
+  
+  // Calculate tentative score
+  let score = scores[currentPlayer - 1];
+  for (const region of throws) {
+    if (typeof region === 'object') {
+      score -= parseInt(region.attr('data-value'));
+    }
+  }
+  
+  if (score > 170) {
+    return; // Cannot be won in 3 throws
+  }
+  
+  const moves = await window.replication.getWinningMoves(score, remaining_throws);
+  
+  // No valid combos remaining
+  if (moves.length == 0) {
+    comboLabels.slideUp('fast');
+    window.replication.changeCombo();
+    return;
+  }
+  
+  // Set and show labels
+  for (const [index, value] of moves.entries()) {
+    const label = throwPanel.find(`#throw-label-${index + currentThrow} > .winning-throw-label`);
+    label.text(value);
+    label.slideDown('slow');
+    window.replication.changeCombo(index + currentThrow, value);
   }
 }
 
@@ -51,6 +97,7 @@ regions.on('click', (event) => {
   region.addClass('selected-region');
   region.attr('data-darts', (_, value) => (value === undefined) && 1 || parseInt(value) + 1);
   throws.splice(index, 0, region);
+  checkCombos()
 
   // Place markers relatively to maintain position upon resize
   const marker = $(`<span id="marker-${index}" class="dart-marker"></span>`);
@@ -75,10 +122,14 @@ throwOptions.on('click', (event) => {
   const button = dropdown.find('button');
   const index = parseInt(dropdown.attr('data-slot'));
 
+  if (changingThrow !== null) {
+    return; // Already changing a throw
+  }
+
   // Change an existing dart
   if (option.text() == 'CHANGE') {
-    if (changingThrow || typeof throws[index] === 'undefined') {
-      return; // Already changing or there is no throw to change
+    if (throws[index] === undefined) {
+      return; // No throw to change
     }
 
     removeDart(index);
@@ -86,7 +137,7 @@ throwOptions.on('click', (event) => {
     button.addClass('changing-throw');
     throws.splice(index, 1);
     changingThrow = index;
-    return;
+    return; // The next board input will count for this throw
   }
 
   // Miss, bounce, or foul
@@ -105,6 +156,8 @@ throwOptions.on('click', (event) => {
     if (index == currentThrow) {
       currentThrow++;
     }
+    
+    checkCombos(); // Refresh combos
   }
 });
 
@@ -115,20 +168,38 @@ const resizeObserver = new ResizeObserver(() => {
 
 resizeObserver.observe(leftPanel.get(0));
 
-// Clear board and throw panel
+// Update scores and reset
 $('#next-turn-button').on('click', (event) => {
   changeColor();
+
+  // Check if all throws have been recorded
+  if (throws.length < 3 || changingThrow !== null) {
+    return;
+  }
+
+  // Calculate turn score
+  let turnScore = 0;
+  for (const region of throws) {
+    if (typeof region === 'object') {
+      turnScore += parseInt(region.attr('data-value'));
+    }
+  }
+  scores[currentPlayer - 1] -= turnScore;
+  scoreboard.find(`#p${currentPlayer}Score`).text(scores[currentPlayer - 1]);
+  
+  // Reset for next turn
+  throws = [];
+  currentThrow = 0;
+  window.replication.nextTurn(currentPlayer, scores[currentPlayer - 1]);
+  currentPlayer = (currentPlayer % 2) + 1;
+
+  // Clear board
+  dartboard.find('.selected-region').attr('data-darts', 0);
   dartboard.find('.selected-region').removeClass('selected-region');
   dartboard.find('.dart-marker').remove();
   throwPanel.find('.throw-dropdown-button').text('');
-  throws = [];
-  currentThrow = 0;
-  window.replication.nextTurn();
-
-  // Update Player Emphasis each time button is clicked
-  // scoreboard id: p1; id: p2
-  // Yellow border or underline or change font color
-
+  comboLabels.slideUp('fast');
+  checkCombos(); // Check winning moves for next player
 });
 
 // Change player emphasis on turn
@@ -215,6 +286,12 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   scoreboard.find('#p2').text(name2);
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
+  scoreboard.find('#p1SetsWon').text('0');
+  scoreboard.find('#p2SetsWon').text('0');
+  scoreboard.find('#p1LegsWon').text('0');
+  scoreboard.find('#p2LegsWon').text('0');
+  scores[0] = 200//parseInt(score);
+  scores[1] = 200//parseInt(score);
 };
 
 

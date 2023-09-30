@@ -135,10 +135,8 @@ body {
   display: block;
 }
 
-/* Best Throw Label */
-
-.best-throw-label {
-  visibility: hidden;
+.winning-throw-label {
+  display: none;
   width: 100%;
   position: absolute;
   bottom: 100%;
@@ -146,6 +144,7 @@ body {
   padding: 10px;
   background-color: rgb(255, 198, 11);
   color: black;
+  border-radius: 8px 8px 0 0;
   font-size: 24px;
   font-weight: bold;
   text-align: center;
@@ -165,7 +164,7 @@ body {
 /* Scoreboard */
 
 #scoreboard {
-  flex: 50%;
+  flex: 30%;
 }
 
 table {
@@ -188,7 +187,7 @@ td {
 /* Statistics */
 
 #statistics {
-  flex: 40%;
+  flex: 60%;
   padding: 1em;
   border-top: 1px solid black;
 }
@@ -285,4 +284,5 @@ td {
   position: absolute;
   top: 5%;
   left: 15%;
+  border-radius: 10px;
 }

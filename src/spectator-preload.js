@@ -8,5 +8,6 @@ contextBridge.exposeInMainWorld('replication', {
     onNextTurn: (...args) => ipcRenderer.on('next-turn', ...args),
     onBoardResized: (...args) => ipcRenderer.on('resize-board', ...args),
     onGetFormInfo: (...args) => ipcRenderer.on('getFormInfo', ...args),
-    onStatSelected: (...args) => ipcRenderer.on('stat-select', ...args)
+    onStatSelected: (...args) => ipcRenderer.on('stat-select', ...args),
+    onComboChanged: (...args) => ipcRenderer.on('change-combo', ...args)
 });

@@ -1,11 +1,13 @@
 const leftPanel = $('#left-panel');
 const dartboard = $('#board-box');
 const throwPanel = $('#throw-panel');
+const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
 const stats = $('#statistics-table')
 
 // Add, change, and remove darts
 window.replication.onDartAdded((event, regionId, index, posX, posY) => {
+
   // Highlight region
   const region = dartboard.find(`#${regionId}`);
   region.addClass('selected-region');
@@ -19,12 +21,12 @@ window.replication.onDartAdded((event, regionId, index, posX, posY) => {
   marker.fadeIn(100);
 
   // Set throw label
-  const throwLabel = throwPanel.find(`#throw-label-${index}`);
+  const throwLabel = throwPanel.find(`#throw-label-${index} > button`);
   throwLabel.text(region.attr('name'));
 });
 
 window.replication.onDartChanged((event, index, labelText) => {
-  throwPanel.find(`#throw-label-${index}`).text(labelText);
+  throwPanel.find(`#throw-label-${index} > button`).text(labelText);
 });
 
 window.replication.onDartRemoved((event, index, regionId, isRegionEmpty) => {
@@ -37,13 +39,19 @@ window.replication.onDartRemoved((event, index, regionId, isRegionEmpty) => {
 });
 
 // Clear the board and update score
-window.replication.onNextTurn((event, playerNum, deltaScore) => {
+window.replication.onNextTurn((event, playerNum, newScore) => {
   changeColor();
+  
+  // Update score
+  scoreboard.find(`#p${playerNum}Score`).text(newScore);
+
+  // Clear board
   dartboard.find('.selected-region').removeClass('selected-region');
   dartboard.find('.dart-marker').fadeOut(100, function() {
     $(this).remove();
   });
-  throwPanel.find('.throw-label').text('');
+  throwPanel.find('.throw-label > button').text('');
+  comboLabels.slideUp('fast');
 });
 
 // Change player emphasis on turn
@@ -92,6 +100,24 @@ window.replication.onBoardResized((event, width) => {
   leftPanel.css('width', width);
 });
 
+// Replicate winning move labels
+window.replication.onComboChanged((event, index, value) => {
+  if (index === undefined) {
+    comboLabels.slideUp('fast'); // Hide all
+    return;
+  }
+
+  const label = throwPanel.find(`#throw-label-${index} > .winning-throw-label`);
+  if (value) {
+    label.text(value);
+    label.slideDown('slow'); // Show one
+  }
+  else {
+    label.slideUp('fast'); // Hide one
+  }
+});
+
+
 // Set the scoreboard info from the new game form
 window.replication.onGetFormInfo((event, name1, name2, offName, loc, date, score, legNum, setNum) => {
   // For changing player emphasis color
@@ -111,7 +137,6 @@ window.replication.onGetFormInfo((event, name1, name2, offName, loc, date, score
   scoreboard.find('#p2').text(name2);
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
-  
 });
 
 // Display Statistic Scorer Selected
