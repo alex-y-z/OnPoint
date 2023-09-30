@@ -22,6 +22,16 @@ async function search_players_by_first(first_name) {
 });
 }
 
+async function get_player_by_id(pid) {
+  return new Promise(function(resolve, reject) 
+  {
+    db.get("Select * from Players where pid = ?", [pid], function(err, row) {
+      if (err) reject(err.message);
+      else resolve(row);
+    })
+  });
+}
+
 function create_player(first_name, last_name) {
   db.run(`INSERT INTO Players (first_name, last_name, league_rank, last_win) VALUES(?,?,?,?)`,
     [first_name, last_name, "Unranked", "None"], function(err) {
@@ -37,6 +47,23 @@ function update_player(player) {
         function(err) {
         if (err) return console.log(err.message);
         }
+  )
+}
+
+/*function create_leg(match) {
+  db.run("INSERT INTO Legs (player_1_score, player_2_score) Values(?,?)",
+  [match.start_score, match.start_score] // need some way to get the initial score of a game
+  )
+}
+//*/
+
+function update_leg(leg) {
+  console.log(leg);
+  db.run("UPDATE Legs Set player_1_score = ?, player_1_darts = ?, player_2_score = ?, player_2_darts = ? where lid = ?",
+  [leg.player_1_score, leg.player_1_darts, leg.player_2_score, leg.player_2_darts, leg.lid],
+  function (err) {
+    if (err) return console.log(err.message);
+  }
   )
 }
 
