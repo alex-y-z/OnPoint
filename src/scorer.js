@@ -170,6 +170,7 @@ resizeObserver.observe(leftPanel.get(0));
 
 // Update scores and reset
 $('#next-turn-button').on('click', (event) => {
+  changeColor();
 
   // Check if all throws have been recorded
   if (throws.length < 3 || changingThrow !== null) {
@@ -201,20 +202,54 @@ $('#next-turn-button').on('click', (event) => {
   checkCombos(); // Check winning moves for next player
 });
 
+// Change player emphasis on turn
+function changeColor() {
+  var table = document.getElementById("scoreboard");   
+  var rows = table.getElementsByTagName("tr");   
+  
+  // Check p1
+  if (document.getElementById("p1").style.color == "white") {
+    // Change background colors
+    rows[1].style.backgroundColor = "#FFC60B";
+    rows[2].style.backgroundColor = "#343434"; 
+    // Change p1
+    document.getElementById("p1").style.color = "black";
+    document.getElementById("p1SetsWon").style.color = "black";
+    document.getElementById("p1LegsWon").style.color = "black";
+    document.getElementById("p1Score").style.color = "black";
+    document.getElementById("p1").style.fontWeight = 'bold';
+    // Change p2
+    document.getElementById("p2").style.color = "white";
+    document.getElementById("p2SetsWon").style.color = "white";
+    document.getElementById("p2LegsWon").style.color = "white";
+    document.getElementById("p2Score").style.color = "white";
+    
+  }
+  else {
+    // Change background colors
+    rows[2].style.backgroundColor = "#FFC60B";
+    rows[1].style.backgroundColor = "#343434"; 
+    // Change p2
+    document.getElementById("p2").style.color = "black";
+    document.getElementById("p2SetsWon").style.color = "black";
+    document.getElementById("p2LegsWon").style.color = "black";
+    document.getElementById("p2Score").style.color = "black";
+    document.getElementById("p2").style.fontWeight = 'bold';
+    // Change p1
+    document.getElementById("p1").style.color = "white";
+    document.getElementById("p1SetsWon").style.color = "white";
+    document.getElementById("p1LegsWon").style.color = "white";
+    document.getElementById("p1Score").style.color = "white";
+  }
+}
+
 // Display new game modal
-/*
-Keywords in newGame.html
-p1
-p2
-official
-location
-date
-startScore
-numOfLegs
-numOfSets
-*/
 $('#new-game-button').on('click', (event) => {
   const modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
+  
+  // For changing player emphasis color
+  var table = document.getElementById("scoreboard");   
+  var rows = table.getElementsByTagName("tr");  
 
   modal.on('load', () => {
     const newGameDoc = modal.contents();
@@ -222,6 +257,12 @@ $('#new-game-button').on('click', (event) => {
 
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
+      rows[1].style.backgroundColor = "#FFC60B";
+      document.getElementById("p1").style.color = "black";
+      document.getElementById("p1SetsWon").style.color = "black";
+      document.getElementById("p1LegsWon").style.color = "black";
+      document.getElementById("p1Score").style.color = "black";
+      document.getElementById("p1").style.fontWeight = 'bold';
       setUpScoreboard(...formData.values());
       window.replication.getFormInfo(...formData.values());
       modal.remove();
@@ -235,38 +276,7 @@ $('#new-game-button').on('click', (event) => {
   $('body').append(modal);
 });
 
-// Validate Form Text Input
-// Returns false if text is out of bounds
-function validateText(text) {
-  if (text.length > 150 ) {
-    return false;
-  }
-  else {
-    return true;
-  }
-};
 
-// Validate Form Number Input
-// Returns false if number is out of bounds
-function validateLegNum(num) {
-  if (num < 3 || num > 29) {
-    return false;
-  }
-  else {
-    return true;
-  }
-};
-
-// Validate Form Number Input
-// Returns false if number is out of bounds
-function validateSetNum(num) {
-  if (num < 1 || num > 9) {
-    return false;
-  }
-  else {
-    return true;
-  }
-};
 
 // Populate Scorer Scoreboard with New Game Info
 function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum) {
