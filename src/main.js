@@ -2,6 +2,7 @@ const { app, screen, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const {Player, Leg, Match, Game} = require('./classes');
 const {db, update_player, request_players} = require("./database");
+const { winning_move } = require('./winning_move');
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
@@ -53,12 +54,18 @@ const createWindows = () => {
   // This forwards information from scorer to spectator
   const channels = [
     'add-dart', 'change-dart', 'remove-dart', 'next-turn', 'resize-board',
-    'getFormInfo', 'stat-select'
+    'getFormInfo', 'stat-select', 'change-combo'
   ];
   channels.forEach(channel => {
     ipcMain.on(channel, (event, ...args) => {
       spectatorWindow.webContents.send(channel, ...args);
     });
+  });
+
+  // Remote function handlers
+  // These should fulfill requests from either renderer
+  ipcMain.handle('get-winning-moves', (event, score, remaining_throws) => {
+    return winning_move(score, remaining_throws);
   });
 
   // Load HTML

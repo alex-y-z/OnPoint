@@ -16,7 +16,7 @@ let known_checkouts = new Map([
     [149, ["T20", "T19", "D16"]],
     [148, ["T20", "T16", "D20"]],
     [147, ["T20", "T17", "D18"]],
-    [146, ["T20", "T18", "D16"]],
+    [146, ["T20", "T18", "D16"]]
 ])
 
 let winning_throws = new Map(
@@ -41,8 +41,7 @@ let winning_throws = new Map(
         [36, "D18"],
         [38, "D19"],
         [40, "D20"],
-        [50, "B50"],
-
+        [50, "B50"]
     ]
 )
 let allowed_throws = new Map(
@@ -110,7 +109,7 @@ function winning_move(score, remaining_throws) {
         // if the score is above 170, there are no possible wins
         return []
     }
-    else if (known_checkouts.has(score)) {
+    else if (known_checkouts.has(score) && remaining_throws == 3) {
         // if we know the known checkout, get it early
         return known_checkouts.get(score)
     }
