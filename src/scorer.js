@@ -280,8 +280,8 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   scoreboard.find('#p2SetsWon').text('0');
   scoreboard.find('#p1LegsWon').text('0');
   scoreboard.find('#p2LegsWon').text('0');
-  scores[0] = 200//parseInt(score);
-  scores[1] = 200//parseInt(score);
+  scores[0] = parseInt(score);
+  scores[1] = parseInt(score);
 };
 
 
