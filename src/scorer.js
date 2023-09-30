@@ -117,6 +117,7 @@ resizeObserver.observe(leftPanel.get(0));
 
 // Clear board and throw panel
 $('#next-turn-button').on('click', (event) => {
+  changeColor();
   dartboard.find('.selected-region').removeClass('selected-region');
   dartboard.find('.dart-marker').remove();
   throwPanel.find('.throw-dropdown-button').text('');
@@ -129,6 +130,47 @@ $('#next-turn-button').on('click', (event) => {
   // Yellow border or underline or change font color
 
 });
+
+// Change player emphasis on turn
+function changeColor() {
+  var table = document.getElementById("scoreboard");   
+  var rows = table.getElementsByTagName("tr");   
+  
+  // Check p1
+  if (document.getElementById("p1").style.color == "white") {
+    // Change background colors
+    rows[1].style.backgroundColor = "#FFC60B";
+    rows[2].style.backgroundColor = "#343434"; 
+    // Change p1
+    document.getElementById("p1").style.color = "black";
+    document.getElementById("p1SetsWon").style.color = "black";
+    document.getElementById("p1LegsWon").style.color = "black";
+    document.getElementById("p1Score").style.color = "black";
+    document.getElementById("p1").style.fontWeight = 'bold';
+    // Change p2
+    document.getElementById("p2").style.color = "white";
+    document.getElementById("p2SetsWon").style.color = "white";
+    document.getElementById("p2LegsWon").style.color = "white";
+    document.getElementById("p2Score").style.color = "white";
+    
+  }
+  else {
+    // Change background colors
+    rows[2].style.backgroundColor = "#FFC60B";
+    rows[1].style.backgroundColor = "#343434"; 
+    // Change p2
+    document.getElementById("p2").style.color = "black";
+    document.getElementById("p2SetsWon").style.color = "black";
+    document.getElementById("p2LegsWon").style.color = "black";
+    document.getElementById("p2Score").style.color = "black";
+    document.getElementById("p2").style.fontWeight = 'bold';
+    // Change p1
+    document.getElementById("p1").style.color = "white";
+    document.getElementById("p1SetsWon").style.color = "white";
+    document.getElementById("p1LegsWon").style.color = "white";
+    document.getElementById("p1Score").style.color = "white";
+  }
+}
 
 // Display new game modal
 /*
@@ -144,6 +186,10 @@ numOfSets
 */
 $('#new-game-button').on('click', (event) => {
   const modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
+  
+  // For changing player emphasis color
+  var table = document.getElementById("scoreboard");   
+  var rows = table.getElementsByTagName("tr");  
 
   modal.on('load', () => {
     const newGameDoc = modal.contents();
@@ -151,6 +197,12 @@ $('#new-game-button').on('click', (event) => {
 
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
+      rows[1].style.backgroundColor = "#FFC60B";
+      document.getElementById("p1").style.color = "black";
+      document.getElementById("p1SetsWon").style.color = "black";
+      document.getElementById("p1LegsWon").style.color = "black";
+      document.getElementById("p1Score").style.color = "black";
+      document.getElementById("p1").style.fontWeight = 'bold';
       setUpScoreboard(...formData.values());
       window.replication.getFormInfo(...formData.values());
       modal.remove();
