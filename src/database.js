@@ -3,7 +3,21 @@ const sqlite = require('sqlite3').verbose();
 let db = new sqlite.Database('./DartsDatabase.db', (err) => {
     console.log(err)
   });
+
+
+function init_db() {
+  // Write Database tables here if they do not already exist
+  // Players
+  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, last_win TEXT NOT NULL, num_180s INTEGER NOT NULL DEFAULT 0)")
+  // Legs, delimit darts with , and |
+  db.run("CREATE TABLE IF NOT EXISTS Legs (lid INTEGER PRIMARY KEY AUTOINCREMENT, player_1_score INTEGER NOT NULL, player_1_darts TEXT NOT NULL, player_2_score INTEGER NOT NULL, player_2_darts TEXT NOT NULL)")
+  // Matches
+  db.run("CREATE TABLE IF NOT EXISTS Matches (mid INTEGER PRIMARY KEY AUTOINCREMENT, winner INTEGER, legs TEXT, Foreign Key(winner) references Players(pid))")
+  // Matches
+  db.run("CREATE TABLE IF NOT EXISTS Games (gid INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, player_1 INTEGER NOT NULL, player_2 INTEGER NOT NULL, winner INTEGER, matches TEXT, Foreign Key(player_1) references Players(pid), Foreign Key(player_2) references Players(pid), Foreign key(winner) references Players(pid))")
   
+}
+
 async function request_players() {
     return new Promise(function(resolve, reject) 
         {   db.all("SELECT * FROM Players", [], function (err, rows) {
@@ -84,4 +98,4 @@ function update_leg(leg) {
   });
   //*/
 
-module.exports = {db, request_players, create_player, update_player};
+module.exports = {db, init_db, request_players, get_player_by_id, search_players_by_first, create_player, update_player};
