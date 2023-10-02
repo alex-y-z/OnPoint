@@ -84,7 +84,7 @@ class Leg {
 
 // A class to represent each match.
 class Match {
-    constructor () {
+    constructor (sqlResponse) {
         // 
 
     };
