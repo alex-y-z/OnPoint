@@ -245,6 +245,8 @@ function changeColor() {
 
 // Display new game modal
 $('#new-game-button').on('click', (event) => {
+  // Get players from database to pass to new game page player table
+  
   const modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
   
   // For changing player emphasis color
