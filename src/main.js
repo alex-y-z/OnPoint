@@ -1,13 +1,10 @@
 const { app, screen, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const sqlite = require('sqlite3').verbose();
+const {Player, Leg, Match, Game} = require('./classes');
+const database = require("./database");
 const { winning_move } = require('./winning_move');
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
-
-let db = new sqlite.Database('./DartsDatabase.db', (err) => {
-  console.log(err)
-});
 
 player_1 = null;
 player_2 = null;
@@ -42,15 +39,7 @@ const createWindows = () => {
     }
   });
 
-  // Write Database tables here if they do not already exist
-  // Players
-  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, last_win TEXT NOT NULL, num_180s INTEGER NOT NULL DEFAULT 0)")
-  // Legs, delimit darts with , and |
-  db.run("CREATE TABLE IF NOT EXISTS Legs (lid INTEGER PRIMARY KEY AUTOINCREMENT, player_1_score INTEGER NOT NULL, player_1_darts TEXT NOT NULL, player_2_score INTEGER NOT NULL, player_2_darts TEXT NOT NULL)")
-  // Matches
-  db.run("CREATE TABLE IF NOT EXISTS Matches (mid INTEGER PRIMARY KEY AUTOINCREMENT, winner INTEGER, leg_1 INTEGER NOT NULL, leg_2 INTEGER NOT NULL, leg_3 INTEGER NOT NULL, leg_4 INTEGER NOT NULL, leg_5 INTEGER NOT NULL, leg_6 INTEGER NOT NULL, leg_7 INTEGER NOT NULL, leg_8 INTEGER NOT NULL, leg_9 INTEGER NOT NULL, leg_10 INTEGER NOT NULL, leg_11 INTEGER NOT NULL,leg_12 INTEGER NOT NULL, leg_13 INTEGER NOT NULL, leg_14 INTEGER NOT NULL, Foreign Key(winner) references Players(pid), Foreign KEY(leg_1) references Legs(lid), Foreign KEY(leg_2) references Legs(lid),Foreign KEY(leg_3) references Legs(lid), Foreign KEY(leg_4) references Legs(lid), Foreign KEY(leg_5) references Legs(lid), Foreign KEY(leg_6) references Legs(lid), Foreign KEY(leg_7) references Legs(lid), Foreign KEY(leg_8) references Legs(lid), Foreign KEY(leg_9) references Legs(lid), Foreign KEY(leg_10) references Legs(lid), Foreign KEY(leg_11) references Legs(lid), Foreign KEY(leg_12) references Legs(lid), Foreign KEY(leg_13) references Legs(lid), Foreign KEY(leg_14) references Legs(lid))")
-  // Matches
-  db.run("CREATE TABLE IF NOT EXISTS Games (gid INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, player_1 INTEGER NOT NULL, player_2 INTEGER NOT NULL, winner INTEGER, match_1 INTEGER NOT NULL, match_2 INTEGER NOT NULL, match_3 INTEGER NOT NULL, match_4 INTEGER NOT NULL, match_5 INTEGER NOT NULL, match_6 INTEGER NOT NULL, match_7 INTEGER NOT NULL, Foreign Key(player_1) references Players(pid), Foreign Key(player_2) references Players(pid), Foreign key(winner) references Players(pid) Foreign Key(match_1) references Matches(mid),  Foreign Key(match_2) references Matches(mid), Foreign Key(match_3) references Matches(mid), Foreign Key(match_4) references Matches(mid), Foreign Key(match_5) references Matches(mid), Foreign Key(match_6) references Matches(mid), Foreign Key(match_7) references Matches(mid))")
+  database.init_db();
 
   // Replication event handlers
   // This forwards information from scorer to spectator
@@ -68,6 +57,26 @@ const createWindows = () => {
   // These should fulfill requests from either renderer
   ipcMain.handle('get-winning-moves', (event, score, remaining_throws) => {
     return winning_move(score, remaining_throws);
+  });
+
+  ipcMain.handle('request-players', (event) => {
+    return database.request_players();
+  });
+
+  ipcMain.handle('get-player-by-id', (event, pid) => {
+    return database.get_player_by_id();
+  });
+
+  ipcMain.handle('search-players-by-first', (event, first_name) => {
+    return database.search_players_by_first(first_name);
+  });
+
+  ipcMain.handle('create-player', (event, first_name, last_name) => {
+    database.create_player(first_name, last_name)
+  });
+
+  ipcMain.handle('update-player', (event, player) => {
+    database.update_player(player); 
   });
 
   // Load HTML
