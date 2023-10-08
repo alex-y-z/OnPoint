@@ -254,6 +254,10 @@ $('#new-game-button').on('click', (event) => {
   modal.on('load', () => {
     const newGameDoc = modal.contents();
     const gameForm = newGameDoc.find('#game-form');
+    window.database.requestPlayers().then((result) => {
+      // cannot pull this into the outer scope, so do anything you need this for in here
+      console.log(result);
+    });
 
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
