@@ -75,9 +75,34 @@ class Leg {
     Parameters:
     Returns:
     */
-    calculateScore = (throw_1, throw_2, throw_3) => {
-        
+    calculateScore = () => {
+        let p1_score = 0;
+        let p2_score = 0;
+        this.player_1_darts.forEach((turn_throws) => {
+            for(i = 1; i < 4; i++){
+                p1_score = p1_score + throws[turn_throws[i]];
+            }
+        })
+        this.player_2_darts.forEach((turn_throws) => {
+            for(i = 1; i < 4; i++){
+                p2_score = p2_score + throws[turn_throws[i]];
+            }
+        })
+        this.player_1_score = p1_score
+        this.player_2_score = p2_score
     };
+
+    add_throws = (throws, player) => {
+        if(player = 1) {
+            this.player_1_darts.push(throws);
+        }
+        else {
+            if (player = 2) {
+                this.player_2_darts.push(throws);
+            }
+        }
+        this.calculateScore();
+    }
 
 
 }

@@ -164,7 +164,26 @@ function winning_move(score, remaining_throws) {
     }
 }
 
+function perfect_leg(score) {
+    let perfect = [];
+    while(score > 181) {
+        score = score - 180;
+        perfect.push(score);
+    }
+    if (score > 170) {
+        score = score - 60;
+        perfect.push(score);
+    }
+    perfect.push(0);
+    return perfect;
+}
+//console.log(perfect_leg(301))
+//console.log(perfect_leg(501))
+//console.log(perfect_leg(701))
+//console.log(perfect_leg(901))
+
 module.exports = {
     winning_move,
-    allowed_throws
+    allowed_throws,
+    perfect_leg
 }
