@@ -52,7 +52,30 @@ body {
   transition: 100ms;
 }
 
+#temp-marker {
+  display: none;
+}
+
 .dart-marker {
+  width: 7%;
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: none;
+  transition: 100ms;
+}
+
+.big-dart-marker {
+  width: 10%;
+  transition: 100ms;
+}
+
+.dart-marker > g {
+  stroke: black;
+  stroke-width: 10%;
+  paint-order: stroke;
+}
+
+/*.dart-marker {
   width: 5%;
   aspect-ratio: 1 / 1;
   position: absolute;
@@ -61,7 +84,7 @@ body {
   border: 2px solid black;
   border-radius: 50%;
   display: none;
-}
+}*/
 
 /* Throw Panel */
 

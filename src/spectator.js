@@ -6,36 +6,56 @@ const scoreboard = $('#scoreboard');
 const stats = $('#statistics-table')
 
 // Add, change, and remove darts
-window.replication.onDartAdded((event, regionId, index, posX, posY) => {
+window.replication.onDartAdded((event, index, regionId, posX, posY) => {
 
   // Highlight region
-  const region = dartboard.find(`#${regionId}`);
+  const region = $(`#${regionId}`);
   region.addClass('selected-region');
   region.attr('data-darts', (_, value) => (value === undefined) && 1 || parseInt(value) + 1);
 
-  // Add marker
-  const marker = $(`<span id="marker-${index}" class="dart-marker"></span>`);
-  marker.css('top', posY);
-  marker.css('left', posX);
-  dartboard.append(marker);
-  marker.fadeIn(100);
+  // Update existing marker or add new one
+  var marker = null;
+  if (region.attr('data-darts') > 1) {
+    marker = $(`#marker-${regionId}`);
+    marker.find('tspan').text(region.attr('data-darts'));
+  }
+  else {
+    marker = $('#temp-marker').clone().attr('id', `marker-${regionId}`);
+    marker.css('top', posY);
+    marker.css('left', posX);
+    marker.addClass('dart-marker');
+    dartboard.append(marker);
+    marker.fadeIn(100);
+  }
+  $('.big-dart-marker').removeClass('big-dart-marker');
+  marker.addClass('big-dart-marker');
 
   // Set throw label
-  const throwLabel = throwPanel.find(`#throw-label-${index} > button`);
+  const throwLabel = $(`#throw-label-${index} > button`);
   throwLabel.text(region.attr('name'));
 });
 
 window.replication.onDartChanged((event, index, labelText) => {
-  throwPanel.find(`#throw-label-${index} > button`).text(labelText);
+  $(`#throw-label-${index} > button`).text(labelText);
 });
 
-window.replication.onDartRemoved((event, index, regionId, isRegionEmpty) => {
-  if (isRegionEmpty) {
-    dartboard.find(`#${regionId}`).removeClass('selected-region');
+window.replication.onDartRemoved((event, index, regionId, dartsLeft) => {
+  const region = $(`#${regionId}`);
+  const marker = $(`#marker-${regionId}`);
+  
+  region.attr('data-darts', dartsLeft);
+  $('.big-dart-marker').removeClass('big-dart-marker');
+  $(`#throw-label-${index} > button`).text('');
+
+  if (dartsLeft == 0) { // Remove marker/highlight
+    region.removeClass('selected-region');
+    marker.fadeOut(100, function() {
+      $(this).remove();
+    })
   }
-  dartboard.find(`#marker-${index}`).fadeOut(100, function() {
-    $(this).remove();
-  })
+  else { // Decrement label
+    marker.find('tspan').text(dartsLeft);
+  }
 });
 
 // Clear the board and update score
@@ -43,9 +63,10 @@ window.replication.onNextTurn((event, playerNum, newScore) => {
   changeColor();
   
   // Update score
-  scoreboard.find(`#p${playerNum}Score`).text(newScore);
+  $(`#p${playerNum}Score`).text(newScore);
 
   // Clear board
+  dartboard.find('.selected-region').removeAttr('data-darts');
   dartboard.find('.selected-region').removeClass('selected-region');
   dartboard.find('.dart-marker').fadeOut(100, function() {
     $(this).remove();
@@ -107,7 +128,7 @@ window.replication.onComboChanged((event, index, value) => {
     return;
   }
 
-  const label = throwPanel.find(`#throw-label-${index} > .winning-throw-label`);
+  const label = $(`#throw-label-${index} > .winning-throw-label`);
   if (value) {
     label.text(value);
     label.slideDown('slow'); // Show one
