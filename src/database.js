@@ -10,11 +10,11 @@ function init_db() {
   // Players
   db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, last_win TEXT NOT NULL, num_180s INTEGER NOT NULL DEFAULT 0)")
   // Legs, delimit darts with , and |
-  db.run("CREATE TABLE IF NOT EXISTS Legs (lid INTEGER PRIMARY KEY AUTOINCREMENT, player_1_score INTEGER NOT NULL, player_1_darts TEXT NOT NULL, player_2_score INTEGER NOT NULL, player_2_darts TEXT NOT NULL)")
+  db.run("CREATE TABLE IF NOT EXISTS Legs (lid INTEGER PRIMARY KEY AUTOINCREMENT, player_1_score INTEGER NOT NULL, player_1_darts TEXT NOT NULL, player_2_score INTEGER NOT NULL, player_2_darts TEXT NOT NULL, match INTEGER NOT NULL, Foreign Key(match) references Matches(mid))")
   // Matches
-  db.run("CREATE TABLE IF NOT EXISTS Matches (mid INTEGER PRIMARY KEY AUTOINCREMENT, winner INTEGER, legs TEXT, Foreign Key(winner) references Players(pid))")
+  db.run("CREATE TABLE IF NOT EXISTS Matches (mid INTEGER PRIMARY KEY AUTOINCREMENT, winner INTEGER, legs TEXT, game INTEGER NOT NULL, Foreign Key(winner) references Players(pid), Foreign Key(game) references Games(gid))")
   // Matches
-  db.run("CREATE TABLE IF NOT EXISTS Games (gid INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, player_1 INTEGER NOT NULL, player_2 INTEGER NOT NULL, winner INTEGER, matches TEXT, Foreign Key(player_1) references Players(pid), Foreign Key(player_2) references Players(pid), Foreign key(winner) references Players(pid))")
+  db.run("CREATE TABLE IF NOT EXISTS Games (gid INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, player_1 INTEGER NOT NULL, player_2 INTEGER NOT NULL, winner INTEGER, start_score INTEGER NOT NULL DEFAULT 501, matches TEXT, Foreign Key(player_1) references Players(pid), Foreign Key(player_2) references Players(pid), Foreign key(winner) references Players(pid))")
   
 }
 
@@ -64,12 +64,20 @@ function update_player(player) {
   )
 }
 
-/*function create_leg(match) {
-  db.run("INSERT INTO Legs (player_1_score, player_2_score) Values(?,?)",
-  [match.start_score, match.start_score] // need some way to get the initial score of a game
+function create_leg(match) {
+  game = match.getParent()
+  db.run("INSERT INTO Legs (player_1_score, player_2_score, match) Values(?,?,?)",
+  [game.start_score, game.start_score, match.match_id], // need some way to get the initial score of a game
+  (err) => {
+    if (err) {
+      console.log(err) 
+    }
+    match.legs.push(db.lastrowid);
+    update_match(match);
+  }
   )
 }
-//*/
+
 
 function update_leg(leg) {
   console.log(leg);
@@ -79,6 +87,49 @@ function update_leg(leg) {
     if (err) return console.log(err.message);
   }
   )
+}
+
+async function get_leg_by_id(lid) {
+  return new Promise(function(resolve, reject) 
+  {
+    db.get("Select * from Legs where lid = ?", [lid], function(err, row) {
+      if (err) reject(err.message);
+      else resolve(row);
+    })
+  });
+}
+
+function create_match(game) {
+  db.run("INSERT INTO Match (game) Values(?)",
+  [game.game_id],
+  (err) => {
+    if (err) {
+      console.log(err);
+    }
+    game.matches.push(str(db.lastrowid))
+  }
+  )
+}
+
+
+function update_match(match) {
+  console.log(match);
+  db.run("UPDATE Matches Set winner = ?, legs = ? where mid = ?",
+  [leg.player_1_score, leg.player_1_darts, leg.player_2_score, leg.player_2_darts, leg.lid],
+  function (err) {
+    if (err) return console.log(err.message);
+  }
+  )
+}
+
+async function get_match_by_id(mid) {
+  return new Promise(function(resolve, reject) 
+  {
+    db.get("Select * from Matches where mid = ?", [mid], function(err, row) {
+      if (err) reject(err.message);
+      else resolve(row);
+    })
+  });
 }
 
   // Create Player test
