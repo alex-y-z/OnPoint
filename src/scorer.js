@@ -270,11 +270,48 @@ $('#new-game-button').on('click', (event) => {
   modal.on('load', () => {
     const newGameDoc = modal.contents();
     const gameForm = newGameDoc.find('#game-form');
-    window.database.requestPlayers().then((result) => {
-      // cannot pull this into the outer scope, so do anything you need this for in here
-      console.log(result);
+    /*const playerForm = newGameDoc.find('#player-form');
+  
+    // Pull all player names from the database
+    players = window.database.requestPlayers().then((pdata) => {
+      res = [];
+      pdata.forEach((p) => {
+        res.push(players(p));
+      });
+      return res;
     });
 
+    // Fill the player table with all player names
+    updatePlayerTable(players);
+    
+    // Open new iframe if user needs to add a new player to the database
+    $('#add-player-button').on('click', (event) => {
+      // Open new iframe for div with id="player-form"
+      // Add first name and last name to the database
+
+      // When submit is pushed:
+      playerForm.on('submit', () => {
+        //const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
+
+        // Get the new player name
+        let first = FormData(playerForm.get(firstName))
+        let last = FormData(playerForm.get(lastName))
+
+        // Add the player to the database
+        window.database.create_player(first,last);
+
+        // Append the name to the player name list for the dropdown selection
+        players.push(first + " " + last);
+
+        // Close the iframe
+        //modal.children.remove();
+      });
+      
+
+    });
+
+    */ 
+    
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
       rows[1].style.backgroundColor = "#FFC60B";
@@ -297,6 +334,20 @@ $('#new-game-button').on('click', (event) => {
 });
 
 
+// Fill in the table of players
+function updatePlayerTable(players) {
+  let table = document.getElementById("playerTable");
+  let row = table.insertRow(0);
+  let first = row.insertCell(0);
+  let last = row.insertCell(1);
+  let num = row.insertCell(2);
+
+  first.innerHTML = players.firstName;
+  last.innerHTML = players.lastName;
+  num.innerHTML = players.player_id;
+
+};
+
 
 // Populate Scorer Scoreboard with New Game Info
 function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum) {
@@ -318,5 +369,9 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
 // Add listener event to statistics table
 stats.find('.dropdown-content>option').on('click', (event) => {
   const option = $(event.target);
-  window.replication.statSelect(option.parent().attr('name'), option.attr('value'));
+
+  // Get player from database and send it as the last parameter
+
+
+  window.replication.statSelect(option.parent().attr('name'), option.attr('value')/*, player*/);
 });
