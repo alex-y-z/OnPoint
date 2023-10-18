@@ -260,19 +260,16 @@ function changeColor() {
 // Display new game modal
 $('#new-game-button').on('click', (event) => {
   // Get players from database to pass to new game page player table
-  
   const modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
-  const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
   
   // For changing player emphasis color
   var table = document.getElementById("scoreboard");   
   var rows = table.getElementsByTagName("tr");  
-
+  
   modal.on('load', () => {
     const newGameDoc = modal.contents();
     const gameForm = newGameDoc.find('#game-form');
     
-  
     // Pull all player names from the database
     players = window.database.requestPlayers().then((pdata) => {
       res = [];
@@ -281,34 +278,40 @@ $('#new-game-button').on('click', (event) => {
       });
       return res;
     });
-
+    
     // Fill the player table with all player names
     //updatePlayerTable(players);
     
     // Open new iframe if user needs to add a new player to the database
-    $('#add-player-button').on('click', (event) => {
+    newGameDoc.find('#add-player-button').on('click', (event) => {
+      const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
+
       modal2.on('load', () => {
-        const playerForm = newGameDoc.find('#player-form');
+        console.log('modal loaded')
+        const newPlayerDoc = modal.contents();
+        const playerForm = newPlayerDoc.find('#player-form');
 
         // When submit is pushed:
         playerForm.on('submit', () => {
-        //const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
+          //const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
 
-        // Get the new player name
-        let first = FormData(playerForm.get(firstName))
-        let last = FormData(playerForm.get(lastName))
+          // Get the new player name
+          let first = FormData(playerForm.get(firstName))
+          let last = FormData(playerForm.get(lastName))
 
-        // Add the player to the database
-        window.database.create_player(first,last);
+          // Add the player to the database
+          window.database.create_player(first,last);
 
-        // Append the name to the player name list for the dropdown selection
-        players.push(first);
-        players.push(last);
+          // Append the name to the player name list for the dropdown selection
+          players.push(first);
+          players.push(last);
 
-        // Close the iframe
-        modal2.remove();
+          // Close the iframe
+          modal2.remove();
         });
       });
+
+      newGameDoc.find('body').append(modal2);
     });
  
     
