@@ -47,15 +47,18 @@ async function get_player_by_id(pid) {
 }
 
 function create_player(first_name, last_name) {
-  db.run(`INSERT INTO Players (first_name, last_name, league_rank, last_win) VALUES(?,?,?,?)`,
-    [first_name, last_name, "Unranked", "None"], function(err) {
-        if (err) return console.log(err.message);
-    }
-  );
+  return new Promise(function(resolve, reject) 
+  {
+    db.run(`INSERT INTO Players (first_name, last_name, league_rank, last_win) VALUES(?,?,?,?)`,
+      [first_name, last_name, "Unranked", "None"], function(err) {
+          if (err) return reject(err.message);
+          else resolve(db.lastrowid);
+      }
+    );
+  });
 }
 
 function update_player(player) {
-    console.log(player);
     db.run("UPDATE Players Set first_name = ?, last_name = ?, total_thrown = ?, number_thrown = ?, league_rank = ?, last_win = ?, num_180s = ? where pid = ?",
         [player.first_name, player.last_name, player.total_thrown, player.number_thrown, player.league_rank, player.last_win, player.num_180s, player.player_id],
         function(err) {
@@ -65,17 +68,21 @@ function update_player(player) {
 }
 
 function create_leg(match) {
-  game = match.getParent()
-  db.run("INSERT INTO Legs (player_1_score, player_2_score, match) Values(?,?,?)",
-  [game.start_score, game.start_score, match.match_id], // need some way to get the initial score of a game
-  (err) => {
-    if (err) {
-      console.log(err) 
+  return new Promise(function(resolve, reject) 
+  {
+    game = match.getParent()
+    db.run("INSERT INTO Legs (player_1_score, player_2_score, match) Values(?,?,?)",
+    [game.start_score, game.start_score, match.match_id], // need some way to get the initial score of a game
+    (err) => {
+      if (err) {
+        reject(err) 
+      }
+      match.legs.push(db.lastrowid);
+      update_match(match);
+      resolve(db.lastrowid);
     }
-    match.legs.push(db.lastrowid);
-    update_match(match);
-  }
-  )
+    )
+  });
 }
 
 
@@ -100,15 +107,19 @@ async function get_leg_by_id(lid) {
 }
 
 function create_match(game) {
-  db.run("INSERT INTO Match (game) Values(?)",
-  [game.game_id],
-  (err) => {
-    if (err) {
-      console.log(err);
+  return new Promise(function(resolve, reject) 
+  {
+    db.run("INSERT INTO Match (game) Values(?)",
+    [game.game_id],
+    (err) => {
+      if (err) {
+        reject(err);
+      }
+      game.matches.push(str(db.lastrowid))
+      resolve(db.lastrowid);
     }
-    game.matches.push(str(db.lastrowid))
-  }
-  )
+    )
+  });
 }
 
 
@@ -149,4 +160,5 @@ async function get_match_by_id(mid) {
   });
   //*/
 
-module.exports = {db, init_db, request_players, get_player_by_id, search_players_by_first, create_player, update_player};
+module.exports = {db, init_db, request_players, get_player_by_id, search_players_by_first, create_player, update_player,
+                  create_leg, update_leg, get_leg_by_id, create_match, update_match, get_match_by_id};
