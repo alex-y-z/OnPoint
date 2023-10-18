@@ -75,10 +75,10 @@ input[type=radio] {
 
 /* New Player Modal */
 #new-player-modal {
-  width: 50%;
-  height: 50%;
+  width: 80%;
+  height: 70%;
   position: absolute;
   top: 5%;
-  left: 15%;
+  left: 10%;
   border-radius: 10px;
 }
