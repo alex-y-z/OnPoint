@@ -301,7 +301,8 @@ $('#new-game-button').on('click', (event) => {
         window.database.create_player(first,last);
 
         // Append the name to the player name list for the dropdown selection
-        players.push(first + " " + last);
+        players.push(first);
+        players.push(last);
 
         // Close the iframe
         //modal.children.remove();
