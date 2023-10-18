@@ -57,7 +57,26 @@ body {
   fill: rgb(0, 238, 255);
 }
 
+#temp-marker {
+  display: none;
+}
+
 .dart-marker {
+  display: inline;
+  width: 7%;
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.dart-marker > g {
+  stroke: black;
+  stroke-width: 10%;
+  paint-order: stroke;
+}
+
+/*.dart-marker {
   width: 5%;
   aspect-ratio: 1 / 1;
   position: absolute;
@@ -65,7 +84,7 @@ body {
   background-color: rgb(255, 198, 11);
   border: 2px solid black;
   border-radius: 50%;
-}
+}*/
 
 /* Throw Panel */
 

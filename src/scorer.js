@@ -16,17 +16,20 @@ var changingThrow = null;
 // Remove dart
 function removeDart(index) {
   const region = throws[index];
-  const marker = dartboard.find(`#marker-${index}`);
-
+  
   if (typeof region === 'object') { // Decrement dart attribute
     region.attr('data-darts', (_, value) => parseInt(value) - 1);
-    marker.remove();
     
-    const isRegionEmpty = (region.attr('data-darts') == 0);
-    window.replication.removeDart(index, region.attr('id'), isRegionEmpty);
-
-    if (isRegionEmpty) { // Remove highlight
+    const marker = $(`#marker-${region.attr('id')}`);
+    const dartsLeft = region.attr('data-darts');
+    window.replication.removeDart(index, region.attr('id'), dartsLeft);
+    
+    if (dartsLeft == 0) { // Remove marker/highlight
+      marker.remove();
       region.removeClass('selected-region');
+    }
+    else { // Decrement label
+      marker.find('tspan').text(dartsLeft);
     }
   }
 }
@@ -37,7 +40,7 @@ async function checkCombos() {
   // Hide the label from the previous turn
   const remaining_throws = 3 - throws.length;
   if (remaining_throws < 3) {
-    throwPanel.find(`#throw-label-${currentThrow - 1} > .winning-throw-label`).slideUp('fast');
+    $(`#throw-label-${currentThrow - 1} > .winning-throw-label`).slideUp('fast');
     window.replication.changeCombo(currentThrow - 1);
     if (remaining_throws == 0) {
       return;
@@ -67,7 +70,7 @@ async function checkCombos() {
   
   // Set and show labels
   for (const [index, value] of moves.entries()) {
-    const label = throwPanel.find(`#throw-label-${index + currentThrow} > .winning-throw-label`);
+    const label = $(`#throw-label-${index + currentThrow} > .winning-throw-label`);
     label.text(value);
     label.slideDown('slow');
     window.replication.changeCombo(index + currentThrow, value);
@@ -94,25 +97,35 @@ regions.on('click', (event) => {
 
   // Highlight region
   const region = $(event.target);
+  const regionId = region.attr('id');
   region.addClass('selected-region');
   region.attr('data-darts', (_, value) => (value === undefined) && 1 || parseInt(value) + 1);
   throws.splice(index, 0, region);
   checkCombos()
 
-  // Place markers relatively to maintain position upon resize
-  const marker = $(`<span id="marker-${index}" class="dart-marker"></span>`);
-  const markerPosX = `${((event.pageX - dartboard.offset().left) / dartboard.width()) * 100}%`;
-  const markerPosY = `${((event.pageY - dartboard.offset().top) / dartboard.height()) * 100}%`;
-  marker.css('top', markerPosY);
-  marker.css('left', markerPosX);
-  dartboard.append(marker);
+  // Update existing marker or add new one
+  var markerPosX = 0, markerPosY = 0;
+  if (region.attr('data-darts') > 1) {
+    const marker = $(`#marker-${regionId}`);
+    marker.find('tspan').text(region.attr('data-darts'));
+  }
+  else {
+    // Place relatively to maintain position upon resize
+    const marker = $('#temp-marker').clone().attr('id', `marker-${regionId}`);
+    markerPosX = `${((event.pageX - dartboard.offset().left) / dartboard.width()) * 100}%`;
+    markerPosY = `${((event.pageY - dartboard.offset().top) / dartboard.height()) * 100}%`;
+    marker.css('top', markerPosY);
+    marker.css('left', markerPosX);
+    marker.addClass('dart-marker');
+    dartboard.append(marker);
+  }
   
   // Update throw label
-  const throwLabel = throwPanel.find(`#throw-label-${index}`);
+  const throwLabel = $(`#throw-label-${index}`);
   throwLabel.find('button').text(region.attr('name'));
 
   // Replicate the result to the spectator
-  window.replication.addDart(region.attr('id'), index, markerPosX, markerPosY);
+  window.replication.addDart(index, regionId, markerPosX, markerPosY);
 });
 
 // Listen to throw dropdowns to explicitly set a throw value
@@ -170,13 +183,12 @@ resizeObserver.observe(leftPanel.get(0));
 
 // Update scores and reset
 $('#next-turn-button').on('click', (event) => {
-  changeColor();
-
+  
   // Check if all throws have been recorded
   if (throws.length < 3 || changingThrow !== null) {
     return;
   }
-
+  
   // Calculate turn score
   let turnScore = 0;
   for (const region of throws) {
@@ -185,21 +197,23 @@ $('#next-turn-button').on('click', (event) => {
     }
   }
   scores[currentPlayer - 1] -= turnScore;
-  scoreboard.find(`#p${currentPlayer}Score`).text(scores[currentPlayer - 1]);
+  $(`#p${currentPlayer}Score`).text(scores[currentPlayer - 1]);
   
   // Reset for next turn
   throws = [];
   currentThrow = 0;
   window.replication.nextTurn(currentPlayer, scores[currentPlayer - 1]);
   currentPlayer = (currentPlayer % 2) + 1;
-
+  
   // Clear board
-  dartboard.find('.selected-region').attr('data-darts', 0);
+  dartboard.find('.selected-region').removeAttr('data-darts');
   dartboard.find('.selected-region').removeClass('selected-region');
   dartboard.find('.dart-marker').remove();
   throwPanel.find('.throw-dropdown-button').text('');
   comboLabels.slideUp('fast');
+  
   checkCombos(); // Check winning moves for next player
+  changeColor();
 });
 
 // Change player emphasis on turn
@@ -241,26 +255,67 @@ function changeColor() {
     document.getElementById("p1LegsWon").style.color = "white";
     document.getElementById("p1Score").style.color = "white";
   }
-}
+};
 
 // Display new game modal
 $('#new-game-button').on('click', (event) => {
   // Get players from database to pass to new game page player table
-  
   const modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
   
   // For changing player emphasis color
   var table = document.getElementById("scoreboard");   
   var rows = table.getElementsByTagName("tr");  
-
+  
   modal.on('load', () => {
     const newGameDoc = modal.contents();
     const gameForm = newGameDoc.find('#game-form');
-    window.database.requestPlayers().then((result) => {
-      // cannot pull this into the outer scope, so do anything you need this for in here
-      console.log(result);
+    
+    // Pull all player names from the database
+    players = window.database.requestPlayers().then((pdata) => {
+      res = [];
+      pdata.forEach((p) => {
+        res.push(players(p));
+      });
+      return res;
     });
+    
+    // Fill the player table with all player names
+    //updatePlayerTable(players);
+    
+    // Open new iframe if user needs to add a new player to the database
+    newGameDoc.find('#add-player-button').on('click', (event) => {
+      const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
 
+      modal2.on('load', () => {
+        console.log('modal loaded')
+        const newPlayerDoc = modal2.contents();
+        const playerForm = newPlayerDoc.find('#player-form');
+
+        // When submit is pushed:
+        playerForm.on('submit', () => {
+          const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
+
+          // Get the new player name
+          let first = playerFormData[0];
+          let last = playerFormData[1];
+
+          console.log("Name: " + first + " " + last);
+
+          // Add the player to the database
+          window.database.create_player(first,last);
+
+          // Append the name to the player name list for the dropdown selection
+          players.push(first + " " + last);
+
+          // Close the iframe
+          modal2.remove();
+        });
+      });
+
+      newGameDoc.find('body').append(modal2);
+    });
+ 
+    
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
       rows[1].style.backgroundColor = "#FFC60B";
@@ -283,6 +338,39 @@ $('#new-game-button').on('click', (event) => {
 });
 
 
+// Fill in the table of players
+function updatePlayerTable(players) {
+  // Find the table
+  let table = document.getElementById("playerTable");
+
+  // Add a row
+  let row = table.insertRow(0);
+
+  // Add a Cell for the first name and add its text
+  let firstCell= row.insertCell(0);
+  let firstName = document.createTextNode(players.firstName);
+  firstCell.appendChild(firstName);
+
+  // Add a cell for the last name and add its text
+  let lastCell = row.insertCell(1);
+  let lastName = document.createTextNode(players.lastName);
+  lastCell.appendChild(lastName);
+
+  // Add a cell for the player ID and add its text
+  let numCell = row.insertCell(2);
+  let idNum = document.createTextNode(players.player_id);
+  numCell.appendChild(idNum);
+
+
+  
+  //first.innerHTML = players.firstName;
+  //last.innerHTML = players.lastName;
+  //num.innerHTML = players.player_id;
+
+  //$(playerTable).find('tbody').append("<tr><td>" + players.firstName + "</td><td>" + players.lastName + "</td><td>" + players.player_id + "</td><tr>");
+
+};
+
 
 // Populate Scorer Scoreboard with New Game Info
 function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum) {
@@ -304,5 +392,9 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
 // Add listener event to statistics table
 stats.find('.dropdown-content>option').on('click', (event) => {
   const option = $(event.target);
-  window.replication.statSelect(option.parent().attr('name'), option.attr('value'));
+
+  // Get player from database and send it as the last parameter
+
+
+  window.replication.statSelect(option.parent().attr('name'), option.attr('value')/*, player*/);
 });
