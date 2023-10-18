@@ -287,8 +287,12 @@ $('#new-game-button').on('click', (event) => {
       const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
 
       modal2.on('load', () => {
+<<<<<<< Updated upstream
         console.log('modal loaded')
         const newPlayerDoc = modal.contents();
+=======
+        const newPlayerDoc = modal2.contents();
+>>>>>>> Stashed changes
         const playerForm = newPlayerDoc.find('#player-form');
 
         // When submit is pushed:
@@ -339,6 +343,7 @@ $('#new-game-button').on('click', (event) => {
 
 // Fill in the table of players
 function updatePlayerTable(players) {
+  /*
   let table = document.getElementById("playerTable");
   let row = table.insertRow(0);
   let first = row.insertCell(0);
@@ -348,6 +353,9 @@ function updatePlayerTable(players) {
   first.innerHTML = players.firstName;
   last.innerHTML = players.lastName;
   num.innerHTML = players.player_id;
+  */
+
+  $(playerTable).find('tbody').append("<tr><td>" + players.firstName + "</td><td>" + players.lastName + "</td><td>" + players.player_id + "</td><tr>");
 
 };
 
