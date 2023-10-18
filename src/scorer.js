@@ -287,12 +287,8 @@ $('#new-game-button').on('click', (event) => {
       const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
 
       modal2.on('load', () => {
-<<<<<<< Updated upstream
         console.log('modal loaded')
-        const newPlayerDoc = modal.contents();
-=======
         const newPlayerDoc = modal2.contents();
->>>>>>> Stashed changes
         const playerForm = newPlayerDoc.find('#player-form');
 
         // When submit is pushed:
