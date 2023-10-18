@@ -293,18 +293,19 @@ $('#new-game-button').on('click', (event) => {
 
         // When submit is pushed:
         playerForm.on('submit', () => {
-          //const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
+          const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
 
           // Get the new player name
-          let first = FormData(playerForm.get(firstName))
-          let last = FormData(playerForm.get(lastName))
+          let first = playerFormData[0];
+          let last = playerFormData[1];
+
+          console.log("Name: " + first + " " + last);
 
           // Add the player to the database
           window.database.create_player(first,last);
 
           // Append the name to the player name list for the dropdown selection
-          players.push(first);
-          players.push(last);
+          players.push(first + " " + last);
 
           // Close the iframe
           modal2.remove();
@@ -339,19 +340,34 @@ $('#new-game-button').on('click', (event) => {
 
 // Fill in the table of players
 function updatePlayerTable(players) {
-  /*
+  // Find the table
   let table = document.getElementById("playerTable");
+
+  // Add a row
   let row = table.insertRow(0);
-  let first = row.insertCell(0);
-  let last = row.insertCell(1);
-  let num = row.insertCell(2);
 
-  first.innerHTML = players.firstName;
-  last.innerHTML = players.lastName;
-  num.innerHTML = players.player_id;
-  */
+  // Add a Cell for the first name and add its text
+  let firstCell= row.insertCell(0);
+  let firstName = document.createTextNode(players.firstName);
+  firstCell.appendChild(firstName);
 
-  $(playerTable).find('tbody').append("<tr><td>" + players.firstName + "</td><td>" + players.lastName + "</td><td>" + players.player_id + "</td><tr>");
+  // Add a cell for the last name and add its text
+  let lastCell = row.insertCell(1);
+  let lastName = document.createTextNode(players.lastName);
+  lastCell.appendChild(lastName);
+
+  // Add a cell for the player ID and add its text
+  let numCell = row.insertCell(2);
+  let idNum = document.createTextNode(players.player_id);
+  numCell.appendChild(idNum);
+
+
+  
+  //first.innerHTML = players.firstName;
+  //last.innerHTML = players.lastName;
+  //num.innerHTML = players.player_id;
+
+  //$(playerTable).find('tbody').append("<tr><td>" + players.firstName + "</td><td>" + players.lastName + "</td><td>" + players.player_id + "</td><tr>");
 
 };
 
