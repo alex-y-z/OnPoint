@@ -255,13 +255,14 @@ function changeColor() {
     document.getElementById("p1LegsWon").style.color = "white";
     document.getElementById("p1Score").style.color = "white";
   }
-}
+};
 
 // Display new game modal
 $('#new-game-button').on('click', (event) => {
   // Get players from database to pass to new game page player table
   
   const modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
+  const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
   
   // For changing player emphasis color
   var table = document.getElementById("scoreboard");   
@@ -270,7 +271,7 @@ $('#new-game-button').on('click', (event) => {
   modal.on('load', () => {
     const newGameDoc = modal.contents();
     const gameForm = newGameDoc.find('#game-form');
-    /*const playerForm = newGameDoc.find('#player-form');
+    
   
     // Pull all player names from the database
     players = window.database.requestPlayers().then((pdata) => {
@@ -282,15 +283,15 @@ $('#new-game-button').on('click', (event) => {
     });
 
     // Fill the player table with all player names
-    updatePlayerTable(players);
+    //updatePlayerTable(players);
     
     // Open new iframe if user needs to add a new player to the database
     $('#add-player-button').on('click', (event) => {
-      // Open new iframe for div with id="player-form"
-      // Add first name and last name to the database
+      modal2.on('load', () => {
+        const playerForm = newGameDoc.find('#player-form');
 
-      // When submit is pushed:
-      playerForm.on('submit', () => {
+        // When submit is pushed:
+        playerForm.on('submit', () => {
         //const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
 
         // Get the new player name
@@ -305,13 +306,11 @@ $('#new-game-button').on('click', (event) => {
         players.push(last);
 
         // Close the iframe
-        //modal.children.remove();
+        modal2.remove();
+        });
       });
-      
-
     });
-
-    */ 
+ 
     
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
