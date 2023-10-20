@@ -13,6 +13,16 @@ var currentThrow = 0;
 var currentPlayer = 1;
 var changingThrow = null;
 
+/*
+// Behold the creation of Bob Jones
+async function test_db() {
+  window.database.createPlayer('Bob', 'Jones');
+  const players = await window.database.requestPlayers();
+  console.log('PLAYERS:', players);
+}
+test_db()
+*/
+
 // Remove dart
 function removeDart(index) {
   const region = throws[index];
