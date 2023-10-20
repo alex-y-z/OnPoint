@@ -290,7 +290,7 @@ $('#new-game-button').on('click', (event) => {
     });
     
     // Fill the player table with all player names
-    //updatePlayerTable(players);
+    updatePlayerTable(players, newGameDoc);
     
     // Open new iframe if user needs to add a new player to the database
     newGameDoc.find('#add-player-button').on('click', (event) => {
@@ -306,16 +306,21 @@ $('#new-game-button').on('click', (event) => {
           const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
 
           // Get the new player name
-          let first = playerFormData[0];
-          let last = playerFormData[1];
+          let first = playerFormData.get('firstName');
+          let last = playerFormData.get('lastName');
 
           console.log("Name: " + first + " " + last);
 
           // Add the player to the database
-          window.database.create_player(first,last);
+          let newID = window.database.create_player(first, last);
 
           // Append the name to the player name list for the dropdown selection
-          players.push(first + " " + last);
+          const newPlayer = Object.create(players[0]);
+          newPlayer.first_name = first;
+          newPlayer.last_name = last;
+          newPlayer.player_id = newID;
+
+          players.push(newPlayer);
 
           // Close the iframe
           modal2.remove();
@@ -349,29 +354,32 @@ $('#new-game-button').on('click', (event) => {
 
 
 // Fill in the table of players
-function updatePlayerTable(players) {
+function updatePlayerTable(players, newGameDoc) {
   // Find the table
-  let table = document.getElementById("playerTable");
+  //let table = document.getElementById("playerTable");
+  const table = newGameDoc.find('#playerTable');
 
-  // Add a row
-  let row = table.insertRow(0);
+  // Loop through each player object to add them to the table
+  for (i in players) {
+    // Add a row
+    let row = table.insertRow(-1);
 
-  // Add a Cell for the first name and add its text
-  let firstCell= row.insertCell(0);
-  let firstName = document.createTextNode(players.firstName);
-  firstCell.appendChild(firstName);
+    // Add a Cell for the first name and add its text
+    let firstCell= row.insertCell(0);
+    let firstName = document.createTextNode(players[i].first_name);
+    firstCell.appendChild(firstName);
 
-  // Add a cell for the last name and add its text
-  let lastCell = row.insertCell(1);
-  let lastName = document.createTextNode(players.lastName);
-  lastCell.appendChild(lastName);
+    // Add a cell for the last name and add its text
+    let lastCell = row.insertCell(1);
+    let lastName = document.createTextNode(players[i].last_name);
+    lastCell.appendChild(lastName);
 
-  // Add a cell for the player ID and add its text
-  let numCell = row.insertCell(2);
-  let idNum = document.createTextNode(players.player_id);
-  numCell.appendChild(idNum);
+    // Add a cell for the player ID and add its text
+    let numCell = row.insertCell(2);
+    let idNum = document.createTextNode(players[i].player_id);
+    numCell.appendChild(idNum);
 
-
+  }
   
   //first.innerHTML = players.firstName;
   //last.innerHTML = players.lastName;
@@ -396,6 +404,9 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   scoreboard.find('#p2LegsWon').text('0');
   scores[0] = parseInt(score);
   scores[1] = parseInt(score);
+
+  // Send to the database
+  
 };
 
 

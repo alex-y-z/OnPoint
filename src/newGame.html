@@ -25,6 +25,7 @@
             </tr>
           </thead>
           <tbody>
+            
           </tbody>
         </table><br><br>
 
@@ -75,8 +76,8 @@
     <script>
       function filterSearch(player) {
         var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById(`${player}`);
-        filter = input.value.toUpperCase();
+        //input = document.getElementById(`${player}`);
+        filter = player.value.toUpperCase();
         table = document.getElementById("playerTable");
         tr = table.getElementsByTagName("tr");
 
