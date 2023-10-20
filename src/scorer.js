@@ -295,16 +295,9 @@ $('#new-game-button').on('click', (event) => {
         playerForm.on('submit', () => {
           const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
 
-          console.log(...playerFormData.entries());
-
-          console.log(Object.values(playerFormData));
-
-          console.log(playerFormData['firstName']);
-          console.log(playerFormData['lastName']);
-
           // Get the new player name
-          let first = playerFormData['firstName'];
-          let last = playerFormData['lastName'];
+          let first = playerFormData.get('firstName');
+          let last = playerFormData.get('lastName');
 
           console.log("Name: " + first + " " + last);
 
@@ -401,6 +394,9 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   scoreboard.find('#p2LegsWon').text('0');
   scores[0] = parseInt(score);
   scores[1] = parseInt(score);
+
+  // Send to the database
+  
 };
 
 
