@@ -15,9 +15,9 @@ contextBridge.exposeInMainWorld('replication', {
 });
 
 contextBridge.exposeInMainWorld('database', {
-    requestPlayers: (...args) => ipcRenderer.invoke('request-players'),
-    getPlayerByID: (...args) => ipcRenderer.invoke('get-player-by-id'),
-    searchPlayersByFirst: (...args) => ipcRenderer.invoke('search-players-by-first'),
-    createPlayer: (...args) => ipcRenderer.invoke('create-player'),
-    updatePlayer: (...args) => ipcRenderer.invoke('update-player'),
-})
+    requestPlayers: () => ipcRenderer.invoke('request-players'),
+    getPlayerByID: (...args) => ipcRenderer.invoke('get-player-by-id', ...args),
+    searchPlayersByFirst: (...args) => ipcRenderer.invoke('search-players-by-first', ...args),
+    createPlayer: (...args) => ipcRenderer.invoke('create-player', ...args),
+    updatePlayer: (...args) => ipcRenderer.invoke('update-player', ...args)
+});
