@@ -1,5 +1,29 @@
 /* Global */
 
+:root {
+  /* Background Colors */
+  --bg-color-1: black;
+  --bg-color-2: white;
+  --bg-color-3: rgb(0, 81, 44);
+  --bg-color-4: rgb(50, 50, 50);
+  --bg-color-5: rgb(200, 200, 200);
+  --bg-color-6: rgb(220, 220, 220);
+  --bg-color-7: rgb(230, 230, 230);
+
+  /* Accent Colors */
+  --ac-color-1: rgb(255, 198, 11);
+  --ac-color-2: rgb(0, 238, 255);
+  --ac-color-3: rgb(0, 128, 0);
+  --ac-color-4: rgb(255, 42, 42);
+
+  /* Text Colors */
+  --tx-color-1: black;
+  --tx-color-2: white;
+
+  /* Border Colors */
+  --br-color-1: black;
+}
+
 * {
   box-sizing: border-box; /* Accounts for padding/border in element size */
 }
@@ -12,7 +36,7 @@ body {
   padding: 2rem;
   margin: 0;
   display: flex;
-  background-color: rgb(0, 81, 44);
+  background-color: var(--bg-color-3);
   user-select: none;
 }
 
@@ -25,7 +49,7 @@ body {
   margin-right: 1em;
   display: flex;
   flex-direction: column;
-  background-color: rgb(230, 230, 230);
+  background-color: var(--bg-color-7);
   border-radius: 10px;
   resize: horizontal;
   overflow: hidden;
@@ -50,11 +74,11 @@ body {
 }
 
 .board-region > path:hover, circle.board-region:hover {
-	fill: rgb(255, 198, 11);
+	fill: var(--ac-color-1);
 }
 
 .selected-region {
-  fill: rgb(0, 238, 255);
+  fill: var(--ac-color-2);
 }
 
 #temp-marker {
@@ -71,26 +95,16 @@ body {
 }
 
 .dart-marker > g {
-  stroke: black;
+  stroke: var(--br-color-1);
   stroke-width: 10%;
   paint-order: stroke;
 }
-
-/*.dart-marker {
-  width: 5%;
-  aspect-ratio: 1 / 1;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  background-color: rgb(255, 198, 11);
-  border: 2px solid black;
-  border-radius: 50%;
-}*/
 
 /* Throw Panel */
 
 #throw-panel {
   flex: 10%;
-  background-color: rgb(200, 200, 200);
+  background-color: var(--bg-color-5);
   border-radius: 0 0 10px 10px;
   display: flex;
   justify-content: center;
@@ -113,25 +127,25 @@ body {
 .throw-dropdown-button {
   width: 100%;
   height: 100%;
-  background-color: black;
+  background-color: var(--bg-color-1);
   border: none;
   font-size: 24px;
   font-weight: bold;
-  color: white;
+  color: var(--tx-color-2);
 }
 
 .changing-throw {
   width: 100%;
   height: 100%;
-  background-color: rgb(255, 198, 11);
-  border: 1px solid black;
+  background-color: var(--ac-color-1);
+  border: 1px solid var(--br-color-1);
 }
 
 .throw-dropdown-content {
   display: none;
   width: 100%;
   position: absolute;
-  background-color: white;
+  background-color: var(--bg-color-2);
   z-index: 1;
   bottom: 100%;
   right: 0;
@@ -139,15 +153,15 @@ body {
 
 .throw-dropdown-content > option {
   display: block;
-  color: black;
-  border: 1px solid black;
+  color: var(--tx-color-1);
+  border: 1px solid var(--br-color-1);
   border-bottom: none;
   padding: 10px;
   font-weight: bold;
 }
 
 .throw-dropdown-content > option:hover {
-  background-color: #ddd;
+  background-color: var(--bg-color-6);
 }
 
 .throw-dropdown:hover .throw-dropdown-content {
@@ -161,8 +175,8 @@ body {
   bottom: 100%;
   right: 0;
   padding: 10px;
-  background-color: rgb(255, 198, 11);
-  color: black;
+  background-color: var(--ac-color-1);
+  color: var(--tx-color-1);
   border-radius: 8px 8px 0 0;
   font-size: 24px;
   font-weight: bold;
@@ -175,8 +189,8 @@ body {
   flex: 40%;
   display: flex;
   flex-direction: column;
-  background-color: #343434;
-  border: 1px solid black;
+  background-color: var(--bg-color-4);
+  border: 1px solid var(--br-color-1);
   border-radius: 10px;
 }
 
@@ -189,18 +203,18 @@ body {
 table {
   table-layout: fixed;
   border-collapse: collapse;
-  color: white;
+  color: var(--tx-color-2);
 }
 
 thead {
-  color: rgba(255, 20, 20, 0.781);
-  background-color: black;
+  color: var(--ac-color-4);
+  background-color: var(--bg-color-1);
 }
 
 td {
   padding: 10px;
   text-align: center;
-  color: white;
+  color: var(--tx-color-2);
 }
 
 /* Statistics */
@@ -208,13 +222,13 @@ td {
 #statistics {
   flex: 60%;
   padding: 1em;
-  border-top: 1px solid black;
+  border-top: 1px solid var(--br-color-1);
 }
 
 #statistics-table {
   width: 100%;
   height: 80%;
-  border: 1px solid black;
+  border: 1px solid var(--br-color-1);
 }
 
 /* Dropdown Button */
@@ -222,8 +236,8 @@ td {
   width: 100%;
   height: 100%;
   padding: 10px;
-  background-color: rgb(0, 0, 0);
-  color: white;
+  background-color: var(--bg-color-1);
+  color: var(--tx-color-2);
   font-size: 16px;
   border: none;
 }
@@ -238,7 +252,7 @@ td {
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: white;
+  background-color: var(--bg-color-2);
   min-width: 160px;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -250,26 +264,26 @@ td {
 
 /* Links inside the dropdown */
 .dropdown-content option {
-  color: black;
+  color: var(--tx-color-1);
   padding: 12px 16px;
   text-decoration: none;
   display: block;
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content option:hover {background-color: #ddd;}
+.dropdown-content option:hover {background-color: var(--bg-color-6);}
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {display: block;}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: rgb(0, 160, 5);} 
+.dropdown:hover .dropbtn {background-color: var(--ac-color-3);} 
 
 /* Control Panel */
 
 #control-panel {
   flex: 10%;
-  background-color: rgb(200, 200, 200);
+  background-color: var(--bg-color-5);
   border-radius: 0 0 10px 10px;
   display: flex;
   justify-content: center;
@@ -282,18 +296,18 @@ td {
   max-width: 200px;
   height: 60%;
   margin: 10px;
-  background-color: black;
+  background-color: var(--bg-color-1);
   border-radius: 6px;
   border: none;
   font-size: 16px;
   font-weight: bold;
-  color: white;
+  color: var(--tx-color-2);
   cursor: pointer;
 }
 
 .control-button:hover {
-  background-color: rgb(255, 198, 11);
-  color: black;
+  background-color: var(--ac-color-1);
+  color: var(--tx-color-1);
 }
 
 /* New Game Modal */
