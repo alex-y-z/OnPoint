@@ -6,79 +6,78 @@
     <link rel="stylesheet" href="newGame.css" />
   </head>
   <body>
-    <h1>New Game Setup</h1>
-    <form id="game-form" database="">  <!-- Insert link to database -->
+    <div>
+      <h1>New Game Setup</h1>
+      <form id="game-form" database="">  <!-- Insert link to database -->
       
-      <!--
-      <label for="p1">Player 1 Name: </label>
-      <input type="text" id="p1" onkeyup="filterSearch(p1)" placeholder="Search for players.." title="Type in a name">
+        <label for="p1">Player 1 Name: </label>
+        <input type="text" id="p1" onkeyup="filterSearch(p1)" placeholder="Search for players.." title="Type in a name">
 
-      <label for="p2">Player 2 Name: </label>
-      <input type="text" id="p2" onkeyup="filterSearch(p2)" placeholder="Search for players.." title="Type in a name"><br><br>
+        <label for="p2">Player 2 Name: </label>
+        <input type="text" id="p2" onkeyup="filterSearch(p2)" placeholder="Search for players.." title="Type in a name"><br><br>
 
-      <table id="playerTable">
-        <tr class="header">
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Player ID</th>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td colspan="3" id="addPlayer">Add Player</td>
-        </tr>
-      </table><br><br>
--->
-      
+        <table id="playerTable">
+          <thead>
+            <tr class="header">
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Player ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+          </tbody>
+        </table><br><br>
 
-      <label for="p1">Player 1 Name: </label>
-      <input type="text" id="p1" name="p1" maxlength="150" required><br><br>
+        <!--
+        <label for="p1">Player 1 Name: </label>
+        <input type="text" id="p1" name="p1" maxlength="150" required><br>
+        
+        <button id='add-player-button' class="add-player-button">Add New Player</button><br><br>
 
-      <label for="p2">Player 2 Name: </label>
-      <input type="text" id="p2" name="p2" maxlength="150" required><br><br>
+        <label for="p2">Player 2 Name: </label>
+        <input type="text" id="p2" name="p2" maxlength="150" required><br>  
+      -->
+        <button id="add-player-button" class="add-player-button">Add New Player</button><br><br>        
 
-     
+        <label for="official">Official's Name: </label>
+        <input type="text" id="official" name="official" maxlength="150" required><br><br>
 
-      <label for="official">Official's Name: </label>
-      <input type="text" id="official" name="official" maxlength="150" required><br><br>
+        <label for="location">Location: </label>
+        <input type="text" id="location" name="location" maxlength="150" required><br><br>
 
-      <label for="location">Location: </label>
-      <input type="text" id="location" name="location" maxlength="150" required><br><br>
+        <label for="date">Date of Match: </label>
+        <input type="date" id="date" name="date" required><br><br>
 
-      <label for="date">Date of Match: </label>
-      <input type="date" id="date" name="date" required><br><br>
+        <label for="startScore">Please Select Starting Score Value: </label><br>
+        <input type="radio" id="1101" name="startScore" value="1101" required>
+        <label for="1101">1101</label><br>
+        <input type="radio" id="801" name="startScore" value="801">
+        <label for="801">801</label><br>
+        <input type="radio" id="501" name="startScore" value="501">
+        <label for="501">501</label><br>
+        <input type="radio" id="301" name="startScore" value="301">
+        <label for="301">301</label><br><br>
 
-      <label for="startScore">Please Select Starting Score Value: </label><br>
-      <input type="radio" id="1101" name="startScore" value="1101" required>
-      <label for="1101">1101</label><br>
-      <input type="radio" id="801" name="startScore" value="801">
-      <label for="801">801</label><br>
-      <input type="radio" id="501" name="startScore" value="501">
-      <label for="501">501</label><br>
-      <input type="radio" id="301" name="startScore" value="301">
-      <label for="301">301</label><br><br>
+        <label for="numOfLegs">Number of Legs: </label>
+        <input type="number" id="numOfLegs" name="numOfLegs" min="3" max="29" required><br><br>
 
-      <label for="numOfLegs">Number of Legs: </label>
-      <input type="number" id="numOfLegs" name="numOfLegs" min="3" max="29" required><br><br>
-
-      <label for="numOfSets">Number of Matches: </label>
-      <input type="number" id="numOfSets" name="numOfSets" min="1" max="9" required><br><br>
-      
-      <input id="submit-button" type="submit" value="Submit">
-      
-      <button id='cancel-button' class="cancel-button">Cancel</button>
-    </form>
+        <label for="numOfSets">Number of Matches: </label>
+        <input type="number" id="numOfSets" name="numOfSets" min="1" max="9" required><br><br>
+        
+        <input id="submit-button" type="submit" value="Submit">
+        
+        <button id='cancel-button' class="cancel-button">Cancel</button>
+      </form>
+    </div>
 
     <!-- Function for user to search through player names-->
     <!--Change tr[i].getElementsByTagName('td')[0] to [1] to search for "Last Name" (index 1) instead of "First Name" (index 0).-->
     <script>
       function filterSearch(player) {
         var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById(`${player}`);
-        filter = input.value.toUpperCase();
+        //input = document.getElementById(`${player}`);
+        filter = player.value.toUpperCase();
         table = document.getElementById("playerTable");
         tr = table.getElementsByTagName("tr");
 
@@ -112,8 +111,7 @@
         last.innerHTML = "NEW CELL2";
         num.innerHTML = "NEW CELL3";
       }
-    </script>
+    </script>   
 
-    <!-- Add option for user to look at game history -->
   </body>
 </html>

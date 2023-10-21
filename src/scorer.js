@@ -13,6 +13,16 @@ var currentThrow = 0;
 var currentPlayer = 1;
 var changingThrow = null;
 
+/*
+// Behold the creation of Bob Jones
+async function test_db() {
+  window.database.createPlayer('Bob', 'Jones');
+  const players = await window.database.requestPlayers();
+  console.log('PLAYERS:', players);
+}
+test_db()
+*/
+
 // Remove dart
 function removeDart(index) {
   const region = throws[index];
@@ -212,8 +222,8 @@ $('#next-turn-button').on('click', (event) => {
   throwPanel.find('.throw-dropdown-button').text('');
   comboLabels.slideUp('fast');
   
-  checkCombos(); // Check winning moves for next player
-  changeColor();
+  checkCombos();  // Check winning moves for next player
+  changeColor();  // Change background color to indicate current player
 });
 
 // Change player emphasis on turn
@@ -255,26 +265,66 @@ function changeColor() {
     document.getElementById("p1LegsWon").style.color = "white";
     document.getElementById("p1Score").style.color = "white";
   }
-}
+};
 
 // Display new game modal
 $('#new-game-button').on('click', (event) => {
   // Get players from database to pass to new game page player table
-  
   const modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
   
   // For changing player emphasis color
   var table = document.getElementById("scoreboard");   
   var rows = table.getElementsByTagName("tr");  
-
+  
   modal.on('load', () => {
     const newGameDoc = modal.contents();
     const gameForm = newGameDoc.find('#game-form');
-    window.database.requestPlayers().then((result) => {
-      // cannot pull this into the outer scope, so do anything you need this for in here
-      console.log(result);
+    
+    // Pull all player names from the database
+    let players = window.database.requestPlayers().then((pdata) => {
+      res = [];
+      pdata.forEach((p) => {
+        res.push(Player(p));
+      });
+      return res;
     });
+    
+    // Fill the player table with all player names
+    updatePlayerTable(players, newGameDoc);
+    
+    // Open new iframe if user needs to add a new player to the database
+    newGameDoc.find('#add-player-button').on('click', (event) => {
+      const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
 
+      modal2.on('load', () => {
+        const newPlayerDoc = modal2.contents();
+        const playerForm = newPlayerDoc.find('#player-form');
+
+        // When submit is pushed:
+        playerForm.on('submit', () => {
+          const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
+
+          // Get the new player name
+          let first = playerFormData.get('firstName');
+          let last = playerFormData.get('lastName');
+
+          // Add the player to the database
+          let newID = window.database.createPlayer(first, last);
+
+          // Append the name to the player name list for the dropdown selection
+          let newPlayer = {first_Name:first, last_Name:last, player_id:newID};
+
+          players.push(newPlayer);
+
+          // Close the iframe
+          modal2.remove();
+        });
+      });
+
+      newGameDoc.find('body').append(modal2);
+    });
+ 
+    
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
       rows[1].style.backgroundColor = "#FFC60B";
@@ -297,6 +347,34 @@ $('#new-game-button').on('click', (event) => {
 });
 
 
+// Fill in the table of players
+function updatePlayerTable(players, newGameDoc) {
+  // Find the table
+  const table = newGameDoc.find('#playerTable');
+
+  // Loop through each player object to add them to the table
+  for (i in players) {
+    // Add a row
+    let row = table.insertRow(-1);
+
+    // Add a Cell for the first name and add its text
+    let firstCell= row.insertCell(0);
+    let firstName = document.createTextNode(players[i].first_name);
+    firstCell.appendChild(firstName);
+
+    // Add a cell for the last name and add its text
+    let lastCell = row.insertCell(1);
+    let lastName = document.createTextNode(players[i].last_name);
+    lastCell.appendChild(lastName);
+
+    // Add a cell for the player ID and add its text
+    let numCell = row.insertCell(2);
+    let idNum = document.createTextNode(players[i].player_id);
+    numCell.appendChild(idNum);
+
+  }
+};
+
 
 // Populate Scorer Scoreboard with New Game Info
 function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum) {
@@ -312,11 +390,18 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   scoreboard.find('#p2LegsWon').text('0');
   scores[0] = parseInt(score);
   scores[1] = parseInt(score);
+
+  // Send to the database
+  // window.database.function(name1, name2, offName, loc, date, score, legNum, setNum);
 };
 
 
 // Add listener event to statistics table
 stats.find('.dropdown-content>option').on('click', (event) => {
   const option = $(event.target);
-  window.replication.statSelect(option.parent().attr('name'), option.attr('value'));
+
+  // Get player from database and send it as the last parameter
+
+
+  window.replication.statSelect(option.parent().attr('name'), option.attr('value')/*, player*/);
 });
