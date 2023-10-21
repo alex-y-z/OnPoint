@@ -95,7 +95,7 @@ class Leg {
         this.player_2_score = p2_score
     };
 
-    add_throws(throws, player) {
+    addThrows(throws, player) {
         if(player = 1) {
             this.player_1_darts.push(throws);
         }
@@ -105,6 +105,13 @@ class Leg {
             }
         }
         this.calculateScore();
+    }
+
+    getPlayerScores() {
+        return {
+            p1: this.player_1_score,
+            p2: this.player_2_score
+        };
     }
 
     getParent() {

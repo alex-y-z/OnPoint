@@ -8,6 +8,9 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
 player_1 = null;
 player_2 = null;
+current_leg = null;
+current_match = null;
+current_game = null;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
