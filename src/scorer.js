@@ -212,8 +212,8 @@ $('#next-turn-button').on('click', (event) => {
   throwPanel.find('.throw-dropdown-button').text('');
   comboLabels.slideUp('fast');
   
-  checkCombos(); // Check winning moves for next player
-  changeColor();
+  checkCombos();  // Check winning moves for next player
+  changeColor();  // Change background color to indicate current player
 });
 
 // Change player emphasis on turn
@@ -271,10 +271,10 @@ $('#new-game-button').on('click', (event) => {
     const gameForm = newGameDoc.find('#game-form');
     
     // Pull all player names from the database
-    players = window.database.requestPlayers().then((pdata) => {
+    let players = window.database.requestPlayers().then((pdata) => {
       res = [];
       pdata.forEach((p) => {
-        res.push(players(p));
+        res.push(Player(p));
       });
       return res;
     });
@@ -287,7 +287,6 @@ $('#new-game-button').on('click', (event) => {
       const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
 
       modal2.on('load', () => {
-        console.log('modal loaded')
         const newPlayerDoc = modal2.contents();
         const playerForm = newPlayerDoc.find('#player-form');
 
@@ -299,16 +298,11 @@ $('#new-game-button').on('click', (event) => {
           let first = playerFormData.get('firstName');
           let last = playerFormData.get('lastName');
 
-          console.log("Name: " + first + " " + last);
-
           // Add the player to the database
-          let newID = window.database.create_player(first, last);
+          let newID = window.database.createPlayer(first, last);
 
           // Append the name to the player name list for the dropdown selection
-          const newPlayer = Object.create(players[0]);
-          newPlayer.first_name = first;
-          newPlayer.last_name = last;
-          newPlayer.player_id = newID;
+          let newPlayer = {first_Name:first, last_Name:last, player_id:newID};
 
           players.push(newPlayer);
 
@@ -346,7 +340,6 @@ $('#new-game-button').on('click', (event) => {
 // Fill in the table of players
 function updatePlayerTable(players, newGameDoc) {
   // Find the table
-  //let table = document.getElementById("playerTable");
   const table = newGameDoc.find('#playerTable');
 
   // Loop through each player object to add them to the table
@@ -370,13 +363,6 @@ function updatePlayerTable(players, newGameDoc) {
     numCell.appendChild(idNum);
 
   }
-  
-  //first.innerHTML = players.firstName;
-  //last.innerHTML = players.lastName;
-  //num.innerHTML = players.player_id;
-
-  //$(playerTable).find('tbody').append("<tr><td>" + players.firstName + "</td><td>" + players.lastName + "</td><td>" + players.player_id + "</td><tr>");
-
 };
 
 
@@ -396,7 +382,7 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   scores[1] = parseInt(score);
 
   // Send to the database
-  
+  // window.database.function(name1, name2, offName, loc, date, score, legNum, setNum);
 };
 
 
