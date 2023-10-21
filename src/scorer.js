@@ -274,7 +274,7 @@ $('#new-game-button').on('click', (event) => {
     let players = window.database.requestPlayers().then((pdata) => {
       res = [];
       pdata.forEach((p) => {
-        res.push(Player(p));
+        res.push(p);
       });
       return res;
     });
