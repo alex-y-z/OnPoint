@@ -72,13 +72,17 @@ const createWindows = () => {
   });
 
   ipcMain.handle('create-player', (event, first_name, last_name) => {
-    database.create_player(first_name, last_name)
+    return database.create_player(first_name, last_name)
   });
 
   ipcMain.handle('update-player', (event, player) => {
     database.update_player(player); 
   });
 
+  ipcMain.handle('create-player-instance', (event, sql) => {
+    return new Player(sql);
+  })
+  
   // Load HTML
   scorerWindow.loadFile(path.join(__dirname, 'scorer.html'));
   spectatorWindow.loadFile(path.join(__dirname, 'spectator.html'));

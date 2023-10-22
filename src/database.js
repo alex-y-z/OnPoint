@@ -13,7 +13,7 @@ function init_db() {
   db.run("CREATE TABLE IF NOT EXISTS Legs (lid INTEGER PRIMARY KEY AUTOINCREMENT, player_1_score INTEGER NOT NULL, player_1_darts TEXT NOT NULL, player_2_score INTEGER NOT NULL, player_2_darts TEXT NOT NULL, match INTEGER NOT NULL, Foreign Key(match) references Matches(mid))")
   // Matches
   db.run("CREATE TABLE IF NOT EXISTS Matches (mid INTEGER PRIMARY KEY AUTOINCREMENT, winner INTEGER, legs TEXT, game INTEGER NOT NULL, Foreign Key(winner) references Players(pid), Foreign Key(game) references Games(gid))")
-  // Matches
+  // Game
   db.run("CREATE TABLE IF NOT EXISTS Games (gid INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, player_1 INTEGER NOT NULL, player_2 INTEGER NOT NULL, winner INTEGER, start_score INTEGER NOT NULL DEFAULT 501, matches TEXT, Foreign Key(player_1) references Players(pid), Foreign Key(player_2) references Players(pid), Foreign key(winner) references Players(pid))")
   
 }
