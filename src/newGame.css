@@ -25,7 +25,7 @@ body {
 }
 
 /* Dropdown Content (Hidden by Default) */
-.dropdown-content {
+.dropdown-content1, .dropdown-content2 {
   display: none;
   position: relative;
   background-color: var(--bg-color-2);
@@ -39,7 +39,7 @@ body {
 }
 
 /* Links inside the dropdown */
-.dropdown-content option {
+.dropdown-content1 option, .dropdown-content2 option {
   color: var(--tx-color-1);
   padding: 12px 16px;
   text-decoration: none;
@@ -47,10 +47,12 @@ body {
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content option:hover {background-color: var(--bg-color-6);}
+.dropdown-content1 option:hover, .dropdown-content2 option:hover {
+  background-color: var(--bg-color-6);
+}
 
 /* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropdown-content1, .dropdown:hover .dropdown-content2 {display: block;}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {background-color: var(--ac-color-3);}

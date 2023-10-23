@@ -399,7 +399,8 @@ $('#new-game-button').on('click', (event) => {
 
 // Update dropdown options
 function updateDropdown(players, newGameDoc) {
-  const menu = newGameDoc.find('#dropdown').get(0);
+  const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
+  const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0);
 
   // Go through all players in the list
   for (i in players) {
@@ -408,7 +409,8 @@ function updateDropdown(players, newGameDoc) {
 
     //menu.append($('<option>').val(optionVal).text(optionText));
     //menu.append(`<option value="${optionVal}">${optionText}</option>`); 
-    menu.append(new Option(optionText, optionVal));
+    menu1.append(new Option(optionText, optionVal));
+    menu2.append(new Option(optionText, optionVal));
   }
 };
 
