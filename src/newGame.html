@@ -33,18 +33,18 @@
         -->
 
         <div class="dropdown">
-          <button class="dropbtn">Select</button>
+          <button class="dropbtn">Select Player 1</button>
           <div id="dropdown" class="dropdown-content" name="dropdown">
-            <input type="text" placeholder="Type in a name..." id="p1" onkeyup="filterSearch(p1)">
-            <option></option>
+            <input type="text" placeholder="Type in a name..." id="p1" onkeyup="filterSearch(p1)" maxlength="150" required>
+            
           </div>
         </div><br><br>
 
         <div class="dropdown">
-          <button class="dropbtn">Select</button>
+          <button class="dropbtn">Select Player 2</button>
           <div id="dropdown" class="dropdown-content" name="dropdown">
-            <input type="text" placeholder="Type in a name..." id="p2" onkeyup="filterSearch(p2)">
-            <option></option>
+            <input type="text" placeholder="Type in a name..." id="p2" onkeyup="filterSearch(p2)" maxlength="150" required>
+            
           </div>
         </div><br><br>
 
@@ -96,43 +96,23 @@
     <!--Change tr[i].getElementsByTagName('td')[0] to [1] to search for "Last Name" (index 1) instead of "First Name" (index 0).-->
     <script>
       function filterSearch(player) {
-        var input, filter, table, tr, td, i, txtValue;
-        //input = document.getElementById(`${player}`);
+        var filter, div, opt, txt;
         filter = player.value.toUpperCase();
-        table = document.getElementById("playerTable");
-        tr = table.getElementsByTagName("tr");
+        div = document.getElementById("dropdown")
+        opt = div.getElementsByTagName("option");
 
-        // Loop through all rows
+        // Loop through all options
         // Hide ones that don't match
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td")[0];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }       
+        for (i = 0; i < opt.length; i++) {
+          txt = opt[i].innerText;
+          if (txt.toUpperCase().indexOf(filter) > -1) {
+            opt[i].style.display = "";
+          } else {
+            opt[i].style.display = "none";
+          }
         }
       }
-    </script>
-
-    <!-- Function to pull players from the database and fill the table with the information -->
-    <!-- Inserts players to the bottom of table -->
-    <!-- Alphabetical insert (insert A-Z) -->
-    <script src="scorer.js">
-      function addRows(firstName, lastName, number) {
-        var table = document.getElementById("playerTable");
-        var row = table.insertRow(-1);
-        var first = row.insertCell(0);
-        var last = row.insertCell(1);
-        var num = row.insertCell(2);
-        first.innerHTML = firstName;
-        last.innerHTML = lastName;
-        num.innerHTML = number;
-      }
-    </script>   
+    </script>  
 
   </body>
 </html>

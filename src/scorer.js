@@ -407,7 +407,8 @@ function updateDropdown(players, newGameDoc) {
     let optionText = players[i].first_name + " " + players[i].last_name + " " + players[i].player_id;
 
     //menu.append($('<option>').val(optionVal).text(optionText));
-    menu.append(`<option value="${optionVal}">${optionText}</option>`); 
+    //menu.append(`<option value="${optionVal}">${optionText}</option>`); 
+    menu.append(new Option(optionText, optionVal));
   }
 };
 
