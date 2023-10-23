@@ -10,7 +10,9 @@ contextBridge.exposeInMainWorld('replication', {
     getFormInfo: (...args) => ipcRenderer.send('getFormInfo', ...args),
     statSelect: (...args) => ipcRenderer.send('stat-select', ...args),
     getWinningMoves: (...args) => ipcRenderer.invoke('get-winning-moves', ...args),
-    changeCombo: (...args) => ipcRenderer.send('change-combo', ...args)
+    getPerfectLeg: (...args) => ipcRenderer.invoke('get-perfect-leg', ...args),
+    changeCombo: (...args) => ipcRenderer.send('change-combo', ...args),
+    changePerfectLeg: (...args) => ipcRenderer.send('change-perfect-leg', ...args)
 });
 
 contextBridge.exposeInMainWorld('database', {

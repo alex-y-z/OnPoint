@@ -2,7 +2,7 @@ const { app, screen, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const {Player, Leg, Match, Game} = require('./classes');
 const database = require("./database");
-const { winning_move } = require('./winning_move');
+const { winning_move, perfect_leg } = require('./winning_move');
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
@@ -45,7 +45,7 @@ const createWindows = () => {
   // This forwards information from scorer to spectator
   const channels = [
     'add-dart', 'change-dart', 'remove-dart', 'next-turn', 'resize-board',
-    'getFormInfo', 'stat-select', 'change-combo'
+    'getFormInfo', 'stat-select', 'change-combo', 'change-perfect-leg'
   ];
   channels.forEach(channel => {
     ipcMain.on(channel, (event, ...args) => {
@@ -57,6 +57,10 @@ const createWindows = () => {
   // These should fulfill requests from either renderer
   ipcMain.handle('get-winning-moves', (event, score, remaining_throws) => {
     return winning_move(score, remaining_throws);
+  });
+
+  ipcMain.handle('get-perfect-leg', (event, startScore) => {
+    return perfect_leg(startScore);
   });
 
   ipcMain.handle('request-players', (event) => {
