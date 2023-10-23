@@ -285,8 +285,8 @@ $('#new-game-button').on('click', (event) => {
     window.database.requestPlayers().then((pdata) => {
       pdata.forEach((p) => {
         players.push(p)
-        
       });
+      
       // Fill the player table with all player names
       updatePlayerTable(players, newGameDoc);
     });
