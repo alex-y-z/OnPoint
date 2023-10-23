@@ -13,6 +13,16 @@ var currentThrow = 0;
 var currentPlayer = 1;
 var changingThrow = null;
 
+/*
+// Behold the creation of Bob Jones
+async function test_db() {
+  window.database.createPlayer('Bob', 'Jones');
+  const players = await window.database.requestPlayers();
+  console.log('PLAYERS:', players);
+}
+test_db()
+*/
+
 // Remove dart
 function removeDart(index) {
   const region = throws[index];
@@ -271,16 +281,15 @@ $('#new-game-button').on('click', (event) => {
     const gameForm = newGameDoc.find('#game-form');
     
     // Pull all player names from the database
-    let players = window.database.requestPlayers().then((pdata) => {
-      res = [];
+    players = []
+    window.database.requestPlayers().then((pdata) => {
       pdata.forEach((p) => {
-        res.push(p);
+        players.push(p)
       });
-      return res;
+      
+      // Fill the player table with all player names
+      updatePlayerTable(players, newGameDoc);
     });
-    
-    // Fill the player table with all player names
-    updatePlayerTable(players, newGameDoc);
     
     // Open new iframe if user needs to add a new player to the database
     newGameDoc.find('#add-player-button').on('click', (event) => {
@@ -299,15 +308,18 @@ $('#new-game-button').on('click', (event) => {
           let last = playerFormData.get('lastName');
 
           // Add the player to the database
-          let newID = window.database.createPlayer(first, last);
+          window.database.createPlayer(first, last).then((newID) => {
+            // Append the name to the player name list for the dropdown selection
+            const newPlayer = Object.create(players[0]);
+            newPlayer.first_name = first;
+            newPlayer.last_name = last;
+            newPlayer.player_id = newID;
 
-          // Append the name to the player name list for the dropdown selection
-          let newPlayer = {first_Name:first, last_Name:last, player_id:newID};
+            players.push(newPlayer);
 
-          players.push(newPlayer);
-
-          // Close the iframe
-          modal2.remove();
+            // Close the iframe
+            modal2.remove();
+          });
         });
       });
 
