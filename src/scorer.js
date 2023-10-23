@@ -330,7 +330,8 @@ $('#new-game-button').on('click', (event) => {
       });
       
       // Fill the player table with all player names
-      updatePlayerTable(players, newGameDoc);
+      updateDropdown(players, newGameDoc);
+      //updatePlayerTable(players, newGameDoc);
     });
     
     // Open new iframe if user needs to add a new player to the database
@@ -363,6 +364,11 @@ $('#new-game-button').on('click', (event) => {
             modal2.remove();
           });
         });
+      
+        newPlayerDoc.find('#cancel-button').on('click', () => {
+          modal2.remove();
+        });
+      
       });
 
       newGameDoc.find('body').append(modal2);
@@ -391,8 +397,25 @@ $('#new-game-button').on('click', (event) => {
 });
 
 
+// Update dropdown options
+function updateDropdown(players, newGameDoc) {
+  const menu = newGameDoc.find('#dropdown').get(0);
+
+  // Go through all players in the list
+  for (i in players) {
+    let optionVal = players[i].player_id;
+    let optionText = players[i].first_name + " " + players[i].last_name + " " + players[i].player_id;
+
+    //menu.append($('<option>').val(optionVal).text(optionText));
+    menu.append(`<option value="${optionVal}">${optionText}</option>`); 
+  }
+};
+
+
+
 // Fill in the table of players
 function updatePlayerTable(players, newGameDoc) {
+
   // Find the table
   const table = newGameDoc.find('#playerTable').get(0);
 
@@ -458,3 +481,19 @@ stats.find('.dropdown-content>option').on('click', (event) => {
 
   window.replication.statSelect(option.parent().attr('name'), option.attr('value')/*, player*/);
 });
+
+
+// Load winner page
+function loadWinner() {
+  const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
+  
+  modal.on('load', () => {
+    const winnerDoc = modal.contents();
+
+    // Close modal when exit button is pushed
+    winnerDoc.find('#exit-button').on('click', () => {
+      modal.remove();
+    });
+
+  });
+};
