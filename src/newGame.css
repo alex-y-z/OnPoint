@@ -68,7 +68,7 @@ body {
   }
 
   #p1:focus, #p2:focus {
-    outline: 3px solid #ddd;
+    outline: 3px solid lightgray;
   }
   
   #playerTable {
