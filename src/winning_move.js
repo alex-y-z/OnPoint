@@ -188,9 +188,10 @@ function perfect_leg(score) {
         throws: (perfect.length * 3) - remaining
     };
 }
-for(let i=101; i < 1101; i = i + 100){
+
+/*for(let i=101; i < 1101; i = i + 100){
     console.log(perfect_leg(i))
-}
+}*/
 
 module.exports = {
     winning_move,
