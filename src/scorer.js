@@ -373,7 +373,20 @@ $('#new-game-button').on('click', (event) => {
 
       newGameDoc.find('body').append(modal2);
     });
- 
+    
+    // Add listener to new game dropdowns
+    gameForm.find('.dropdown-content1>option').on('click', (event) => {
+      const option = $(event.target);
+      option.selected = true;
+    });
+
+    // Add listener to new game dropdowns
+    gameForm.find('.dropdown-content2>option').on('click', (event) => {
+      const option = $(event.target);
+      option.selected = true;
+
+    });
+
     
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
@@ -413,7 +426,6 @@ function updateDropdown(players, newGameDoc) {
     menu2.append(new Option(optionText, optionVal));
   }
 };
-
 
 
 // Fill in the table of players
