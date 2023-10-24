@@ -230,7 +230,6 @@ resizeObserver.observe(leftPanel.get(0));
 
 // Update scores and reset
 $('#next-turn-button').on('click', (event) => {
-  
   // Check if all throws have been recorded
   if (scorer.throws.length < 3 || scorer.changingThrow !== null) {
     return;
@@ -321,7 +320,7 @@ $('#new-game-button').on('click', (event) => {
   modal.on('load', () => {
     const newGameDoc = modal.contents();
     const gameForm = newGameDoc.find('#game-form');
-    
+
     // Pull all player names from the database
     players = []
     window.database.requestPlayers().then((pdata) => {
@@ -331,7 +330,6 @@ $('#new-game-button').on('click', (event) => {
       
       // Fill the player table with all player names
       updateDropdown(players, newGameDoc);
-      //updatePlayerTable(players, newGameDoc);
     });
     
     // Open new iframe if user needs to add a new player to the database
@@ -373,7 +371,20 @@ $('#new-game-button').on('click', (event) => {
 
       newGameDoc.find('body').append(modal2);
     });
- 
+    
+    // Add listener to new game dropdowns
+    gameForm.find('.dropdown-content1>option').on('click', (event) => {
+      const option = $(event.target);
+      option.selected = true;
+    });
+
+    // Add listener to new game dropdowns
+    gameForm.find('.dropdown-content2>option').on('click', (event) => {
+      const option = $(event.target);
+      option.selected = true;
+
+    });
+
     
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
@@ -399,46 +410,16 @@ $('#new-game-button').on('click', (event) => {
 
 // Update dropdown options
 function updateDropdown(players, newGameDoc) {
-  const menu = newGameDoc.find('#dropdown').get(0);
+  const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
+  const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0);
 
   // Go through all players in the list
   for (i in players) {
     let optionVal = players[i].player_id;
     let optionText = players[i].first_name + " " + players[i].last_name + " " + players[i].player_id;
 
-    //menu.append($('<option>').val(optionVal).text(optionText));
-    menu.append(`<option value="${optionVal}">${optionText}</option>`); 
-  }
-};
-
-
-
-// Fill in the table of players
-function updatePlayerTable(players, newGameDoc) {
-
-  // Find the table
-  const table = newGameDoc.find('#playerTable').get(0);
-
-  // Loop through each player object to add them to the table
-  for (i in players) {
-    // Add a row
-    let row = table.insertRow(-1);
-
-    // Add a Cell for the first name and add its text
-    let firstCell= row.insertCell(0);
-    let firstName = document.createTextNode(players[i].first_name);
-    firstCell.appendChild(firstName);
-
-    // Add a cell for the last name and add its text
-    let lastCell = row.insertCell(1);
-    let lastName = document.createTextNode(players[i].last_name);
-    lastCell.appendChild(lastName);
-
-    // Add a cell for the player ID and add its text
-    let numCell = row.insertCell(2);
-    let idNum = document.createTextNode(players[i].player_id);
-    numCell.appendChild(idNum);
-
+    menu1.append(new Option(optionText, optionVal));
+    menu2.append(new Option(optionText, optionVal));
   }
 };
 
@@ -484,11 +465,13 @@ stats.find('.dropdown-content>option').on('click', (event) => {
 
 
 // Load winner page
-function loadWinner() {
+function loadWinner(playerName) {
   const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
   
   modal.on('load', () => {
     const winnerDoc = modal.contents();
+
+    winnerDoc.find('#name').text(playerName);
 
     // Close modal when exit button is pushed
     winnerDoc.find('#exit-button').on('click', () => {
@@ -497,3 +480,4 @@ function loadWinner() {
 
   });
 };
+
