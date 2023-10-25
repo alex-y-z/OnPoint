@@ -206,9 +206,9 @@ window.replication.onStatSelected((event, loc, stat_type/*, player*/) => {
       // Execute for player 1's current league rank
       stats.find(`#${loc}`).text("Rank: " /*+ stats.league_rank*/) 
       break;
-    case "p1-lastWin":
+    case "p1-checkouts":
       // Execute for player 1's last match win
-      stats.find(`#${loc}`).text("Last Match Win: " /*+ stats.last_win*/) 
+      stats.find(`#${loc}`).text("Number of 100+ Checkouts: " /*+ stats.p1-checkouts*/) 
       break;
     case "p1-avgScore":
       // Execute for player 1's average league score for the season
@@ -228,9 +228,9 @@ window.replication.onStatSelected((event, loc, stat_type/*, player*/) => {
       // Execute for player 2's current league rank
       stats.find(`#${loc}`).text("Rank: " /*+ stats.p2-league_rank*/) 
       break;
-    case "p2-lastWin":
+    case "p2-checkouts":
       // Execute for player 2's last match win
-      stats.find(`#${loc}`).text("Last Match Win: " /*+ stats.p2-last_win*/) 
+      stats.find(`#${loc}`).text("Number of 100+ Checkouts: " /*+ stats.p2-checkouts*/) 
       break;
     case "p2-avgScore":
       // Execute for player 2's average league score for the season
