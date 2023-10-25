@@ -1,4 +1,5 @@
 const { app, screen, BrowserWindow, ipcMain } = require('electron');
+const { data } = require('jquery');
 const path = require('path');
 const {Player, Leg, Match, Game} = require('./classes');
 const database = require("./database");
@@ -8,6 +9,9 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
 player_1 = null;
 player_2 = null;
+current_leg = null;
+current_match = null;
+current_game = null;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -68,7 +72,7 @@ const createWindows = () => {
   });
 
   ipcMain.handle('get-player-by-id', (event, pid) => {
-    return database.get_player_by_id();
+    return database.get_player_by_id(pid);
   });
 
   ipcMain.handle('search-players-by-first', (event, first_name) => {
@@ -82,11 +86,35 @@ const createWindows = () => {
   ipcMain.handle('update-player', (event, player) => {
     database.update_player(player); 
   });
-
-  ipcMain.handle('create-player-instance', (event, sql) => {
-    return new Player(sql);
-  })
   
+  ipcMain.handle('set-player-1', (event, pid) => {
+    database.get_player_by_id(pid).then((player) => {
+      player_1 = Player(player);
+    })
+  })
+
+  ipcMain.handle('set-player-2', (event, pid) => {
+    database.get_player_by_id(pid).then((player) => {
+      player_2 = Player(player);
+    })
+  })
+
+  ipcMain.handle('set-current-game', (event, gid) => {
+    database.get_game_by_id(gid).then((game) => {
+      current_game = Game(game);
+    })
+  })
+
+  ipcMain.handle('update-game-status', (event) => {
+    database.update_player(player_1);
+    database.update_player(player_2);
+    database.update_leg(current_leg);
+  })
+
+  ipcMain.handle('get-current-scores', (event) => {
+    return current_leg.getScores();
+  })
+
   // Load HTML
   scorerWindow.loadFile(path.join(__dirname, 'scorer.html'));
   spectatorWindow.loadFile(path.join(__dirname, 'spectator.html'));

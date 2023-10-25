@@ -230,7 +230,6 @@ resizeObserver.observe(leftPanel.get(0));
 
 // Update scores and reset
 $('#next-turn-button').on('click', (event) => {
-  
   // Check if all throws have been recorded
   if (scorer.throws.length < 3 || scorer.changingThrow !== null) {
     return;
@@ -321,53 +320,45 @@ $('#new-game-button').on('click', (event) => {
   modal.on('load', () => {
     const newGameDoc = modal.contents();
     const gameForm = newGameDoc.find('#game-form');
-    
+
     // Pull all player names from the database
     players = []
     window.database.requestPlayers().then((pdata) => {
       pdata.forEach((p) => {
         players.push(p)
-        
       });
+      
       // Fill the player table with all player names
-      updatePlayerTable(players, newGameDoc);
+      updateDropdown(players, newGameDoc);
     });
     
-    // Open new iframe if user needs to add a new player to the database
-    newGameDoc.find('#add-player-button').on('click', (event) => {
-      const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
+    // Add listener to new game dropdowns
+    gameForm.on('click', '.dropdown-content1>option', (event) => {
+      const option = $(event.target);
+      option.selected = true;
 
-      modal2.on('load', () => {
-        const newPlayerDoc = modal2.contents();
-        const playerForm = newPlayerDoc.find('#player-form');
+      // Check if addPlayer
+      if (option.text() == "Add New Player") {
+        addNewPlayer(newGameDoc);
+      }
 
-        // When submit is pushed:
-        playerForm.on('submit', () => {
-          const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
-
-          // Get the new player name
-          let first = playerFormData.get('firstName');
-          let last = playerFormData.get('lastName');
-
-          // Add the player to the database
-          window.database.createPlayer(first, last).then((newID) => {
-            // Append the name to the player name list for the dropdown selection
-            const newPlayer = Object.create(players[0]);
-            newPlayer.first_name = first;
-            newPlayer.last_name = last;
-            newPlayer.player_id = newID;
-
-            players.push(newPlayer);
-
-            // Close the iframe
-            modal2.remove();
-          });
-        });
-      });
-
-      newGameDoc.find('body').append(modal2);
+      // Change the button text
+      option.parent().parent().find('.dropbtn').text(option.text());
     });
- 
+
+    // Add listener to new game dropdowns
+    gameForm.on('click', '.dropdown-content2>option', (event) => {
+      const option = $(event.target);
+      option.selected = true;
+
+      // Check if addPlayer
+      if (option.text() == "Add New Player") {
+        addNewPlayer(newGameDoc);
+      }
+
+      // Change Button Text
+      option.parent().parent().find('.dropbtn').text(option.text());
+    });
     
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
@@ -391,31 +382,59 @@ $('#new-game-button').on('click', (event) => {
 });
 
 
-// Fill in the table of players
-function updatePlayerTable(players, newGameDoc) {
-  // Find the table
-  const table = newGameDoc.find('#playerTable').get(0);
+function addNewPlayer(newGameDoc) {
+  const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
 
-  // Loop through each player object to add them to the table
+  modal2.on('load', () => {
+    const newPlayerDoc = modal2.contents();
+    const playerForm = newPlayerDoc.find('#player-form');
+
+    // When submit is pushed:
+    playerForm.on('submit', () => {
+      const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
+
+      // Get the new player name
+      let first = playerFormData.get('firstName');
+      let last = playerFormData.get('lastName');  
+      
+      // Add the player to the database
+      window.database.createPlayer(first, last);//.then((newID));
+
+      // Access the dropdowns
+      const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
+      const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0); 
+
+      // Add the player to the dropdown
+      menu1.append(new Option(first + " " + last));// + " " + newID, newID));
+      menu2.append(new Option(first + " " + last));// + " " + newID, newID));
+      
+      // Close the iframe
+      modal2.remove();
+
+    });
+  
+    newPlayerDoc.find('#cancel-button').on('click', () => {
+      modal2.remove();
+    });
+  
+  });
+
+  newGameDoc.find('body').append(modal2);
+};
+
+
+// Update dropdown options
+function updateDropdown(players, newGameDoc) {
+  const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
+  const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0);
+
+  // Go through all players in the list
   for (i in players) {
-    // Add a row
-    let row = table.insertRow(-1);
+    let optionVal = players[i].player_id;
+    let optionText = players[i].first_name + " " + players[i].last_name + " " + players[i].player_id;
 
-    // Add a Cell for the first name and add its text
-    let firstCell= row.insertCell(0);
-    let firstName = document.createTextNode(players[i].first_name);
-    firstCell.appendChild(firstName);
-
-    // Add a cell for the last name and add its text
-    let lastCell = row.insertCell(1);
-    let lastName = document.createTextNode(players[i].last_name);
-    lastCell.appendChild(lastName);
-
-    // Add a cell for the player ID and add its text
-    let numCell = row.insertCell(2);
-    let idNum = document.createTextNode(players[i].player_id);
-    numCell.appendChild(idNum);
-
+    menu1.append(new Option(optionText, optionVal));
+    menu2.append(new Option(optionText, optionVal));
   }
 };
 
@@ -458,3 +477,22 @@ stats.find('.dropdown-content>option').on('click', (event) => {
 
   window.replication.statSelect(option.parent().attr('name'), option.attr('value')/*, player*/);
 });
+
+
+// Load winner page
+function loadWinner(playerName) {
+  const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
+  
+  modal.on('load', () => {
+    const winnerDoc = modal.contents();
+
+    winnerDoc.find('#name').text(playerName);
+
+    // Close modal when exit button is pushed
+    winnerDoc.find('#exit-button').on('click', () => {
+      modal.remove();
+    });
+
+  });
+};
+
