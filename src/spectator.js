@@ -151,7 +151,7 @@ window.replication.onPerfectLegChanged((event, playerNum, hasPerfectLeg) => {
 });
 
 // Set the scoreboard info from the new game form
-window.replication.onGetFormInfo((event, name1, name2, offName, loc, date, score, legNum, setNum) => {
+window.replication.onGetFormInfo((event, names, offName, loc, date, score, legNum, setNum) => {
   // For changing player emphasis color
   var table = document.getElementById("scoreboard");   
   var rows = table.getElementsByTagName("tr"); 
@@ -165,8 +165,8 @@ window.replication.onGetFormInfo((event, name1, name2, offName, loc, date, score
   // Fill in the text
   scoreboard.find('#numOfLegs').text('(' + legNum + ')');
   scoreboard.find('#numOfSets').text('(' + setNum + ')');
-  scoreboard.find('#p1').contents()[0].nodeValue = name1;
-  scoreboard.find('#p2').contents()[0].nodeValue = name2;
+  scoreboard.find('#p1').contents()[0].nodeValue = names[0];
+  scoreboard.find('#p2').contents()[0].nodeValue = names[1];
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
 });

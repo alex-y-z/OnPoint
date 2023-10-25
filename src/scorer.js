@@ -15,7 +15,8 @@ var scorer = {
   currentThrow: 0,
   currentTurn: 0,
   currentPlayer: 1,
-  changingThrow: null
+  changingThrow: null,
+  playerNames: []
 };
 
 
@@ -344,6 +345,9 @@ $('#new-game-button').on('click', (event) => {
 
       // Change the button text
       option.parent().parent().find('.dropbtn').text(option.text());
+
+      // Add to playerNames list
+      scorer.playerNames[0] = option.text();
     });
 
     // Add listener to new game dropdowns
@@ -358,6 +362,9 @@ $('#new-game-button').on('click', (event) => {
 
       // Change Button Text
       option.parent().parent().find('.dropbtn').text(option.text());
+
+      // Add to playerNames list
+      scorer.playerNames[1] = option.text();
     });
     
     gameForm.on('submit', () => {
@@ -369,7 +376,7 @@ $('#new-game-button').on('click', (event) => {
       document.getElementById("p1Score").style.color = "black";
       document.getElementById("p1").style.fontWeight = 'bold';
       setUpScoreboard(...formData.values());
-      window.replication.getFormInfo(...formData.values());
+      window.replication.getFormInfo(scorer.playerNames, ...formData.values());
       modal.remove();
     });
 
@@ -440,7 +447,7 @@ function updateDropdown(players, newGameDoc) {
 
 
 // Populate Scorer Scoreboard with New Game Info
-function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum) {
+function setUpScoreboard(offName, loc, date, score, legNum, setNum) {
 
   // Initialize perfect leg for given score
   score = 301; // TEST WHILE NEW GAME PAGE IS DOWN
@@ -452,8 +459,8 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   // Populate scoreboard
   scoreboard.find('#numOfLegs').text('(' + legNum + ')');
   scoreboard.find('#numOfSets').text('(' + setNum + ')');
-  scoreboard.find('#p1').contents()[0].nodeValue = name1;
-  scoreboard.find('#p2').contents()[0].nodeValue = name2;
+  scoreboard.find('#p1').contents()[0].nodeValue = scorer.playerNames[0];
+  scoreboard.find('#p2').contents()[0].nodeValue = scorer.playerNames[1];
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
   scoreboard.find('#p1SetsWon').text('0');
@@ -464,7 +471,7 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   scorer.scores[1] = scorer.startScore;
 
   // Send to the database
-  // window.database.function(name1, name2, offName, loc, date, score, legNum, setNum);
+  // window.database.function(scorer.playerNames[0], scorer.playerNames[1], offName, loc, date, score, legNum, setNum);
 };
 
 
