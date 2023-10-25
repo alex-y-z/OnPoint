@@ -72,12 +72,6 @@ class Leg {
     // Pulls from the database
     
 
-    /*
-    Description: Takes the values from the thrownDarts array to update
-                 the score for the player.
-    Parameters:
-    Returns:
-    */
     calculateScore() {
         let p1_score = 0;
         let p2_score = 0;
@@ -144,6 +138,16 @@ class Match {
         })
     }
 
+    getLegString() {
+        str = "";
+        this.legs.forEach((leg) => {
+            str = str + leg + ",";
+        })
+        if (str.length > 0)
+        return str.slice(0, -1);
+        else return str;
+    }
+
     getStats() {
             legs = this.getLegs()
             turnTotal = 0
@@ -205,12 +209,38 @@ class Game {
         this.player_1 = sqlResponse.player_1;
         this.player_2 = sqlResponse.player_2;
         this.winner = sqlResponse.winner;
+        this.official = sqlResponse.official;
+        this.location = sqlResponse.location;
+        this.date = sqlResponse.date;
+        this.leg_num = sqlResponse.leg_num;
+        this.match_num = sqlResponse.match_num;
         this.start_score = sqlResponse.start_score;
         this.matches = Array.from(sqlResponse.matches, a => a.split(','));
 
     };
 
-    
+    getMatches() {
+        return db.all("SELECT * From Matches where mid in ?", [this.matches], (err, rows) => {
+            if (err) {
+                return 0;
+            }
+            matches = []
+            rows.forEach((row) => {
+                matches.push(Match(row))
+            })
+            return matches;
+        })
+    }
+
+    getMatchString() {
+        str = "";
+        this.matches.forEach((match) => {
+            str = str + match + ",";
+        })
+        if (str.length > 0)
+        return str.slice(0, -1);
+        else return str;
+    }
 
 }
 

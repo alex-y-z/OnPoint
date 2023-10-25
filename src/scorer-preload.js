@@ -21,5 +21,7 @@ contextBridge.exposeInMainWorld('database', {
     searchPlayersByFirst: (...args) => ipcRenderer.invoke('search-players-by-first', ...args),
     createPlayer: (...args) => ipcRenderer.invoke('create-player', ...args),
     updatePlayer: (...args) => ipcRenderer.invoke('update-player', ...args),
-    Player: (...args) => ipcRenderer.invoke('create-player-instance', ...args)
+    setPlayer1: (...args) => ipcRenderer.invoke('set-player-1', ...args),
+    setPlayer2: (...args) => ipcRenderer.invoke('set-player-2', ...args),
+    
 });
