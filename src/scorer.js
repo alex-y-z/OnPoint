@@ -332,51 +332,16 @@ $('#new-game-button').on('click', (event) => {
       updateDropdown(players, newGameDoc);
     });
     
-    // Open new iframe if user needs to add a new player to the database
-    newGameDoc.find('#add-player-button').on('click', (event) => {
-      const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
-
-      modal2.on('load', () => {
-        const newPlayerDoc = modal2.contents();
-        const playerForm = newPlayerDoc.find('#player-form');
-
-        // When submit is pushed:
-        playerForm.on('submit', () => {
-          const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
-
-          // Get the new player name
-          let first = playerFormData.get('firstName');
-          let last = playerFormData.get('lastName');  
-          
-          // Add the player to the database
-          window.database.createPlayer(first, last).then((newID));
-
-          // Access the dropdowns
-          const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
-          const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0); 
-
-          // Add the player to the dropdown
-          menu1.append(new Option(first + " " + last + " " + newID, newID));
-          menu2.append(new Option(first + " " + last + " " + newID, newID));
-          
-          // Close the iframe
-          modal2.remove();
-
-        });
-      
-        newPlayerDoc.find('#cancel-button').on('click', () => {
-          modal2.remove();
-        });
-      
-      });
-
-      newGameDoc.find('body').append(modal2);
-    });
-    
     // Add listener to new game dropdowns
     gameForm.on('click', '.dropdown-content1>option', (event) => {
       const option = $(event.target);
       option.selected = true;
+
+      // Check if addPlayer
+      if (option.text() == "Add New Player") {
+        addNewPlayer(newGameDoc);
+      }
+
       // Change the button text
       option.parent().parent().find('.dropbtn').text(option.text());
     });
@@ -385,6 +350,12 @@ $('#new-game-button').on('click', (event) => {
     gameForm.on('click', '.dropdown-content2>option', (event) => {
       const option = $(event.target);
       option.selected = true;
+
+      // Check if addPlayer
+      if (option.text() == "Add New Player") {
+        addNewPlayer(newGameDoc);
+      }
+
       // Change Button Text
       option.parent().parent().find('.dropbtn').text(option.text());
     });
@@ -409,6 +380,47 @@ $('#new-game-button').on('click', (event) => {
   
   $('body').append(modal);
 });
+
+
+function addNewPlayer(newGameDoc) {
+  const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
+
+  modal2.on('load', () => {
+    const newPlayerDoc = modal2.contents();
+    const playerForm = newPlayerDoc.find('#player-form');
+
+    // When submit is pushed:
+    playerForm.on('submit', () => {
+      const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
+
+      // Get the new player name
+      let first = playerFormData.get('firstName');
+      let last = playerFormData.get('lastName');  
+      
+      // Add the player to the database
+      window.database.createPlayer(first, last);//.then((newID));
+
+      // Access the dropdowns
+      const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
+      const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0); 
+
+      // Add the player to the dropdown
+      menu1.append(new Option(first + " " + last));// + " " + newID, newID));
+      menu2.append(new Option(first + " " + last));// + " " + newID, newID));
+      
+      // Close the iframe
+      modal2.remove();
+
+    });
+  
+    newPlayerDoc.find('#cancel-button').on('click', () => {
+      modal2.remove();
+    });
+  
+  });
+
+  newGameDoc.find('body').append(modal2);
+};
 
 
 // Update dropdown options
