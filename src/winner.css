@@ -1,0 +1,265 @@
+:root {
+    /* Background Colors */
+    --bg-color-1: black;
+    --bg-color-2: white;
+    --bg-color-3: rgb(0, 81, 44);
+    --bg-color-4: rgb(50, 50, 50);
+    --bg-color-5: rgb(200, 200, 200);
+    --bg-color-6: rgb(230, 230, 230);
+
+    /* Accent Colors */
+    --ac-color-1: rgb(255, 198, 11);
+    --ac-color-2: rgb(0, 238, 255);
+    --ac-color-3: rgb(0, 128, 0);
+    --ac-color-4: rgb(255, 42, 42);
+    --ac-color-5: rgb(197, 197, 197);
+    --ac-color-6: rgb(255, 40, 148);
+    --ac-color-7: rgb(255, 255, 0);
+
+    /* Text Colors */
+    --tx-color-1: black;
+    --tx-color-2: white;
+
+    /* Border Colors */
+    --br-color-1: black;
+    --br-color-2: white;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color-1);
+}
+
+h1 {
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    color: var(--tx-color-2);
+    font-size: 12pt;
+}
+
+p {
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    color: var(--tx-color-2);
+    font-size: 20pt;
+}
+
+.confetti {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 8px;
+    height: 16px;
+    background: var(--ac-color-6);
+    top: 0;
+    opacity: 0;
+}
+
+.confetti-piece:nth-child(1) {
+    left: 5%;
+    transform: rotate(-20deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 1s;
+    animation-duration: 2s;
+}
+
+.confetti-piece:nth-child(2) {
+    left: 10%;
+    transform: rotate(100deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 2s;
+    animation-duration: 2.5s;
+}
+
+.confetti-piece:nth-child(3) {
+    left: 15%;
+    transform: rotate(-50deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 3s;
+    animation-duration: 3.5s;
+}
+
+.confetti-piece:nth-child(4) {
+    left: 20%;
+    transform: rotate(30deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 4s;
+    animation-duration: 3.5s;
+}
+
+.confetti-piece:nth-child(5) {
+    left: 25%;
+    transform: rotate(-120deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 5s;
+    animation-duration: 2.5s;
+}
+
+.confetti-piece:nth-child(6) {
+    left: 30%;
+    transform: rotate(105deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 1s;
+    animation-duration: 2s;
+}
+
+.confetti-piece:nth-child(7) {
+    left: 35%;
+    transform: rotate(-94deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 2s;
+    animation-duration: 2.5s;
+}
+
+.confetti-piece:nth-child(8) {
+    left: 40%;
+    transform: rotate(80deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 3s;
+    animation-duration: 3s;
+}
+
+.confetti-piece:nth-child(9) {
+    left: 45%;
+    transform: rotate(-150deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 4s;
+    animation-duration: 3.5s;
+}
+
+.confetti-piece:nth-child(10) {
+    left: 50%;
+    transform: rotate(130deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 5s;
+    animation-duration: 3s;
+}
+
+.confetti-piece:nth-child(11) {
+    left: 55%;
+    transform: rotate(-54deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 1s;
+    animation-duration: 2.5s;
+}
+
+.confetti-piece:nth-child(12) {
+    left: 60%;
+    transform: rotate(60deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 2s;
+    animation-duration: 2s;
+}
+
+.confetti-piece:nth-child(13) {
+    left: 65%;
+    transform: rotate(45deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 3s;
+    animation-duration: 3.5s;
+}
+
+.confetti-piece:nth-child(14) {
+    left: 70%;
+    transform: rotate(5deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 4s;
+    animation-duration: 3s;
+}
+
+.confetti-piece:nth-child(15) {
+    left: 75%;
+    transform: rotate(-19deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 5s;
+    animation-duration: 2.5s;
+}
+
+.confetti-piece:nth-child(16) {
+    left: 80%;
+    transform: rotate(-54deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 1s;
+    animation-duration: 2.5s;
+}
+
+.confetti-piece:nth-child(17) {
+    left: 85%;
+    transform: rotate(65deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 2s;
+    animation-duration: 2.5s;
+}
+
+.confetti-piece:nth-child(18) {
+    left: 90%;
+    transform: rotate(-98deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 3s;
+    animation-duration: 3s;
+}
+
+.confetti-piece:nth-child(19) {
+    left: 95%;
+    transform: rotate(102deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 4s;
+    animation-duration: 2.5s;
+}
+
+.confetti-piece:nth-child(20) {
+    left: 100%;
+    transform: rotate(5deg);
+    animation: sprinkle 5000ms infinite linear;
+    animation-delay: 5s;
+    animation-duration: 2.5s;
+}
+
+.confetti-piece:nth-child(odd) {
+    background: var(--ac-color-2);
+}
+
+.confetti-piece:nth-child(even) {
+    z-index: 1;
+}
+
+.confetti-piece:nth-child(4n) {
+    width: 3px;
+    height: 10px;
+    animation-duration: 5000ms;
+}
+
+.confetti-piece:nth-child(3n) {
+    width: 4px;
+    height: 8px;
+    animation-duration: 5000ms;
+    animation-delay: 2000ms;
+}
+
+.confetti-piece:nth-child(4n-7) {
+    background: var(--ac-color-7);
+}
+
+/* Specifies the sprinkle animation code */
+@keyframes sprinkle {
+    from {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    to {
+        transform: translateY(300px);
+    }
+
+}

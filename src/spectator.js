@@ -138,6 +138,17 @@ window.replication.onComboChanged((event, index, value) => {
   }
 });
 
+// Replicate perfect leg labels
+window.replication.onPerfectLegChanged((event, playerNum, hasPerfectLeg) => {
+  const perfectLabel = $(`#perfect-label-${playerNum}`);
+  if (hasPerfectLeg) {
+    perfectLabel.addClass('max-perfect-label min-perfect-label');
+    setTimeout(() => { perfectLabel.removeClass('max-perfect-label'); }, 3000); // Minimize after a few seconds
+  }
+  else {
+    perfectLabel.removeClass('max-perfect-label min-perfect-label');
+  }
+});
 
 // Set the scoreboard info from the new game form
 window.replication.onGetFormInfo((event, name1, name2, offName, loc, date, score, legNum, setNum) => {
@@ -154,8 +165,8 @@ window.replication.onGetFormInfo((event, name1, name2, offName, loc, date, score
   // Fill in the text
   scoreboard.find('#numOfLegs').text('(' + legNum + ')');
   scoreboard.find('#numOfSets').text('(' + setNum + ')');
-  scoreboard.find('#p1').text(name1);
-  scoreboard.find('#p2').text(name2);
+  scoreboard.find('#p1').contents()[0].nodeValue = name1;
+  scoreboard.find('#p2').contents()[0].nodeValue = name2;
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
 });
