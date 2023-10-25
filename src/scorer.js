@@ -373,18 +373,18 @@ $('#new-game-button').on('click', (event) => {
     });
     
     // Add listener to new game dropdowns
-    gameForm.find('.dropdown-content1>option').on('click', (event) => {
+    gameForm.on('click', '.dropdown-content1>option', (event) => {
       const option = $(event.target);
       option.selected = true;
+      option.parent().parent().text(option.text());
     });
 
     // Add listener to new game dropdowns
-    gameForm.find('.dropdown-content2>option').on('click', (event) => {
+    gameForm.on('click', '.dropdown-content2>option', (event) => {
       const option = $(event.target);
       option.selected = true;
-
+      option.parent().parent().text(option.text());
     });
-
     
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
