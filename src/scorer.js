@@ -230,7 +230,7 @@ const resizeObserver = new ResizeObserver(() => {
 resizeObserver.observe(leftPanel.get(0));
 
 // Update scores and reset
-$('#next-turn-button').on('click', (event) => {
+$('#next-turn-button').on('click', (event) => {  
   // Check if all throws have been recorded
   if (scorer.throws.length < 3 || scorer.changingThrow !== null) {
     return;
@@ -501,5 +501,7 @@ function loadWinner(playerName) {
     });
 
   });
+
+  $('body').append(modal);
 };
 
