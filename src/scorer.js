@@ -346,21 +346,22 @@ $('#new-game-button').on('click', (event) => {
 
           // Get the new player name
           let first = playerFormData.get('firstName');
-          let last = playerFormData.get('lastName');
-
+          let last = playerFormData.get('lastName');  
+          
           // Add the player to the database
-          window.database.createPlayer(first, last).then((newID) => {
-            // Append the name to the player name list for the dropdown selection
-            const newPlayer = Object.create(players[0]);
-            newPlayer.first_name = first;
-            newPlayer.last_name = last;
-            newPlayer.player_id = newID;
+          window.database.createPlayer(first, last).then((newID));
 
-            players.push(newPlayer);
+          // Access the dropdowns
+          const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
+          const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0); 
 
-            // Close the iframe
-            modal2.remove();
-          });
+          // Add the player to the dropdown
+          menu1.append(new Option(first + " " + last + " " + newID, newID));
+          menu2.append(new Option(first + " " + last + " " + newID, newID));
+          
+          // Close the iframe
+          modal2.remove();
+
         });
       
         newPlayerDoc.find('#cancel-button').on('click', () => {
@@ -376,14 +377,16 @@ $('#new-game-button').on('click', (event) => {
     gameForm.on('click', '.dropdown-content1>option', (event) => {
       const option = $(event.target);
       option.selected = true;
-      option.parent().parent().text(option.text());
+      // Change the button text
+      option.parent().parent().find('.dropbtn').text(option.text());
     });
 
     // Add listener to new game dropdowns
     gameForm.on('click', '.dropdown-content2>option', (event) => {
       const option = $(event.target);
       option.selected = true;
-      option.parent().parent().text(option.text());
+      // Change Button Text
+      option.parent().parent().find('.dropbtn').text(option.text());
     });
     
     gameForm.on('submit', () => {
