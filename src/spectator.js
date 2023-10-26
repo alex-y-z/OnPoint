@@ -5,8 +5,28 @@ const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
 const stats = $('#statistics-table')
 
-// Add, change, and remove darts
-window.replication.onDartAdded((event, index, regionId, posX, posY) => {
+
+// This function only runs when the file is first loaded
+function init() {
+
+  // Register IPC listeners
+  window.replication.onDartAdded(addDart);
+  window.replication.onDartChanged(changeDart);
+  window.replication.onDartRemoved(removeDart);
+  window.replication.onNextTurn(nextTurn);
+  window.replication.onBoardResized(resizeBoard);
+  window.replication.onComboChanged(changeCombo);
+  window.replication.onPerfectLegChanged(changePerfectLeg);
+  window.replication.onGetFormInfo(setUpScoreboard);
+  window.replication.onStatSelected(showStatistic);
+  window.replication.onScreenReset(() => { location.reload(); });
+}
+
+$(init());
+
+
+// Mark throw on board
+function addDart(event, index, regionId, posX, posY) {
 
   // Highlight region
   const region = $(`#${regionId}`);
@@ -33,20 +53,18 @@ window.replication.onDartAdded((event, index, regionId, posX, posY) => {
   // Set throw label
   const throwLabel = $(`#throw-label-${index} > button`);
   throwLabel.text(region.attr('name'));
-});
+}
 
-window.replication.onDartChanged((event, index, labelText) => {
-  $(`#throw-label-${index} > button`).text(labelText);
-});
 
-window.replication.onDartRemoved((event, index, regionId, dartsLeft) => {
+// Remove marker from board
+function removeDart(event, index, regionId, dartsLeft) {
   const region = $(`#${regionId}`);
   const marker = $(`#marker-${regionId}`);
   
   region.attr('data-darts', dartsLeft);
   $('.big-dart-marker').removeClass('big-dart-marker');
   $(`#throw-label-${index} > button`).text('');
-
+  
   if (dartsLeft == 0) { // Remove marker/highlight
     region.removeClass('selected-region');
     marker.fadeOut(100, function() {
@@ -56,10 +74,17 @@ window.replication.onDartRemoved((event, index, regionId, dartsLeft) => {
   else { // Decrement label
     marker.find('tspan').text(dartsLeft);
   }
-});
+}
+
+
+// Update throw label
+function changeDart(event, index, labelText) {
+  $(`#throw-label-${index} > button`).text(labelText);
+}
+
 
 // Clear the board and update score
-window.replication.onNextTurn((event, playerNum, newScore) => {
+function nextTurn(event, playerNum, newScore) {
   changeColor();
   
   // Update score
@@ -73,7 +98,8 @@ window.replication.onNextTurn((event, playerNum, newScore) => {
   });
   throwPanel.find('.throw-label > button').text('');
   comboLabels.slideUp('fast');
-});
+}
+
 
 // Change player emphasis on turn
 function changeColor() {
@@ -116,13 +142,15 @@ function changeColor() {
   }
 }
 
+
 // Replicate left panel width
-window.replication.onBoardResized((event, width) => {
+function resizeBoard(event, width) {
   leftPanel.css('width', width);
-});
+}
+
 
 // Replicate winning move labels
-window.replication.onComboChanged((event, index, value) => {
+function changeCombo(event, index, value) {
   if (index === undefined) {
     comboLabels.slideUp('fast'); // Hide all
     return;
@@ -136,10 +164,11 @@ window.replication.onComboChanged((event, index, value) => {
   else {
     label.slideUp('fast'); // Hide one
   }
-});
+}
+
 
 // Replicate perfect leg labels
-window.replication.onPerfectLegChanged((event, playerNum, hasPerfectLeg) => {
+function changePerfectLeg(event, playerNum, hasPerfectLeg) {
   const perfectLabel = $(`#perfect-label-${playerNum}`);
   if (hasPerfectLeg) {
     perfectLabel.addClass('max-perfect-label min-perfect-label');
@@ -148,10 +177,11 @@ window.replication.onPerfectLegChanged((event, playerNum, hasPerfectLeg) => {
   else {
     perfectLabel.removeClass('max-perfect-label min-perfect-label');
   }
-});
+}
+
 
 // Set the scoreboard info from the new game form
-window.replication.onGetFormInfo((event, name1, name2, offName, loc, date, score, legNum, setNum) => {
+function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum, setNum) {
   // For changing player emphasis color
   var table = document.getElementById("scoreboard");   
   var rows = table.getElementsByTagName("tr"); 
@@ -169,12 +199,17 @@ window.replication.onGetFormInfo((event, name1, name2, offName, loc, date, score
   scoreboard.find('#p2').contents()[0].nodeValue = name2;
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
-});
+  scoreboard.find('#p1SetsWon').text('0');
+  scoreboard.find('#p2SetsWon').text('0');
+  scoreboard.find('#p1LegsWon').text('0');
+  scoreboard.find('#p2LegsWon').text('0');
+}
+
 
 // Display Statistic Scorer Selected
 // Search through the database for player/match history to calculate statistic
 // stat_type can be any keyword associated in the option list (scorer.html)
-window.replication.onStatSelected((event, loc, stat_type/*, player*/) => {
+function showStatistic(event, loc, stat_type/*, player*/) {
   // Get stats object from database
   //let stats = player.getStats();
 
@@ -245,7 +280,7 @@ window.replication.onStatSelected((event, loc, stat_type/*, player*/) => {
       stats.find(`#${loc}`).text("Win Percentage: " /*+ stats.p2-winPercent*/) 
       break; 
   }
-});
+}
 
 
 

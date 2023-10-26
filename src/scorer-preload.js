@@ -12,7 +12,8 @@ contextBridge.exposeInMainWorld('replication', {
     getWinningMoves: (...args) => ipcRenderer.invoke('get-winning-moves', ...args),
     getPerfectLeg: (...args) => ipcRenderer.invoke('get-perfect-leg', ...args),
     changeCombo: (...args) => ipcRenderer.send('change-combo', ...args),
-    changePerfectLeg: (...args) => ipcRenderer.send('change-perfect-leg', ...args)
+    changePerfectLeg: (...args) => ipcRenderer.send('change-perfect-leg', ...args),
+    resetScreen: (...args) => ipcRenderer.send('reset-screen', ...args)
 });
 
 contextBridge.exposeInMainWorld('database', {

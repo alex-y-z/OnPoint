@@ -38,6 +38,6 @@ input[type=text] {
     box-sizing: border-box;
 }
 
-.cancel-button {
+#quick-start-button {
     margin-left: 125px;
 }

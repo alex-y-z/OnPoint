@@ -49,7 +49,8 @@ const createWindows = () => {
   // This forwards information from scorer to spectator
   const channels = [
     'add-dart', 'change-dart', 'remove-dart', 'next-turn', 'resize-board',
-    'getFormInfo', 'stat-select', 'change-combo', 'change-perfect-leg'
+    'getFormInfo', 'stat-select', 'change-combo', 'change-perfect-leg',
+    'reset-screen'
   ];
   channels.forEach(channel => {
     ipcMain.on(channel, (event, ...args) => {
