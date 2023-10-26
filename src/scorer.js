@@ -400,7 +400,7 @@ function showNewGameModal() {
     
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
-      setUpScoreboard(scorer.playerNames, ...formData.values());
+      setUpScoreboard(...formData.values());
       window.replication.getFormInfo(scorer.playerNames, ...formData.values());
       startGame(); // Initialize any states and register listeners
       modal.remove();
@@ -408,8 +408,8 @@ function showNewGameModal() {
 
     // TEMPORARY QUICK START
     gameForm.find('#quick-start-button').on('click', (event) => {
-      gameForm.find('#dropdown.dropdown-content1').parent().find('.dropbtn').text('Wyatt Earp');
-      gameForm.find('#dropdown.dropdown-content2').parent().find('.dropbtn').text('Doc Holliday');
+      scorer.playerNames[0] = 'Wyatt Earp';
+      scorer.playerNames[1] = 'Doc Holliday';
       gameForm.find('#official').val('Crazy Horse');
       gameForm.find('#location').val('Mariana Trench');
       gameForm.find('#date').val('1984-12-12');
