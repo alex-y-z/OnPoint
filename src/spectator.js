@@ -196,8 +196,8 @@ function setUpScoreboard(event, names, offName, loc, date, score, legNum, setNum
   // Fill in the text
   scoreboard.find('#numOfLegs').text('(' + legNum + ')');
   scoreboard.find('#numOfSets').text('(' + setNum + ')');
-  scoreboard.find('#p1').contents()[0].nodeValue = names[0];
-  scoreboard.find('#p2').contents()[0].nodeValue = names[1];
+  scoreboard.find('#p1').text(names[0]);
+  scoreboard.find('#p2').text(names[1]);
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
   scoreboard.find('#p1SetsWon').text('0');
