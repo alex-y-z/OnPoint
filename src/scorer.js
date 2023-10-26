@@ -15,7 +15,8 @@ const scorer = {
   currentThrow: 0,
   currentTurn: 0,
   currentPlayer: 1,
-  changingThrow: null
+  changingThrow: null,
+  playerNames: []
 }
 
 
@@ -375,6 +376,9 @@ function showNewGameModal() {
 
       // Change the button text
       option.parent().parent().find('.dropbtn').text(option.text());
+
+      // Add to playerNames list
+      scorer.playerNames[0] = option.text();
     });
 
     // Add listener to new game dropdowns
@@ -389,15 +393,15 @@ function showNewGameModal() {
 
       // Change Button Text
       option.parent().parent().find('.dropbtn').text(option.text());
+
+      // Add to playerNames list
+      scorer.playerNames[1] = option.text();
     });
     
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
-      const player1 = gameForm.find('#dropdown.dropdown-content1').parent().find('.dropbtn').text();
-      const player2 = gameForm.find('#dropdown.dropdown-content2').parent().find('.dropbtn').text();
-      setUpScoreboard(player1, player2, ...formData.values());
-      window.replication.getFormInfo(player1, player2, ...formData.values());
-
+      setUpScoreboard(scorer.playerNames, ...formData.values());
+      window.replication.getFormInfo(scorer.playerNames, ...formData.values());
       startGame(); // Initialize any states and register listeners
       modal.remove();
     });
@@ -473,11 +477,11 @@ function updateDropdown(players, newGameDoc) {
     menu1.append(new Option(optionText, optionVal));
     menu2.append(new Option(optionText, optionVal));
   }
-};
+}
 
 
 // Populate scorer scoreboard with new game info
-function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum) {
+function setUpScoreboard(offName, loc, date, score, legNum, setNum) {
 
   // Initialize perfect leg for given score
   scorer.startScore = parseInt(score);
@@ -488,8 +492,8 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   // Populate scoreboard
   scoreboard.find('#numOfLegs').text('(' + legNum + ')');
   scoreboard.find('#numOfSets').text('(' + setNum + ')');
-  scoreboard.find('#p1').contents()[0].nodeValue = name1;
-  scoreboard.find('#p2').contents()[0].nodeValue = name2;
+  scoreboard.find('#p1').contents()[0].nodeValue = scorer.playerNames[0];
+  scoreboard.find('#p2').contents()[0].nodeValue = scorer.playerNames[1];
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
   scoreboard.find('#p1SetsWon').text('0');
@@ -510,8 +514,8 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   document.getElementById("p1").style.fontWeight = 'bold';
 
   // Send to the database
-  // window.database.function(name1, name2, offName, loc, date, score, legNum, setNum);
-}
+  // window.database.function(scorer.playerNames[0], scorer.playerNames[1], offName, loc, date, score, legNum, setNum);
+};
 
 
 // Display a given statistic
@@ -539,4 +543,6 @@ function loadWinner(playerName) {
       modal.remove();
     });
   });
+
+  $('body').append(modal);
 }

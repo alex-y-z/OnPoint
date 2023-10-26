@@ -36,6 +36,7 @@ h1 {
     justify-content: center;
     color: var(--tx-color-2);
     font-size: 12pt;
+    text-align: center;
 }
 
 p {
@@ -44,6 +45,7 @@ p {
     justify-content: center;
     color: var(--tx-color-2);
     font-size: 20pt;
+    text-align: center;
 }
 
 .confetti {

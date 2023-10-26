@@ -181,7 +181,8 @@ function changePerfectLeg(event, playerNum, hasPerfectLeg) {
 
 
 // Set the scoreboard info from the new game form
-function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum, setNum) {
+function setUpScoreboard(event, names, offName, loc, date, score, legNum, setNum) {
+  
   // For changing player emphasis color
   var table = document.getElementById("scoreboard");   
   var rows = table.getElementsByTagName("tr"); 
@@ -195,8 +196,8 @@ function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum,
   // Fill in the text
   scoreboard.find('#numOfLegs').text('(' + legNum + ')');
   scoreboard.find('#numOfSets').text('(' + setNum + ')');
-  scoreboard.find('#p1').contents()[0].nodeValue = name1;
-  scoreboard.find('#p2').contents()[0].nodeValue = name2;
+  scoreboard.find('#p1').contents()[0].nodeValue = names[0];
+  scoreboard.find('#p2').contents()[0].nodeValue = names[1];
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
   scoreboard.find('#p1SetsWon').text('0');
@@ -241,9 +242,9 @@ function showStatistic(event, loc, stat_type/*, player*/) {
       // Execute for player 1's current league rank
       stats.find(`#${loc}`).text("Rank: " /*+ stats.league_rank*/) 
       break;
-    case "p1-lastWin":
+    case "p1-checkouts":
       // Execute for player 1's last match win
-      stats.find(`#${loc}`).text("Last Match Win: " /*+ stats.last_win*/) 
+      stats.find(`#${loc}`).text("Number of 100+ Checkouts: " /*+ stats.p1-checkouts*/) 
       break;
     case "p1-avgScore":
       // Execute for player 1's average league score for the season
@@ -263,9 +264,9 @@ function showStatistic(event, loc, stat_type/*, player*/) {
       // Execute for player 2's current league rank
       stats.find(`#${loc}`).text("Rank: " /*+ stats.p2-league_rank*/) 
       break;
-    case "p2-lastWin":
+    case "p2-checkouts":
       // Execute for player 2's last match win
-      stats.find(`#${loc}`).text("Last Match Win: " /*+ stats.p2-last_win*/) 
+      stats.find(`#${loc}`).text("Number of 100+ Checkouts: " /*+ stats.p2-checkouts*/) 
       break;
     case "p2-avgScore":
       // Execute for player 2's average league score for the season
