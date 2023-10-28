@@ -19,8 +19,10 @@ const scorer = {
   throws: [],
   perfectLeg: null,
   startScore: 301,
-  currentThrow: 0,
+  currentSet: 0,
+  currentLeg: 0,
   currentTurn: 0,
+  currentThrow: 0,
   currentPlayer: 1,
   changingThrow: null,
   playerNames: []
