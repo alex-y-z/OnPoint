@@ -293,8 +293,6 @@ function setThrow(event) {
 
 // Update scores and reset
 function nextTurn(event) {
-  loadWinner(scorer.playerNames[0]);
-
   // Check if all throws have been recorded
   if (scorer.throws.length < 3 || scorer.changingThrow !== null) {
     return;
