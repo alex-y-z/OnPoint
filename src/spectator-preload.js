@@ -12,5 +12,5 @@ contextBridge.exposeInMainWorld('replication', {
     onComboChanged: (...args) => ipcRenderer.on('change-combo', ...args),
     onPerfectLegChanged: (...args) => ipcRenderer.on('change-perfect-leg', ...args),
     onScreenReset: (...args) => ipcRenderer.on('reset-screen', ...args),
-    showWinner: (...args) => ipcRenderer.on('showWinner', ...args)
+    onShowWinner: (...args) => ipcRenderer.on('showWinner', ...args)
 });

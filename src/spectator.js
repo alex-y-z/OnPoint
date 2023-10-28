@@ -20,6 +20,7 @@ function init() {
   window.replication.onGetFormInfo(setUpScoreboard);
   window.replication.onStatSelected(showStatistic);
   window.replication.onScreenReset(() => { location.reload(); });
+  window.replication.onShowWinner(showWinner);
 }
 
 $(init());
