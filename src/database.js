@@ -87,7 +87,6 @@ function create_leg(match) {
 
 
 function update_leg(leg) {
-  console.log(leg);
   db.run("UPDATE Legs Set player_1_score = ?, player_1_darts = ?, player_2_score = ?, player_2_darts = ? where lid = ?",
   [leg.player_1_score, leg.player_1_darts, leg.player_2_score, leg.player_2_darts, leg.lid],
   function (err) {
@@ -124,7 +123,6 @@ function create_match(game) {
 
 
 function update_match(match) {
-  console.log(match);
   db.run("UPDATE Matches Set winner = ?, legs = ? where mid = ?",
   [match.winner, match.getLegString(), match.mid],
   function (err) {
@@ -161,7 +159,6 @@ function create_game(name, player1, player2, official, location, date, leg_num, 
 
 
 function update_game(game) {
-  console.log(game);
   // rest of our properties here are readonly past creation
   db.run("UPDATE Games Set winner = ?, matches = ? where gid = ?",
   [game.winner, game.getMatchString(), game.game_id],
@@ -180,23 +177,6 @@ async function get_game_by_id(gid) {
     })
   });
 }
-
-  // Create Player test
-  // create_player("Test", "Player");
-
-  // Update Player Test
-  /* comment out this line to enable
-  request_players().then((rows) => {
-    console.log
-    let test_player = new Player(rows[0]);
-    console.log(test_player);
-    test_player.first_name = "New";
-    test_player.last_name = "Player";
-    test_player.num_180s = 80;
-    test_player.league_rank = "Gold";
-    update_player(test_player);
-  });
-  //*/
 
 module.exports = {db, init_db, request_players, get_player_by_id, search_players_by_first, create_player, update_player,
                   create_leg, update_leg, get_leg_by_id, create_match, update_match, get_match_by_id, create_game,
