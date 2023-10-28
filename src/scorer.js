@@ -7,7 +7,14 @@ const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
 const stats = $('#statistics');
 
+/*const PLAYER_TEMPLATE = {
+  name: null,
+  score: 0,
+  hasPerfectLeg: false,
+}*/
+
 const scorer = {
+  //players: [Object.assign({}, PLAYER_TEMPLATE), Object.assign({}, PLAYER_TEMPLATE)],
   scores: [0, 0],
   throws: [],
   perfectLeg: null,
@@ -147,6 +154,7 @@ function previewDart(event) {
 }
 
 
+// Hide value preview
 function hideDartPreview(event) {
   const index = (scorer.changingThrow !== null) ? scorer.changingThrow : scorer.currentThrow;
   if (index > 2) {
