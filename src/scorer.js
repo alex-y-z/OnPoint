@@ -527,8 +527,8 @@ function setUpScoreboard(offName, loc, date, score, legNum, setNum) {
   });
 
   // Populate scoreboard
-  scoreboard.find('#numOfLegs').text('(' + legNum + ')');
-  scoreboard.find('#numOfSets').text('(' + setNum + ')');
+  scoreboard.find('#set-col').text(`Sets (${setNum})`);
+  scoreboard.find('#leg-col').text(`Legs (${legNum})`);
   scoreboard.find('#p1').contents()[0].nodeValue = scorer.playerNames[0];
   scoreboard.find('#p2').contents()[0].nodeValue = scorer.playerNames[1];
   scoreboard.find('#p1Score').text(score);

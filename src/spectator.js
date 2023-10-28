@@ -194,8 +194,8 @@ function setUpScoreboard(event, names, offName, loc, date, score, legNum, setNum
   document.getElementById("p1").style.fontWeight = 'bold';
 
   // Fill in the text
-  scoreboard.find('#numOfLegs').text('(' + legNum + ')');
-  scoreboard.find('#numOfSets').text('(' + setNum + ')');
+  scoreboard.find('#set-col').text(`Sets (${setNum})`);
+  scoreboard.find('#leg-col').text(`Legs (${legNum})`);
   scoreboard.find('#p1').contents()[0].nodeValue = names[0];
   scoreboard.find('#p2').contents()[0].nodeValue = names[1];
   scoreboard.find('#p1Score').text(score);

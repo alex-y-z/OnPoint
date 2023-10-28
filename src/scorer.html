@@ -622,10 +622,8 @@
           <!--HEADER-->
           <tr id="score-col-names">
             <th scope="col">Name</th>
-            <th scope="col">Sets</th>
-            <th scope="col" id="numOfSets">(0)</th>
-            <th scope="col">Legs</th>
-            <th scope="col" id="numOfLegs">(0)</th>
+            <th id="set-col" scope="col">Sets</th>
+            <th id="leg-col" scope="col">Legs</th>
             <th scope="col">Score</th>
           </tr>
         </thead>
@@ -635,8 +633,8 @@
             <td id="p1" style="position: relative">
               <img id="perfect-label-1" class="perfect-label" src="images/perfect_label.svg">
             </td>
-            <td colspan="2" id="p1SetsWon"></td>
-            <td colspan="2" id="p1LegsWon"></td>
+            <td id="p1SetsWon"></td>
+            <td id="p1LegsWon"></td>
             <td id="p1Score"></td>
           </tr>
 
@@ -645,8 +643,8 @@
             <td id="p2" style="position: relative">
               <img id="perfect-label-2" class="perfect-label" src="images/perfect_label.svg">
             </td>   
-            <td colspan="2" id="p2SetsWon"></td>
-            <td colspan="2" id="p2LegsWon"></td>
+            <td id="p2SetsWon"></td>
+            <td id="p2LegsWon"></td>
             <td id="p2Score"></td>
           </tr>
         </tbody>
