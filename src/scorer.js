@@ -411,7 +411,9 @@ function showNewGameModal() {
       option.parent().parent().find('.dropbtn').text(option.text());
 
       // Add to playerNames list
-      scorer.playerNames[0] = option.text();
+      const selected = option.text();
+      onlyName = selected.substring(0, selected.search('#') - 1);
+      scorer.playerNames[0] = onlyName;
     });
 
     // Add listener to new game dropdowns
@@ -427,8 +429,10 @@ function showNewGameModal() {
       // Change Button Text
       option.parent().parent().find('.dropbtn').text(option.text());
 
-      // Add to playerNames list
-      scorer.playerNames[1] = option.text();
+      // Add to playerNames list without the ID number
+      const selected = option.text();
+      onlyName = selected.substring(0, selected.search('#') - 1);
+      scorer.playerNames[1] = onlyName;
     });
     
     gameForm.on('submit', () => {
@@ -473,15 +477,15 @@ function showNewPlayerModal(newGameDoc) {
       let last = playerFormData.get('lastName');  
       
       // Add the player to the database
-      window.database.createPlayer(first, last);//.then((newID));
+      window.database.createPlayer(first, last).then((newID));
 
       // Access the dropdowns
       const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
       const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0); 
 
       // Add the player to the dropdown
-      menu1.append(new Option(first + " " + last));// + " " + newID, newID));
-      menu2.append(new Option(first + " " + last));// + " " + newID, newID));
+      menu1.append(new Option(first + " " + last) + " " + newID);
+      menu2.append(new Option(first + " " + last) + " " + newID);
       
       // Close the iframe
       modal2.remove();
@@ -505,7 +509,7 @@ function updateDropdown(players, newGameDoc) {
   // Go through all players in the list
   for (i in players) {
     let optionVal = players[i].player_id;
-    let optionText = players[i].first_name + " " + players[i].last_name + " " + players[i].player_id;
+    let optionText = players[i].first_name + " " + players[i].last_name + " #" + players[i].player_id;
 
     menu1.append(new Option(optionText, optionVal));
     menu2.append(new Option(optionText, optionVal));
