@@ -567,7 +567,7 @@ function showStatistic(event) {
 
 // Load winner page
 function loadWinner(playerName) {
-  window.replication.showWinner(event, playerName);
+  window.replication.showWinner(playerName);
 
   const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
   
