@@ -55,6 +55,7 @@ body {
 }
 
 #board-container {
+  height: 1px;
   flex: 90%;
   margin: 1em;
 }
@@ -64,6 +65,8 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  aspect-ratio: 1/1;
+  max-height: 100%;
 }
 
 .board-region > path:hover, circle.board-region:hover {
@@ -132,6 +135,7 @@ body {
   height: 100%;
   background-color: var(--ac-color-1);
   border: 1px solid var(--br-color-1);
+  color: var(--tx-color-1);
 }
 
 .throw-dropdown-content {
@@ -222,6 +226,7 @@ td {
 }
 
 .perfect-label {
+  visibility: hidden;
   position: absolute;
   height: 50%;
   top: 50%;
@@ -229,17 +234,18 @@ td {
   transform: translate(0, -50%);
   z-index: -1;
   transition: transform 0.5s ease-in-out;
-  filter: drop-shadow( 2px 2px 3px rgba(35, 25, 50, 0.6));
+  filter: drop-shadow(2px 2px 3px rgba(35, 25, 50, 0.6));
 }
 
 .min-perfect-label {
+  visibility: visible;
   transform: translate(-20%, -50%);
-  transition: transform 1s ease-in-out;
+  transition: transform 0.8s ease-in-out;
 }
 
 .max-perfect-label {
   transform: translate(-100%, -50%);
-  transition: transform 1s ease-out;
+  transition: transform 0.8s ease-out;
 }
 
 /* Statistics */

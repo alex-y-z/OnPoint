@@ -7,7 +7,14 @@ const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
 const stats = $('#statistics');
 
-var scorer = {
+/*const PLAYER_TEMPLATE = {
+  name: null,
+  score: 0,
+  hasPerfectLeg: false,
+}*/
+
+const scorer = {
+  //players: [Object.assign({}, PLAYER_TEMPLATE), Object.assign({}, PLAYER_TEMPLATE)],
   scores: [0, 0],
   throws: [],
   perfectLeg: null,
@@ -17,29 +24,43 @@ var scorer = {
   currentPlayer: 1,
   changingThrow: null,
   playerNames: []
-};
-
-
-// Remove dart
-function removeDart(index) {
-  const region = scorer.throws[index];
-  
-  if (typeof region === 'object') { // Decrement dart attribute
-    region.attr('data-darts', (_, value) => parseInt(value) - 1);
-    
-    const marker = $(`#marker-${region.attr('id')}`);
-    const dartsLeft = region.attr('data-darts');
-    window.replication.removeDart(index, region.attr('id'), dartsLeft);
-    
-    if (dartsLeft == 0) { // Remove marker/highlight
-      marker.remove();
-      region.removeClass('selected-region');
-    }
-    else { // Decrement label
-      marker.find('tspan').text(dartsLeft);
-    }
-  }
 }
+
+
+// This function only runs when the file is first loaded
+function init() {
+
+  // Resize the spectator view to match the scorer view
+  const resizeObserver = new ResizeObserver(() => {
+    window.replication.resizeBoard(leftPanel.css('width'));
+  });
+  resizeObserver.observe(leftPanel.get(0));
+
+  // Display the new game modal on startup
+  showNewGameModal();
+}
+
+$(init());
+
+
+// This function runs at the beginning of each game
+function startGame() {
+
+  // Register listeners
+  regions.on('click', addDart);
+  regions.on('mouseenter', previewDart);
+  regions.on('mouseleave', hideDartPreview);
+  throwOptions.on('click', setThrow);
+  stats.find('.dropdown-content>option').on('click', showStatistic);
+  $('#next-turn-button').on('click', nextTurn);
+
+  // TODO: turn this into a confirmation
+  $('#new-game-button').on('click', (event) => {
+    window.replication.resetScreen();
+    location.reload();
+  });
+}
+
 
 // Check for winning combos
 async function checkCombos() {
@@ -84,6 +105,7 @@ async function checkCombos() {
   }
 }
 
+
 // Check if player has a perfect leg
 function checkPerfectLeg(isTurnOver) {
   const scoreThresholds = scorer.perfectLeg.scoreThresholds;
@@ -99,7 +121,6 @@ function checkPerfectLeg(isTurnOver) {
 
   // Compare scores after each turn
   if (isTurnOver) {
-    console.log(scorer.scores[scorer.currentPlayer - 1], scoreThresholds[scorer.currentTurn]);
     if (scorer.scores[scorer.currentPlayer - 1] <= scoreThresholds[scorer.currentTurn]) {
       window.replication.changePerfectLeg(scorer.currentPlayer, true);
       perfectLabel.addClass('max-perfect-label min-perfect-label');
@@ -120,8 +141,32 @@ function checkPerfectLeg(isTurnOver) {
   }
 }
 
-// Attach a click listener to each board region
-regions.on('click', (event) => {
+
+// Display value of hovered region
+function previewDart(event) {
+  const index = (scorer.changingThrow !== null) ? scorer.changingThrow : scorer.currentThrow;
+  if (index > 2) {
+    return;
+  }
+  const region = $(event.target);
+  const throwLabel = $(`#throw-label-${index}`);
+  throwLabel.find('button').text(region.attr('name'));
+}
+
+
+// Hide value preview
+function hideDartPreview(event) {
+  const index = (scorer.changingThrow !== null) ? scorer.changingThrow : scorer.currentThrow;
+  if (index > 2) {
+    return;
+  }
+  const throwLabel = $(`#throw-label-${index}`);
+  throwLabel.find('button').text('');
+}
+
+
+// Mark the board and record a throw
+function addDart(event) {
   if (scorer.throws.length == 3) {
     return;
   }
@@ -172,10 +217,33 @@ regions.on('click', (event) => {
 
   // Replicate the result to the spectator
   window.replication.addDart(index, regionId, markerPosX, markerPosY);
-});
+}
 
-// Listen to throw dropdowns to explicitly set a throw value
-throwOptions.on('click', (event) => {
+
+// Unmark the board and flush records for a particular throw
+function removeDart(index) {
+  const region = scorer.throws[index];
+  
+  if (typeof region === 'object') { // Decrement dart attribute
+    region.attr('data-darts', (_, value) => parseInt(value) - 1);
+    
+    const marker = $(`#marker-${region.attr('id')}`);
+    const dartsLeft = region.attr('data-darts');
+    window.replication.removeDart(index, region.attr('id'), dartsLeft);
+    
+    if (dartsLeft == 0) { // Remove marker/highlight
+      marker.remove();
+      region.removeClass('selected-region');
+    }
+    else { // Decrement label
+      marker.find('tspan').text(dartsLeft);
+    }
+  }
+}
+
+
+// Explicitly set a throw value
+function setThrow(event) {
   const option = $(event.target);
   const dropdown = option.parent().parent();
   const button = dropdown.find('button');
@@ -220,17 +288,12 @@ throwOptions.on('click', (event) => {
     checkCombos();
     checkPerfectLeg(false);
   }
-});
+}
 
-// Resize the spectator view to match the scorer view
-const resizeObserver = new ResizeObserver(() => {
-  window.replication.resizeBoard(leftPanel.css('width'));
-});
-
-resizeObserver.observe(leftPanel.get(0));
 
 // Update scores and reset
-$('#next-turn-button').on('click', (event) => {  
+function nextTurn(event) {
+
   // Check if all throws have been recorded
   if (scorer.throws.length < 3 || scorer.changingThrow !== null) {
     return;
@@ -266,7 +329,8 @@ $('#next-turn-button').on('click', (event) => {
   
   checkCombos(); // Check winning moves for next player
   changeColor(); // Change background color to indicate current player
-});
+}
+
 
 // Change player emphasis on turn
 function changeColor() {
@@ -307,16 +371,14 @@ function changeColor() {
     document.getElementById("p1LegsWon").style.color = "white";
     document.getElementById("p1Score").style.color = "white";
   }
-};
+}
+
 
 // Display new game modal
-$('#new-game-button').on('click', (event) => {
+function showNewGameModal() {
+
   // Get players from database to pass to new game page player table
   const modal = $('<iframe id="new-game-modal" src="newGame.html"></iframe>');
-  
-  // For changing player emphasis color
-  var table = document.getElementById("scoreboard");   
-  var rows = table.getElementsByTagName("tr");  
   
   modal.on('load', () => {
     const newGameDoc = modal.contents();
@@ -340,7 +402,7 @@ $('#new-game-button').on('click', (event) => {
 
       // Check if addPlayer
       if (option.text() == "Add New Player") {
-        addNewPlayer(newGameDoc);
+        showNewPlayerModal(newGameDoc);
       }
 
       // Change the button text
@@ -357,7 +419,7 @@ $('#new-game-button').on('click', (event) => {
 
       // Check if addPlayer
       if (option.text() == "Add New Player") {
-        addNewPlayer(newGameDoc);
+        showNewPlayerModal(newGameDoc);
       }
 
       // Change Button Text
@@ -369,27 +431,31 @@ $('#new-game-button').on('click', (event) => {
     
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
-      rows[1].style.backgroundColor = "#FFC60B";
-      document.getElementById("p1").style.color = "black";
-      document.getElementById("p1SetsWon").style.color = "black";
-      document.getElementById("p1LegsWon").style.color = "black";
-      document.getElementById("p1Score").style.color = "black";
-      document.getElementById("p1").style.fontWeight = 'bold';
       setUpScoreboard(...formData.values());
       window.replication.getFormInfo(scorer.playerNames, ...formData.values());
+      startGame(); // Initialize any states and register listeners
       modal.remove();
     });
 
-    newGameDoc.find('#cancel-button').on('click', () => {
-      modal.remove();
+    // TEMPORARY QUICK START
+    gameForm.find('#quick-start-button').on('click', (event) => {
+      scorer.playerNames[0] = 'Wyatt Earp';
+      scorer.playerNames[1] = 'Doc Holliday';
+      gameForm.find('#official').val('Crazy Horse');
+      gameForm.find('#location').val('Mariana Trench');
+      gameForm.find('#date').val('1984-12-12');
+      gameForm.find('#301').prop('checked', true);
+      gameForm.find('#numOfLegs').val(12);
+      gameForm.find('#numOfSets').val(3);
     });
   });
   
   $('body').append(modal);
-});
+}
 
 
-function addNewPlayer(newGameDoc) {
+// Display new player modal
+function showNewPlayerModal(newGameDoc) {
   const modal2 = $('<iframe id="new-player-modal" src="newPlayer.html"></iframe>');
 
   modal2.on('load', () => {
@@ -423,11 +489,10 @@ function addNewPlayer(newGameDoc) {
     newPlayerDoc.find('#cancel-button').on('click', () => {
       modal2.remove();
     });
-  
   });
 
   newGameDoc.find('body').append(modal2);
-};
+}
 
 
 // Update dropdown options
@@ -443,14 +508,13 @@ function updateDropdown(players, newGameDoc) {
     menu1.append(new Option(optionText, optionVal));
     menu2.append(new Option(optionText, optionVal));
   }
-};
+}
 
 
-// Populate Scorer Scoreboard with New Game Info
+// Populate scorer scoreboard with new game info
 function setUpScoreboard(offName, loc, date, score, legNum, setNum) {
 
   // Initialize perfect leg for given score
-  score = 301; // TEST WHILE NEW GAME PAGE IS DOWN
   scorer.startScore = parseInt(score);
   window.replication.getPerfectLeg(scorer.startScore).then((perfectLeg) => {
     scorer.perfectLeg = perfectLeg;
@@ -470,20 +534,30 @@ function setUpScoreboard(offName, loc, date, score, legNum, setNum) {
   scorer.scores[0] = scorer.startScore;
   scorer.scores[1] = scorer.startScore;
 
+  // Initialize emphasis color
+  var table = document.getElementById("scoreboard");
+  var rows = table.getElementsByTagName("tr");
+  rows[1].style.backgroundColor = "#FFC60B";
+  document.getElementById("p1").style.color = "black";
+  document.getElementById("p1SetsWon").style.color = "black";
+  document.getElementById("p1LegsWon").style.color = "black";
+  document.getElementById("p1Score").style.color = "black";
+  document.getElementById("p1").style.fontWeight = 'bold';
+
   // Send to the database
   // window.database.function(scorer.playerNames[0], scorer.playerNames[1], offName, loc, date, score, legNum, setNum);
 };
 
 
-// Add listener event to statistics table
-stats.find('.dropdown-content>option').on('click', (event) => {
+// Display a given statistic
+function showStatistic(event) {
   const option = $(event.target);
 
   // Get player from database and send it as the last parameter
 
 
   window.replication.statSelect(option.parent().attr('name'), option.attr('value')/*, player*/);
-});
+}
 
 
 // Load winner page
@@ -499,9 +573,7 @@ function loadWinner(playerName) {
     winnerDoc.find('#exit-button').on('click', () => {
       modal.remove();
     });
-
   });
 
   $('body').append(modal);
-};
-
+}
