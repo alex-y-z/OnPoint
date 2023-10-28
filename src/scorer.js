@@ -293,6 +293,7 @@ function setThrow(event) {
 
 // Update scores and reset
 function nextTurn(event) {
+  loadWinner(scorer.playerNames[0]);
 
   // Check if all throws have been recorded
   if (scorer.throws.length < 3 || scorer.changingThrow !== null) {
@@ -566,6 +567,8 @@ function showStatistic(event) {
 
 // Load winner page
 function loadWinner(playerName) {
+  window.replication.showWinner(playerName);
+
   const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
   
   modal.on('load', () => {
