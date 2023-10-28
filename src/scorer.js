@@ -7,7 +7,14 @@ const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
 const stats = $('#statistics');
 
+/*const PLAYER_TEMPLATE = {
+  name: null,
+  score: 0,
+  hasPerfectLeg: false,
+}*/
+
 const scorer = {
+  //players: [Object.assign({}, PLAYER_TEMPLATE), Object.assign({}, PLAYER_TEMPLATE)],
   scores: [0, 0],
   throws: [],
   perfectLeg: null,
@@ -41,6 +48,8 @@ function startGame() {
 
   // Register listeners
   regions.on('click', addDart);
+  regions.on('mouseenter', previewDart);
+  regions.on('mouseleave', hideDartPreview);
   throwOptions.on('click', setThrow);
   stats.find('.dropdown-content>option').on('click', showStatistic);
   $('#next-turn-button').on('click', nextTurn);
@@ -112,7 +121,6 @@ function checkPerfectLeg(isTurnOver) {
 
   // Compare scores after each turn
   if (isTurnOver) {
-    console.log(scorer.scores[scorer.currentPlayer - 1], scoreThresholds[scorer.currentTurn]);
     if (scorer.scores[scorer.currentPlayer - 1] <= scoreThresholds[scorer.currentTurn]) {
       window.replication.changePerfectLeg(scorer.currentPlayer, true);
       perfectLabel.addClass('max-perfect-label min-perfect-label');
@@ -131,6 +139,29 @@ function checkPerfectLeg(isTurnOver) {
     window.replication.changePerfectLeg(scorer.currentPlayer, false);
     perfectLabel.removeClass('max-perfect-label min-perfect-label');
   }
+}
+
+
+// Display value of hovered region
+function previewDart(event) {
+  const index = (scorer.changingThrow !== null) ? scorer.changingThrow : scorer.currentThrow;
+  if (index > 2) {
+    return;
+  }
+  const region = $(event.target);
+  const throwLabel = $(`#throw-label-${index}`);
+  throwLabel.find('button').text(region.attr('name'));
+}
+
+
+// Hide value preview
+function hideDartPreview(event) {
+  const index = (scorer.changingThrow !== null) ? scorer.changingThrow : scorer.currentThrow;
+  if (index > 2) {
+    return;
+  }
+  const throwLabel = $(`#throw-label-${index}`);
+  throwLabel.find('button').text('');
 }
 
 
