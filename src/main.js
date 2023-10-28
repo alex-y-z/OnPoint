@@ -50,7 +50,7 @@ const createWindows = () => {
   const channels = [
     'add-dart', 'change-dart', 'remove-dart', 'next-turn', 'resize-board',
     'getFormInfo', 'stat-select', 'change-combo', 'change-perfect-leg',
-    'reset-screen'
+    'reset-screen', 'showWinner'
   ];
   channels.forEach(channel => {
     ipcMain.on(channel, (event, ...args) => {

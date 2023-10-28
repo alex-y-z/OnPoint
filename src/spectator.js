@@ -284,4 +284,20 @@ function showStatistic(event, loc, stat_type/*, player*/) {
 }
 
 
+function showWinner(playerName) {
+  const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
+  
+  modal.on('load', () => {
+    const winnerDoc = modal.contents();
+
+    winnerDoc.find('#name').text(playerName);
+
+    // Close modal when exit button is pushed
+    winnerDoc.find('#exit-button').on('click', () => {
+      modal.remove();
+    });
+  });
+
+  $('body').append(modal);
+}
 
