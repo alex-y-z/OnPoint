@@ -285,7 +285,7 @@ function showStatistic(event, loc, stat_type/*, player*/) {
 }
 
 
-function showWinner(playerName) {
+function showWinner(event, playerName) {
   const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
   
   modal.on('load', () => {
