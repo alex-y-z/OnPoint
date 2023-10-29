@@ -8,7 +8,7 @@ let db = new sqlite.Database('./DartsDatabase.db', (err) => {
 function init_db() {
   // Write Database tables here if they do not already exist
   // Players
-  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, last_win TEXT NOT NULL, num_180s INTEGER NOT NULL DEFAULT 0)")
+  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, num_checkouts_100 TEXT NOT NULL, num_180s INTEGER NOT NULL DEFAULT 0, num_doubles INTEGER NOT NULL DEFAULT 0)")
   // Legs, delimit darts with , and |
   db.run("CREATE TABLE IF NOT EXISTS Legs (lid INTEGER PRIMARY KEY AUTOINCREMENT, player_1_score INTEGER NOT NULL, player_1_darts TEXT NOT NULL, player_2_score INTEGER NOT NULL, player_2_darts TEXT NOT NULL, match INTEGER NOT NULL, Foreign Key(match) references Matches(mid))")
   // Matches

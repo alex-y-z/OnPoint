@@ -109,7 +109,11 @@ class Leg {
     }
 
     getParent() {
-        return db.get("SELECT * FROM Matches where mid = ?", [this.match])
+        return db.get("SELECT * FROM Matches where mid = ?", [this.match], (err, row) => {
+            if (err)
+            return 0;
+            return Match(row);
+        })
     }
 
 
