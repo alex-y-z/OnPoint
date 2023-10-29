@@ -15,6 +15,9 @@ const stats = $('#statistics');
 
 const scorer = {
   //players: [Object.assign({}, PLAYER_TEMPLATE), Object.assign({}, PLAYER_TEMPLATE)],
+  game: null,
+  players: [],
+
   scores: [0, 0],
   throws: [],
   perfectLeg: null,
@@ -46,7 +49,19 @@ $(init());
 
 
 // This function runs at the beginning of each game
-function startGame() {
+async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, setNum) {
+
+  // Instantiate objects
+  scorer.players[0] = await window.database.getPlayerByID(pid1);
+  scorer.players[1] = await window.database.getPlayerByID(pid2);
+  scorer.game = await window.database.createGame('Championship', pid1, pid2, offName, loc, date, legNum, setNum, startScore);
+  window.database.setPlayer1(pid1);
+  window.database.setPlayer2(pid2);
+  console.log(scorer.players);
+
+  // Set up scoreboard
+  setUpScoreboard(offName, loc, date, startScore, legNum, setNum);
+  window.replication.getFormInfo(scorer.playerNames, offName, loc, date, startScore, legNum, setNum);
 
   // Register listeners
   regions.on('click', addDart);
@@ -385,9 +400,10 @@ function showNewGameModal() {
   modal.on('load', () => {
     const newGameDoc = modal.contents();
     const gameForm = newGameDoc.find('#game-form');
+    const selectedPlayers = [];
 
     // Pull all player names from the database
-    players = []
+    const players = []
     window.database.requestPlayers().then((pdata) => {
       pdata.forEach((p) => {
         players.push(p)
@@ -397,49 +413,37 @@ function showNewGameModal() {
       updateDropdown(players, newGameDoc);
     });
     
-    // Add listener to new game dropdowns
-    gameForm.on('click', '.dropdown-content1>option', (event) => {
+    // Add listener to player selection dropdowns
+    function selectPlayer(event, playerNum) {
       const option = $(event.target);
       option.selected = true;
 
       // Check if addPlayer
       if (option.text() == "Add New Player") {
         showNewPlayerModal(newGameDoc);
+        return;
       }
 
-      // Change the button text
+      // Change the button text and record selected PID
       option.parent().parent().find('.dropbtn').text(option.text());
+      selectedPlayers[playerNum] = option.val();
+    }
 
-      // Add to playerNames list
-      const selected = option.text();
-      onlyName = selected.substring(0, selected.search('#') - 1);
-      scorer.playerNames[0] = onlyName;
+    gameForm.on('click', '.dropdown-content1>option', (event) => {
+      selectPlayer(event, 0)
     });
 
     // Add listener to new game dropdowns
     gameForm.on('click', '.dropdown-content2>option', (event) => {
-      const option = $(event.target);
-      option.selected = true;
-
-      // Check if addPlayer
-      if (option.text() == "Add New Player") {
-        showNewPlayerModal(newGameDoc);
-      }
-
-      // Change Button Text
-      option.parent().parent().find('.dropbtn').text(option.text());
-
-      // Add to playerNames list without the ID number
-      const selected = option.text();
-      onlyName = selected.substring(0, selected.search('#') - 1);
-      scorer.playerNames[1] = onlyName;
+      selectPlayer(event, 1)
     });
     
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
-      setUpScoreboard(...formData.values());
-      window.replication.getFormInfo(scorer.playerNames, ...formData.values());
-      startGame(); // Initialize any states and register listeners
+
+      // Initialize any states and register listeners
+      startGame(...selectedPlayers, ...formData.values());
+
       modal.remove();
     });
 
@@ -473,23 +477,24 @@ function showNewPlayerModal(newGameDoc) {
       const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
 
       // Get the new player name
-      let first = playerFormData.get('firstName');
-      let last = playerFormData.get('lastName');  
+      const first = playerFormData.get('firstName');
+      const last = playerFormData.get('lastName');  
       
       // Add the player to the database
-      window.database.createPlayer(first, last).then((newID));
+      window.database.createPlayer(first, last).then((newID) => {
 
-      // Access the dropdowns
-      const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
-      const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0); 
-
-      // Add the player to the dropdown
-      menu1.append(new Option(first + " " + last) + " " + newID);
-      menu2.append(new Option(first + " " + last) + " " + newID);
+        // Access the dropdowns
+        const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
+        const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0); 
+  
+        // Add the player to the dropdown
+        const optionText = `${first} ${last} #${newID}`
+        menu1.append(new Option(optionText, newID));
+        menu2.append(new Option(optionText, newID));
+      });
       
       // Close the iframe
       modal2.remove();
-
     });
   
     newPlayerDoc.find('#cancel-button').on('click', () => {
@@ -508,11 +513,10 @@ function updateDropdown(players, newGameDoc) {
 
   // Go through all players in the list
   for (i in players) {
-    let optionVal = players[i].player_id;
-    let optionText = players[i].first_name + " " + players[i].last_name + " #" + players[i].player_id;
-
-    menu1.append(new Option(optionText, optionVal));
-    menu2.append(new Option(optionText, optionVal));
+    const player = players[i];
+    const optionText = player.first_name + " " + player.last_name + " #" + player.pid;
+    menu1.append(new Option(optionText, player.pid));
+    menu2.append(new Option(optionText, player.pid));
   }
 }
 
