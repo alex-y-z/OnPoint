@@ -20,6 +20,7 @@ function init() {
   window.replication.onGetFormInfo(setUpScoreboard);
   window.replication.onStatSelected(showStatistic);
   window.replication.onScreenReset(() => { location.reload(); });
+  window.replication.onShowWinner(showWinner);
 }
 
 $(init());
@@ -284,4 +285,20 @@ function showStatistic(event, loc, stat_type/*, player*/) {
 }
 
 
+function showWinner(event, playerName) {
+  const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
+  
+  modal.on('load', () => {
+    const winnerDoc = modal.contents();
+
+    winnerDoc.find('#name').text(playerName);
+
+    // Close modal when exit button is pushed
+    winnerDoc.find('#exit-button').on('click', () => {
+      modal.remove();
+    });
+  });
+
+  $('body').append(modal);
+}
 

@@ -35,7 +35,7 @@ h1 {
     align-items: center;
     justify-content: center;
     color: var(--tx-color-2);
-    font-size: 12pt;
+    font-size: 20pt;
     text-align: center;
 }
 
@@ -44,7 +44,7 @@ p {
     align-items: center;
     justify-content: center;
     color: var(--tx-color-2);
-    font-size: 20pt;
+    font-size: 36pt;
     text-align: center;
 }
 
@@ -264,4 +264,11 @@ p {
         transform: translateY(300px);
     }
 
+}
+
+#exit-button {
+    display: flex;
+    justify-content: left;
+    position: absolute;
+    bottom: 5px;
 }
