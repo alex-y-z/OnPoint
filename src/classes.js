@@ -242,6 +242,31 @@ class Game {
         else return str;
     }
 
+    getStats() {
+        matchTotal = 0
+        matchNum = 0
+        highestTurn = 0
+        num180 = 0
+        numBull = 0
+        numDouble = 0
+        matches = getMatches();
+        matches.forEach((match) => {
+            stats = match.getStats();
+            matchTotal = matchTotal + stats.avg_turn;
+            matchNum = matchNum + 1;
+            highestTurn = highestTurn + stats.highest_turn;
+            num180 = num180 + stats.num_180;
+            numBull = numBull + stats.num_bull;
+            numDouble = numDouble + stats.num_double;
+        })
+        return {
+            avg_turn: matchTotal / matchNum,
+            highest_turn: highestTurn,
+            num_180: num180,
+            num_bull: numBull,
+            num_double: numDouble
+        }
+    }
 }
 
 module.exports = {Player, Leg, Match, Game};
