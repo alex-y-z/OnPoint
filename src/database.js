@@ -70,18 +70,20 @@ function update_player(player) {
 function create_leg(match) {
   return new Promise(function(resolve, reject) 
   {
-    game = match.getParent()
-    db.run("INSERT INTO Legs (player_1_score, player_2_score, match) Values(?,?,?)",
-    [game.start_score, game.start_score, match.match_id], // need some way to get the initial score of a game
-    (err) => {
-      if (err) {
-        reject(err) 
+    match.getParent().then((game) => {
+      db.run("INSERT INTO Legs (player_1_score, player_2_score, match, player_1_darts, player_2_darts) Values(?,?,?,?,?)",
+      [game.start_score, game.start_score, match.match_id, "", ""], // need some way to get the initial score of a game
+      function (err) {
+        if (err) {
+          reject(err) 
+        }
+        match.legs.push(this.lastID);
+        update_match(match);
+        resolve(this.lastID);
       }
-      match.legs.push(this.lastID);
-      update_match(match);
-      resolve(this.lastID);
-    }
-    )
+      )
+    });
+
   });
 }
 

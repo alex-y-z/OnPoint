@@ -88,8 +88,16 @@ const createWindows = () => {
     return database.search_players_by_first(first_name);
   });
 
-  ipcMain.handle('create-leg', (event, match) => {
-    return database.create_leg(match)
+  ipcMain.handle('create-leg', (event) => {
+    return new Promise((resolve, reject) => {
+      database.create_leg(current_match)
+      .then((lid) => {
+        database.get_leg_by_id(lid).then((leg) => {
+          current_leg = new Leg(leg);
+          resolve(current_leg);
+        });
+      });
+    });
   });
   
   ipcMain.handle('update-leg', (event, leg) => {
@@ -100,8 +108,17 @@ const createWindows = () => {
     return database.get_leg_by_id(lid);
   });
 
-  ipcMain.handle('create-match', (event, game) => {
-    return database.create_match(game)
+  ipcMain.handle('create-match', (event) => {
+    return new Promise((resolve, reject) => {
+      database.create_match(current_game)
+      .then((mid) => {
+        database.get_match_by_id(mid).then((match) => {
+          current_match = new Match(match);
+          resolve(current_match);
+        });
+      });
+    })
+
   });
   
   ipcMain.handle('update-match', (event, match) => {
@@ -113,8 +130,15 @@ const createWindows = () => {
   });
 
   ipcMain.handle('create-game', (event, name, player1, player2, official, location, date, leg_num, match_num, start_score) => {
-    console.log(name, player1, player2, official, location, date, leg_num, match_num, start_score)
-    return database.create_game(name, player1, player2, official, location, date, leg_num, match_num, start_score)
+    return new Promise((resolve, reject) => {
+      database.create_game(name, player1, player2, official, location, date, leg_num, match_num, start_score)
+      .then((gid) => {
+        database.get_game_by_id(gid).then((game) => {
+          current_game = new Game(game);
+          resolve(current_game);
+        });
+      });
+    })
   });
   
   ipcMain.handle('update-game', (event, game) => {
