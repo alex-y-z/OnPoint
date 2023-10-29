@@ -121,7 +121,7 @@ class Match {
         // 
         this.match_id = sqlResponse.mid;
         this.winner = sqlResponse.winner;
-        this.legs = Array.from(sqlResponse.legs, a => a.split(','))
+        this.legs = sqlResponse.legs === null ? [] : Array.from(sqlResponse.legs, a => a.split(','))
         this.game = sqlResponse.game
     };
 
@@ -132,7 +132,7 @@ class Match {
             }
             legs = []
             rows.forEach((row) => {
-                legs.push(Leg(row))
+                legs.push(new Leg(row))
             })
             return legs;
         })
@@ -193,7 +193,7 @@ class Match {
     getParent() {
         return db.get("Select * from Games where gid = ?", [this.game], (err, row) => {
             if (err) return 0;
-            return Game(row);
+            return new Game(row);
         })
     }
 
@@ -215,7 +215,7 @@ class Game {
         this.leg_num = sqlResponse.leg_num;
         this.match_num = sqlResponse.match_num;
         this.start_score = sqlResponse.start_score;
-        this.matches = Array.from(sqlResponse.matches, a => a.split(','));
+        this.matches = sqlResponse.matches === null ? [] : Array.from(sqlResponse.matches, a => a.split(','));
 
     };
 
@@ -226,7 +226,7 @@ class Game {
             }
             matches = []
             rows.forEach((row) => {
-                matches.push(Match(row))
+                matches.push(new Match(row))
             })
             return matches;
         })

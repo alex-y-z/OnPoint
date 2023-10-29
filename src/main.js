@@ -73,11 +73,11 @@ const createWindows = () => {
   });
   
   ipcMain.handle('create-player', (event, first_name, last_name) => {
-    return database.create_player(first_name, last_name)
+    return database.create_player(first_name, last_name);
   });
   
   ipcMain.handle('update-player', (event, player) => {
-    database.update_player(player);
+    database.update_player(new Player(player));
   });
   
   ipcMain.handle('get-player-by-id', (event, pid) => {
@@ -88,24 +88,36 @@ const createWindows = () => {
     return database.search_players_by_first(first_name);
   });
 
-  ipcMain.handle('create-leg', (event, match) => {
-    return database.create_leg(match)
+  ipcMain.handle('create-leg', (event) => {
+    return database.create_leg(current_match)
+    .then((lid) => {
+      return database.get_leg_by_id(lid).then((leg) => {
+        current_leg = new Leg(leg);
+        return leg;
+      });
+    });
   });
   
   ipcMain.handle('update-leg', (event, leg) => {
-    database.update_leg(leg);
+    database.update_leg(new Leg(leg));
   });
   
   ipcMain.handle('get-leg-by-id', (event, lid) => {
     return database.get_leg_by_id(lid);
   });
 
-  ipcMain.handle('create-match', (event, game) => {
-    return database.create_match(game)
+  ipcMain.handle('create-match', (event) => {
+    return database.create_match(current_game)
+    .then((mid) => {
+      return database.get_match_by_id(mid).then((match) => {
+        current_match = new Match(match);
+        return match;
+      });
+    });
   });
   
   ipcMain.handle('update-match', (event, match) => {
-    database.update_match(match);
+    database.update_match(new Match(match));
   });
   
   ipcMain.handle('get-match-by-id', (event, mid) => {
@@ -113,12 +125,17 @@ const createWindows = () => {
   });
 
   ipcMain.handle('create-game', (event, name, player1, player2, official, location, date, leg_num, match_num, start_score) => {
-    console.log(name, player1, player2, official, location, date, leg_num, match_num, start_score)
     return database.create_game(name, player1, player2, official, location, date, leg_num, match_num, start_score)
+    .then((gid) => {
+      return database.get_game_by_id(gid).then((game) => {
+        current_game = new Game(game);
+        return game;
+      });
+    });
   });
   
   ipcMain.handle('update-game', (event, game) => {
-    database.update_game(game);
+    database.update_game(new Game(game));
   });
   
   ipcMain.handle('get-game-by-id', (event, gid) => {
@@ -127,19 +144,13 @@ const createWindows = () => {
 
   ipcMain.handle('set-player-1', (event, pid) => {
     database.get_player_by_id(pid).then((player) => {
-      player_1 = Player(player);
+      player_1 = new Player(player);
     })
   });
 
   ipcMain.handle('set-player-2', (event, pid) => {
     database.get_player_by_id(pid).then((player) => {
-      player_2 = Player(player);
-    })
-  });
-
-  ipcMain.handle('set-current-game', (event, gid) => {
-    database.get_game_by_id(gid).then((game) => {
-      current_game = Game(game);
+      player_2 = new Player(player);
     })
   });
 

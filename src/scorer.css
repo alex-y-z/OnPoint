@@ -39,6 +39,10 @@ body {
   user-select: none;
 }
 
+caption {
+  margin: 2%;
+}
+
 /* Left Panel (dartboard + throw) */
 
 #left-panel {
@@ -198,10 +202,11 @@ body {
 #scoreboard {
   flex: 30%;
   background-color: var(--bg-color-4);
+  width: 100%;
 }
 
-#scoreboard-title {
-  height: 25px;
+#scoreboard td {
+  min-width: 15%;
 }
 
 table {

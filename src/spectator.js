@@ -182,7 +182,7 @@ function changePerfectLeg(event, playerNum, hasPerfectLeg) {
 
 
 // Set the scoreboard info from the new game form
-function setUpScoreboard(event, names, offName, loc, date, score, legNum, setNum) {
+function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum, setNum) {
   
   // For changing player emphasis color
   var table = document.getElementById("scoreboard");   
@@ -197,8 +197,8 @@ function setUpScoreboard(event, names, offName, loc, date, score, legNum, setNum
   // Fill in the text
   scoreboard.find('#set-col').text(`Sets (${setNum})`);
   scoreboard.find('#leg-col').text(`Legs (${legNum})`);
-  scoreboard.find('#p1').contents()[0].nodeValue = names[0];
-  scoreboard.find('#p2').contents()[0].nodeValue = names[1];
+  scoreboard.find('#p1').contents()[0].nodeValue = name1;
+  scoreboard.find('#p2').contents()[0].nodeValue = name2;
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
   scoreboard.find('#p1SetsWon').text('0');

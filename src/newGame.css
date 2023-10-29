@@ -135,4 +135,5 @@ input[type=radio] {
   top: 5%;
   left: 10%;
   border-radius: 10px;
+  z-index: 5;
 }
