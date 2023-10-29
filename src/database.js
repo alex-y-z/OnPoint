@@ -150,7 +150,6 @@ function create_game(name, player1, player2, official, location, date, leg_num, 
       if (err) {
         reject(err);
       }
-      game.matches.push(str(this.lastID))
       resolve(this.lastID);
     }
     )
