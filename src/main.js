@@ -1,8 +1,7 @@
 const { app, screen, BrowserWindow, ipcMain } = require('electron');
-const { data } = require('jquery');
 const path = require('path');
 const {Player, Leg, Match, Game} = require('./classes');
-const database = require("./database");
+const database = require('./database');
 const { winning_move, perfect_leg } = require('./winning_move');
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
@@ -52,6 +51,7 @@ const createWindows = () => {
     'getFormInfo', 'stat-select', 'change-combo', 'change-perfect-leg',
     'reset-screen', 'showWinner'
   ];
+
   channels.forEach(channel => {
     ipcMain.on(channel, (event, ...args) => {
       spectatorWindow.webContents.send(channel, ...args);
@@ -71,50 +71,87 @@ const createWindows = () => {
   ipcMain.handle('request-players', (event) => {
     return database.request_players();
   });
-
+  
+  ipcMain.handle('create-player', (event, first_name, last_name) => {
+    return database.create_player(first_name, last_name)
+  });
+  
+  ipcMain.handle('update-player', (event, player) => {
+    database.update_player(player);
+  });
+  
   ipcMain.handle('get-player-by-id', (event, pid) => {
     return database.get_player_by_id(pid);
   });
-
+  
   ipcMain.handle('search-players-by-first', (event, first_name) => {
     return database.search_players_by_first(first_name);
   });
 
-  ipcMain.handle('create-player', (event, first_name, last_name) => {
-    return database.create_player(first_name, last_name)
-  });
-
-  ipcMain.handle('update-player', (event, player) => {
-    database.update_player(player); 
+  ipcMain.handle('create-leg', (event, match) => {
+    return database.create_leg(match)
   });
   
+  ipcMain.handle('update-leg', (event, leg) => {
+    database.update_leg(leg);
+  });
+  
+  ipcMain.handle('get-leg-by-id', (event, lid) => {
+    return database.get_leg_by_id(lid);
+  });
+
+  ipcMain.handle('create-match', (event, game) => {
+    return database.create_match(game)
+  });
+  
+  ipcMain.handle('update-match', (event, match) => {
+    database.update_match(match);
+  });
+  
+  ipcMain.handle('get-match-by-id', (event, mid) => {
+    return database.get_match_by_id(mid);
+  });
+
+  ipcMain.handle('create-game', (event, name, player1, player2, official, location, date, leg_num, match_num, start_score) => {
+    console.log(name, player1, player2, official, location, date, leg_num, match_num, start_score)
+    return database.create_game(name, player1, player2, official, location, date, leg_num, match_num, start_score)
+  });
+  
+  ipcMain.handle('update-game', (event, game) => {
+    database.update_game(game);
+  });
+  
+  ipcMain.handle('get-game-by-id', (event, gid) => {
+    return database.get_game_by_id(gid);
+  });
+
   ipcMain.handle('set-player-1', (event, pid) => {
     database.get_player_by_id(pid).then((player) => {
       player_1 = Player(player);
     })
-  })
+  });
 
   ipcMain.handle('set-player-2', (event, pid) => {
     database.get_player_by_id(pid).then((player) => {
       player_2 = Player(player);
     })
-  })
+  });
 
   ipcMain.handle('set-current-game', (event, gid) => {
     database.get_game_by_id(gid).then((game) => {
       current_game = Game(game);
     })
-  })
+  });
 
   ipcMain.handle('update-game-status', (event) => {
     database.update_player(player_1);
     database.update_player(player_2);
     database.update_leg(current_leg);
-  })
+  });
 
   ipcMain.handle('get-current-scores', (event) => {
     return current_leg.getScores();
-  })
+  });
 
   // Load HTML
   scorerWindow.loadFile(path.join(__dirname, 'scorer.html'));

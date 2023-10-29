@@ -149,44 +149,44 @@ class Match {
     }
 
     getStats() {
-            legs = this.getLegs()
-            turnTotal = 0
-            turnNum = 0
-            highestTurn = 0
-            num180 = 0
-            numBull = 0
-            numDouble = 0
-            legs.forEach((leg) => {
-                leg.player_1_darts.forEach((turn) => {
-                    turnNum++;
-                    turn_score = throws[turn[1]] + throws[turn[2]] + throws[turn[3]]
-                    turnTotal = turnTotal + turn_score
-                    if (highestTurn < turn_score) {
-                        highestTurn = turn_score
-                    }
-                    num180 = num180 + (turn.filter(x => x === "T20").length === 3 ? 1 : 0)
-                    numBull = numBull + turn.filter(x => x === "B50").length
-                    numDouble = numDouble + turn.filter(x => doubles.includes(x)).length
-                })
-                leg.player_2_darts.forEach((turn) => {
-                    turnNum++;
-                    turn_score = throws[turn[1]] + throws[turn[2]] + throws[turn[3]]
-                    turnTotal = turnTotal + turn_score
-                    if (highestTurn < turn_score) {
-                        highestTurn = turn_score
-                    }
-                    num180 = num180 + (turn.filter(x => x === "T20").length === 3 ? 1 : 0)
-                    numBull = numBull + turn.filter(x => x === "B50").length
-                    numDouble = numDouble + turn.filter(x => doubles.includes(x)).length
-                })
+        legs = this.getLegs()
+        turnTotal = 0
+        turnNum = 0
+        highestTurn = 0
+        num180 = 0
+        numBull = 0
+        numDouble = 0
+        legs.forEach((leg) => {
+            leg.player_1_darts.forEach((turn) => {
+                turnNum++;
+                turn_score = throws[turn[1]] + throws[turn[2]] + throws[turn[3]]
+                turnTotal = turnTotal + turn_score
+                if (highestTurn < turn_score) {
+                    highestTurn = turn_score
+                }
+                num180 = num180 + (turn.filter(x => x === "T20").length === 3 ? 1 : 0)
+                numBull = numBull + turn.filter(x => x === "B50").length
+                numDouble = numDouble + turn.filter(x => doubles.includes(x)).length
             })
-            return {
-                avg_turn: turnTotal / turnNum,
-                highest_turn: highestTurn,
-                num_180: num180,
-                num_bull: numBull,
-                num_double: numDouble
-            }
+            leg.player_2_darts.forEach((turn) => {
+                turnNum++;
+                turn_score = throws[turn[1]] + throws[turn[2]] + throws[turn[3]]
+                turnTotal = turnTotal + turn_score
+                if (highestTurn < turn_score) {
+                    highestTurn = turn_score
+                }
+                num180 = num180 + (turn.filter(x => x === "T20").length === 3 ? 1 : 0)
+                numBull = numBull + turn.filter(x => x === "B50").length
+                numDouble = numDouble + turn.filter(x => doubles.includes(x)).length
+            })
+        })
+        return {
+            avg_turn: turnTotal / turnNum,
+            highest_turn: highestTurn,
+            num_180: num180,
+            num_bull: numBull,
+            num_double: numDouble
+        }
 
     }
 

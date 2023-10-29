@@ -85,7 +85,6 @@ function create_leg(match) {
   });
 }
 
-
 function update_leg(leg) {
   db.run("UPDATE Legs Set player_1_score = ?, player_1_darts = ?, player_2_score = ?, player_2_darts = ? where lid = ?",
   [leg.player_1_score, leg.player_1_darts, leg.player_2_score, leg.player_2_darts, leg.lid],
@@ -121,7 +120,6 @@ function create_match(game) {
   });
 }
 
-
 function update_match(match) {
   db.run("UPDATE Matches Set winner = ?, legs = ? where mid = ?",
   [match.winner, match.getLegString(), match.mid],
@@ -155,7 +153,6 @@ function create_game(name, player1, player2, official, location, date, leg_num, 
     )
   });
 }
-
 
 function update_game(game) {
   // rest of our properties here are readonly past creation
