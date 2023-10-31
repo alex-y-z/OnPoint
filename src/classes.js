@@ -62,9 +62,9 @@ class Leg {
         this.leg_id = sqlResponse.lid
         this.player_1_score = sqlResponse.player_1_score
         this.player_2_score = sqlResponse.player_2_score
-        player_1_turns = sqlResponse.player_1_darts.split("|")
+        let player_1_turns = sqlResponse.player_1_darts.split("|")
         this.player_1_darts = Array.from(player_1_turns, a => a.split(","))
-        player_2_turns = sqlResponse.player_2_darts.split("|")
+        let player_2_turns = sqlResponse.player_2_darts.split("|")
         this.player_2_darts = Array.from(player_2_turns, a => a.split(","))
         this.match = sqlResponse.match
     };
@@ -109,7 +109,12 @@ class Leg {
     }
 
     getParent() {
-        return db.get("SELECT * FROM Matches where mid = ?", [this.match])
+        return new Promise((resolve, reject) => {
+            db.get("SELECT * FROM Matches where mid = ?", [this.match], (err, row) => {
+                if(err) reject(err);
+                resolve(new Match(row));
+            })
+        })
     }
 
 
@@ -126,20 +131,23 @@ class Match {
     };
 
     getLegs() {
-        return db.all("SELECT * From Legs where lid in ?", [this.legs], (err, rows) => {
-            if (err) {
-                return 0;
-            }
-            legs = []
-            rows.forEach((row) => {
-                legs.push(new Leg(row))
+        return new Promise((resolve, reject) => {
+            db.all("SELECT * From Legs where lid in ?", [this.legs], (err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                legs = []
+                rows.forEach((row) => {
+                    legs.push(new Leg(row))
+                })
+                resolve(legs);
             })
-            return legs;
         })
+
     }
 
     getLegString() {
-        str = "";
+        let str = "";
         this.legs.forEach((leg) => {
             str = str + leg + ",";
         })
@@ -191,10 +199,13 @@ class Match {
     }
 
     getParent() {
-        return db.get("Select * from Games where gid = ?", [this.game], (err, row) => {
-            if (err) return 0;
-            return new Game(row);
+        return new Promise((resolve, reject) => {
+            db.get("Select * from Games where gid = ?", [this.game], (err, row) => {
+                if (err) reject(err);
+                resolve(new Game(row));
+            })
         })
+
     }
 
 
@@ -220,20 +231,23 @@ class Game {
     };
 
     getMatches() {
-        return db.all("SELECT * From Matches where mid in ?", [this.matches], (err, rows) => {
-            if (err) {
-                return 0;
-            }
-            matches = []
-            rows.forEach((row) => {
-                matches.push(new Match(row))
+        return new Promise((resolve, reject) => {
+            db.all("SELECT * From Matches where mid in ?", [this.matches], (err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                matches = []
+                rows.forEach((row) => {
+                    matches.push(new Match(row))
+                })
+                resolve(matches);
             })
-            return matches;
         })
+
     }
 
     getMatchString() {
-        str = "";
+        let str = "";
         this.matches.forEach((match) => {
             str = str + match + ",";
         })
@@ -242,6 +256,31 @@ class Game {
         else return str;
     }
 
+    getStats() {
+        matchTotal = 0
+        matchNum = 0
+        highestTurn = 0
+        num180 = 0
+        numBull = 0
+        numDouble = 0
+        matches = getMatches();
+        matches.forEach((match) => {
+            stats = match.getStats();
+            matchTotal = matchTotal + stats.avg_turn;
+            matchNum = matchNum + 1;
+            highestTurn = highestTurn + stats.highest_turn;
+            num180 = num180 + stats.num_180;
+            numBull = numBull + stats.num_bull;
+            numDouble = numDouble + stats.num_double;
+        })
+        return {
+            avg_turn: matchTotal / matchNum,
+            highest_turn: highestTurn,
+            num_180: num180,
+            num_bull: numBull,
+            num_double: numDouble
+        }
+    }
 }
 
 module.exports = {Player, Leg, Match, Game};

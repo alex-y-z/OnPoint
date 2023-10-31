@@ -89,11 +89,13 @@ const createWindows = () => {
   });
 
   ipcMain.handle('create-leg', (event) => {
-    return database.create_leg(current_match)
-    .then((lid) => {
-      return database.get_leg_by_id(lid).then((leg) => {
-        current_leg = new Leg(leg);
-        return leg;
+    return new Promise((resolve, reject) => {
+      database.create_leg(current_match)
+      .then((lid) => {
+        database.get_leg_by_id(lid).then((leg) => {
+          current_leg = new Leg(leg);
+          resolve(current_leg);
+        });
       });
     });
   });
@@ -107,13 +109,15 @@ const createWindows = () => {
   });
 
   ipcMain.handle('create-match', (event) => {
-    return database.create_match(current_game)
-    .then((mid) => {
-      return database.get_match_by_id(mid).then((match) => {
-        current_match = new Match(match);
-        return match;
+    return new Promise((resolve, reject) => {
+      database.create_match(current_game)
+      .then((mid) => {
+        database.get_match_by_id(mid).then((match) => {
+          current_match = new Match(match);
+          resolve(current_match);
+        });
       });
-    });
+    })
   });
   
   ipcMain.handle('update-match', (event, match) => {
@@ -125,13 +129,15 @@ const createWindows = () => {
   });
 
   ipcMain.handle('create-game', (event, name, player1, player2, official, location, date, leg_num, match_num, start_score) => {
-    return database.create_game(name, player1, player2, official, location, date, leg_num, match_num, start_score)
-    .then((gid) => {
-      return database.get_game_by_id(gid).then((game) => {
-        current_game = new Game(game);
-        return game;
+    return new Promise((resolve, reject) => {
+      database.create_game(name, player1, player2, official, location, date, leg_num, match_num, start_score)
+      .then((gid) => {
+        database.get_game_by_id(gid).then((game) => {
+          current_game = new Game(game);
+          resolve(current_game);
+        });
       });
-    });
+    })
   });
   
   ipcMain.handle('update-game', (event, game) => {

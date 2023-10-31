@@ -8,7 +8,7 @@ let db = new sqlite.Database('./DartsDatabase.db', (err) => {
 function init_db() {
   // Write Database tables here if they do not already exist
   // Players
-  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, last_win TEXT NOT NULL, num_180s INTEGER NOT NULL DEFAULT 0)")
+  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, num_checkouts_100 TEXT NOT NULL, num_180s INTEGER NOT NULL DEFAULT 0, num_doubles INTEGER NOT NULL DEFAULT 0)")
   // Legs, delimit darts with , and |
   db.run("CREATE TABLE IF NOT EXISTS Legs (lid INTEGER PRIMARY KEY AUTOINCREMENT, player_1_score INTEGER NOT NULL, player_1_darts TEXT NOT NULL, player_2_score INTEGER NOT NULL, player_2_darts TEXT NOT NULL, match INTEGER NOT NULL, Foreign Key(match) references Matches(mid))")
   // Matches
@@ -70,19 +70,19 @@ function update_player(player) {
 function create_leg(match) {
   return new Promise(function(resolve, reject) 
   {
-    game = match.getParent()
-    console.log('GAME:', game)
-    db.run("INSERT INTO Legs (player_1_score, player_2_score, match) Values(?,?,?)",
-    [game.start_score, game.start_score, match.match_id], // need some way to get the initial score of a game
-    (err) => {
-      if (err) {
-        reject(err) 
+    match.getParent().then((game) => {
+      db.run("INSERT INTO Legs (player_1_score, player_2_score, match, player_1_darts, player_2_darts) Values(?,?,?,?,?)",
+      [game.start_score, game.start_score, match.match_id, "", ""], // need some way to get the initial score of a game
+      function (err) {
+        if (err) {
+          reject(err) 
+        }
+        match.legs.push(this.lastID);
+        update_match(match);
+        resolve(this.lastID);
       }
-      match.legs.push(this.lastID);
-      update_match(match);
-      resolve(this.lastID);
-    }
-    )
+      )
+    });
   });
 }
 
