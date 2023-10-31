@@ -126,7 +126,7 @@ class Match {
         // 
         this.match_id = sqlResponse.mid;
         this.winner = sqlResponse.winner;
-        this.legs = Array.from(sqlResponse.legs, a => a.split(','))
+        this.legs = sqlResponse.legs === null ? [] : Array.from(sqlResponse.legs, a => a.split(','))
         this.game = sqlResponse.game
     };
 
@@ -226,7 +226,7 @@ class Game {
         this.leg_num = sqlResponse.leg_num;
         this.match_num = sqlResponse.match_num;
         this.start_score = sqlResponse.start_score;
-        this.matches = Array.from(sqlResponse.matches, a => a.split(','));
+        this.matches = sqlResponse.matches === null ? [] : Array.from(sqlResponse.matches, a => a.split(','));
 
     };
 

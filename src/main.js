@@ -73,11 +73,11 @@ const createWindows = () => {
   });
   
   ipcMain.handle('create-player', (event, first_name, last_name) => {
-    return database.create_player(first_name, last_name)
+    return database.create_player(first_name, last_name);
   });
   
   ipcMain.handle('update-player', (event, player) => {
-    database.update_player(player);
+    database.update_player(new Player(player));
   });
   
   ipcMain.handle('get-player-by-id', (event, pid) => {
@@ -101,7 +101,7 @@ const createWindows = () => {
   });
   
   ipcMain.handle('update-leg', (event, leg) => {
-    database.update_leg(leg);
+    database.update_leg(new Leg(leg));
   });
   
   ipcMain.handle('get-leg-by-id', (event, lid) => {
@@ -118,11 +118,10 @@ const createWindows = () => {
         });
       });
     })
-
   });
   
   ipcMain.handle('update-match', (event, match) => {
-    database.update_match(match);
+    database.update_match(new Match(match));
   });
   
   ipcMain.handle('get-match-by-id', (event, mid) => {
@@ -142,7 +141,7 @@ const createWindows = () => {
   });
   
   ipcMain.handle('update-game', (event, game) => {
-    database.update_game(game);
+    database.update_game(new Game(game));
   });
   
   ipcMain.handle('get-game-by-id', (event, gid) => {
@@ -151,19 +150,13 @@ const createWindows = () => {
 
   ipcMain.handle('set-player-1', (event, pid) => {
     database.get_player_by_id(pid).then((player) => {
-      player_1 = Player(player);
+      player_1 = new Player(player);
     })
   });
 
   ipcMain.handle('set-player-2', (event, pid) => {
     database.get_player_by_id(pid).then((player) => {
-      player_2 = Player(player);
-    })
-  });
-
-  ipcMain.handle('set-current-game', (event, gid) => {
-    database.get_game_by_id(gid).then((game) => {
-      current_game = Game(game);
+      player_2 = new Player(player);
     })
   });
 

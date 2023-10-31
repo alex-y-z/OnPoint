@@ -83,7 +83,6 @@ function create_leg(match) {
       }
       )
     });
-
   });
 }
 
@@ -109,16 +108,15 @@ async function get_leg_by_id(lid) {
 function create_match(game) {
   return new Promise(function(resolve, reject) 
   {
-    db.run("INSERT INTO Match (game) Values(?)",
+    db.run("INSERT INTO Matches (game) Values(?)",
     [game.game_id],
-    (err) => {
+    function(err) {
       if (err) {
-        reject(err);
+        return reject(err);
       }
-      game.matches.push(str(this.lastID))
+      game.matches.push(new String(this.lastID))
       resolve(this.lastID);
-    }
-    )
+    })
   });
 }
 
@@ -146,13 +144,12 @@ function create_game(name, player1, player2, official, location, date, leg_num, 
   {
     db.run("INSERT INTO Games (name, player_1, player_2, official, location, date, leg_num, match_num, start_score) Values(?, ?, ?, ?, ?, ?, ?, ?, ?)",
     [name, player1, player2, official, location, date, leg_num, match_num, start_score],
-    (err) => {
+    function(err) {
       if (err) {
-        reject(err);
+        return reject(err.message);
       }
       resolve(this.lastID);
-    }
-    )
+    })
   });
 }
 

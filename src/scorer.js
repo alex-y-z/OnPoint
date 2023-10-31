@@ -7,28 +7,19 @@ const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
 const stats = $('#statistics');
 
-/*const PLAYER_TEMPLATE = {
-  name: null,
-  score: 0,
-  hasPerfectLeg: false,
-}*/
-
 const scorer = {
-  //players: [Object.assign({}, PLAYER_TEMPLATE), Object.assign({}, PLAYER_TEMPLATE)],
   game: null,
+  match: null,
+  leg: null,
   players: [],
-
   scores: [0, 0],
   throws: [],
   perfectLeg: null,
-  startScore: 301,
-  currentSet: 0,
-  currentLeg: 0,
+  startScore: null,
   currentTurn: 0,
   currentThrow: 0,
   currentPlayer: 1,
-  changingThrow: null,
-  playerNames: []
+  changingThrow: null
 }
 
 
@@ -51,17 +42,23 @@ $(init());
 // This function runs at the beginning of each game
 async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, setNum) {
 
-  // Instantiate objects
+  // Initialize game and players
+  scorer.game = await window.database.createGame('Championship', pid1, pid2, offName, loc, date, legNum, setNum, startScore);
   scorer.players[0] = await window.database.getPlayerByID(pid1);
   scorer.players[1] = await window.database.getPlayerByID(pid2);
-  scorer.game = await window.database.createGame('Championship', pid1, pid2, offName, loc, date, legNum, setNum, startScore);
   window.database.setPlayer1(pid1);
   window.database.setPlayer2(pid2);
-  console.log(scorer.players);
+  console.log(scorer.players, scorer.game);
+
+  // Initialize perfect leg for given start score
+  scorer.startScore = parseInt(startScore);
+  scorer.perfectLeg = await window.replication.getPerfectLeg(startScore);
 
   // Set up scoreboard
-  setUpScoreboard(offName, loc, date, startScore, legNum, setNum);
-  window.replication.getFormInfo(scorer.playerNames, offName, loc, date, startScore, legNum, setNum);
+  const name1 = `${scorer.players[0].first_name} ${scorer.players[0].last_name}`;
+  const name2 = `${scorer.players[1].first_name} ${scorer.players[1].last_name}`;
+  setUpScoreboard(name1, name2, offName, loc, date, startScore, legNum, setNum);
+  window.replication.getFormInfo(name1, name2, offName, loc, date, startScore, legNum, setNum);
 
   // Register listeners
   regions.on('click', addDart);
@@ -76,6 +73,32 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
     window.replication.resetScreen();
     location.reload();
   });
+
+  // Start first match of the game
+  startMatch();
+}
+
+
+async function startMatch() {
+
+  // Create a new match within the current game
+  scorer.match = await window.database.createMatch(scorer.game);
+
+  // Start first leg of the match
+  console.log(scorer.match);
+  startLeg();
+}
+
+
+async function startLeg() {
+
+  // Create a new leg within the current match
+  scorer.leg = await window.database.createLeg(scorer.match);
+
+  // Reset scores
+  scorer.scores[0] = scorer.startScore;
+  scorer.scores[1] = scorer.startScore;
+  console.log(scorer.leg);
 }
 
 
@@ -521,27 +544,19 @@ function updateDropdown(players, newGameDoc) {
 
 
 // Populate scorer scoreboard with new game info
-function setUpScoreboard(offName, loc, date, score, legNum, setNum) {
-
-  // Initialize perfect leg for given score
-  scorer.startScore = parseInt(score);
-  window.replication.getPerfectLeg(scorer.startScore).then((perfectLeg) => {
-    scorer.perfectLeg = perfectLeg;
-  });
+function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum) {
 
   // Populate scoreboard
   scoreboard.find('#set-col').text(`Sets (${setNum})`);
   scoreboard.find('#leg-col').text(`Legs (${legNum})`);
-  scoreboard.find('#p1').contents()[0].nodeValue = scorer.playerNames[0];
-  scoreboard.find('#p2').contents()[0].nodeValue = scorer.playerNames[1];
+  scoreboard.find('#p1').contents()[0].nodeValue = name1;
+  scoreboard.find('#p2').contents()[0].nodeValue = name2;
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
   scoreboard.find('#p1SetsWon').text('0');
   scoreboard.find('#p2SetsWon').text('0');
   scoreboard.find('#p1LegsWon').text('0');
   scoreboard.find('#p2LegsWon').text('0');
-  scorer.scores[0] = scorer.startScore;
-  scorer.scores[1] = scorer.startScore;
 
   // Initialize emphasis color
   var table = document.getElementById("scoreboard");
