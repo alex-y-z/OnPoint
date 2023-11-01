@@ -15,6 +15,7 @@ class Player {
         this.number_thrown = sqlResponse.number_thrown
         this.league_rank = sqlResponse.league_rank
         this.last_win = sqlResponse.last_win
+        this.num_checkouts_100 = sqlResponse.num_checkouts_100
         this.num_180s = sqlResponse.num_180s
         //other parameters we generate as needed
     };
@@ -40,6 +41,7 @@ class Player {
                     average_score: this.total_thrown / this.number_thrown,
                     last_win: this.last_win,
                     total_thrown: this.total_thrown,
+                    num_checkouts_100: this.num_checkouts_100,
                     num_180s: this.num_180s,
                     win_percent: total_wins / total_games,
                     //probably need to discuss what "average season score" means before impl
@@ -62,6 +64,7 @@ class Leg {
         this.leg_id = sqlResponse.lid
         this.player_1_score = sqlResponse.player_1_score
         this.player_2_score = sqlResponse.player_2_score
+        console.log(sqlResponse, typeof sqlResponse.player_1_darts);
         let player_1_turns = sqlResponse.player_1_darts.split("|")
         this.player_1_darts = Array.from(player_1_turns, a => a.split(","))
         let player_2_turns = sqlResponse.player_2_darts.split("|")

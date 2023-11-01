@@ -33,5 +33,6 @@ contextBridge.exposeInMainWorld('database', {
     getMatchById: (...args) => ipcRenderer.invoke('get-match-by-id', ...args),
     createGame: (...args) => ipcRenderer.invoke('create-game', ...args),
     updateGame: (...args) => ipcRenderer.invoke('update-game', ...args),
-    getGameByID: (...args) => ipcRenderer.invoke('get-game-by-id', ...args)
+    getGameByID: (...args) => ipcRenderer.invoke('get-game-by-id', ...args),
+    updateGameStatus: (...args) => ipcRenderer.invoke('update-game-status', ...args)
 });

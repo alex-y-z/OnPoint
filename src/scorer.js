@@ -48,7 +48,7 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
   scorer.players[1] = await window.database.getPlayerByID(pid2);
   window.database.setPlayer1(pid1);
   window.database.setPlayer2(pid2);
-  console.log(scorer.players, scorer.game);
+  console.log('PLAYERS', scorer.players, '\nGAME', scorer.game);
 
   // Initialize perfect leg for given start score
   scorer.startScore = parseInt(startScore);
@@ -79,17 +79,19 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
 }
 
 
+// This function runs at the beginning of each match
 async function startMatch() {
 
   // Create a new match within the current game
   scorer.match = await window.database.createMatch(scorer.game);
 
   // Start first leg of the match
-  console.log(scorer.match);
+  console.log('MATCH', scorer.match);
   startLeg();
 }
 
 
+// This function runs at the beginning of each leg
 async function startLeg() {
 
   // Create a new leg within the current match
@@ -98,7 +100,7 @@ async function startLeg() {
   // Reset scores
   scorer.scores[0] = scorer.startScore;
   scorer.scores[1] = scorer.startScore;
-  console.log(scorer.leg);
+  console.log('LEG', scorer.leg);
 }
 
 
@@ -333,6 +335,7 @@ function setThrow(event) {
 
 // Update scores and reset
 function nextTurn(event) {
+
   // Check if all throws have been recorded
   if (scorer.throws.length < 3 || scorer.changingThrow !== null) {
     return;
@@ -348,6 +351,23 @@ function nextTurn(event) {
   scorer.scores[scorer.currentPlayer - 1] -= turnScore;
   $(`#p${scorer.currentPlayer}Score`).text(scorer.scores[scorer.currentPlayer - 1]);
   checkPerfectLeg(true);
+
+  // Update relevant data
+  const player = scorer.players[scorer.currentPlayer - 1];
+  player.total_thrown += turnScore;
+  player.number_thrown += 3;
+  if (turnScore == 180) {
+    player.num_180s += 1;
+  }
+  console.log('UPDATING PLAYER', player);
+
+  const leg = scorer.leg;
+  leg[`player_${scorer.currentPlayer}_darts`] = scorer.throws.map((region) => (typeof region === 'object') ? region.attr('name') : 'S0');
+  leg[`player_${scorer.currentPlayer}_score`] -= turnScore;
+  console.log('UPDATING LEG', leg);
+
+  console.log('UPDATING GAME STATUS');
+  window.database.updateGameStatus(scorer.players[0], scorer.players[1], scorer.leg);
   
   // Reset for next turn
   scorer.throws = [];

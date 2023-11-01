@@ -1,14 +1,15 @@
 const sqlite = require('sqlite3').verbose();
 
 let db = new sqlite.Database('./DartsDatabase.db', (err) => {
-    console.log(err)
-  });
+  if (err)
+    console.log(err);
+});
 
 
 function init_db() {
   // Write Database tables here if they do not already exist
   // Players
-  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, num_checkouts_100 TEXT NOT NULL, num_180s INTEGER NOT NULL DEFAULT 0, num_doubles INTEGER NOT NULL DEFAULT 0)")
+  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, last_win TEXT NOT NULL, num_checkouts_100 INTEGER NOT NULL DEFAULT 0, num_180s INTEGER NOT NULL DEFAULT 0, num_doubles INTEGER NOT NULL DEFAULT 0)")
   // Legs, delimit darts with , and |
   db.run("CREATE TABLE IF NOT EXISTS Legs (lid INTEGER PRIMARY KEY AUTOINCREMENT, player_1_score INTEGER NOT NULL, player_1_darts TEXT NOT NULL, player_2_score INTEGER NOT NULL, player_2_darts TEXT NOT NULL, match INTEGER NOT NULL, Foreign Key(match) references Matches(mid))")
   // Matches
@@ -59,8 +60,8 @@ function create_player(first_name, last_name) {
 }
 
 function update_player(player) {
-    db.run("UPDATE Players Set first_name = ?, last_name = ?, total_thrown = ?, number_thrown = ?, league_rank = ?, last_win = ?, num_180s = ? where pid = ?",
-        [player.first_name, player.last_name, player.total_thrown, player.number_thrown, player.league_rank, player.last_win, player.num_180s, player.player_id],
+    db.run("UPDATE Players Set first_name = ?, last_name = ?, total_thrown = ?, number_thrown = ?, league_rank = ?, last_win = ?, num_checkouts_100 = ?, num_180s = ? where pid = ?",
+        [player.first_name, player.last_name, player.total_thrown, player.number_thrown, player.league_rank, player.last_win, player.num_checkouts_100, player.num_180s, player.player_id],
         function(err) {
         if (err) return console.log(err.message);
         }

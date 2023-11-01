@@ -160,7 +160,10 @@ const createWindows = () => {
     })
   });
 
-  ipcMain.handle('update-game-status', (event) => {
+  ipcMain.handle('update-game-status', (event, player1, player2, leg) => {
+    player_1 = player1;
+    player_2 = player2;
+    current_leg = leg;
     database.update_player(player_1);
     database.update_player(player_2);
     database.update_leg(current_leg);
