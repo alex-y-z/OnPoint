@@ -162,19 +162,20 @@ const createWindows = () => {
     })
   });
 
+  ipcMain.handle('set-match-winner', (event, winner) => {
+    current_match.winner = winner;
+    database.update_match(current_match);
+  })
 
+  ipcMain.handle('set-game-winner', (event, winner) => {
+    current_game.winner = winner;
+    database.update_game(current_game);
+  })
 
-  ipcMain.handle('update-game-status', (event, player1, player2, leg, match, game) => {
+  ipcMain.handle('update-game-status', (event, player1, player2, leg) => {
     player_1 = Object.assign(new Player(), player1);
     player_2 = Object.assign(new Player(), player2);
     current_leg = Object.assign(new Leg(), leg);
-    current_match = Object.assign(new Match(), match);
-    current_game = Object.assign(new Game(), game);
-    console.log(player_1);
-    console.log(player_2);
-    console.log(current_leg);
-    console.log(current_match);
-    console.log(current_game);
     database.update_player(player_1);
     database.update_player(player_2);
     database.update_leg(current_leg);

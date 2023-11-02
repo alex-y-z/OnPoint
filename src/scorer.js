@@ -367,7 +367,7 @@ function nextTurn(event) {
   console.log('UPDATING LEG', leg);
 
   console.log('UPDATING GAME STATUS');
-  window.database.updateGameStatus(scorer.players[0], scorer.players[1], scorer.leg, scorer.match, scorer.game);
+  window.database.updateGameStatus(scorer.players[0], scorer.players[1], scorer.leg);
   
   // Reset for next turn
   scorer.throws = [];
