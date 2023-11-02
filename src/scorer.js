@@ -362,12 +362,12 @@ function nextTurn(event) {
   console.log('UPDATING PLAYER', player);
 
   const leg = scorer.leg;
-  leg[`player_${scorer.currentPlayer}_darts`] = scorer.throws.map((region) => (typeof region === 'object') ? region.attr('name') : 'S0');
+  leg[`player_${scorer.currentPlayer}_darts`].push(scorer.throws.map((region) => (typeof region === 'object') ? region.attr('name') : 'S0'));
   leg[`player_${scorer.currentPlayer}_score`] -= turnScore;
   console.log('UPDATING LEG', leg);
 
   console.log('UPDATING GAME STATUS');
-  window.database.updateGameStatus(scorer.players[0], scorer.players[1], scorer.leg);
+  window.database.updateGameStatus(scorer.players[0], scorer.players[1], scorer.leg, scorer.match, scorer.game);
   
   // Reset for next turn
   scorer.throws = [];

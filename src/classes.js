@@ -2,26 +2,40 @@ const {allowed_throws, winning_throws} = require("./winning_move");
 const {db} = require("./database");
 
 throws = new Map(Array.from(allowed_throws, a => a.reverse()))
+throws["S0"] = 0;
 doubles = new Map(Array.from(winning_throws, a => a.reverse()))
 doubles.delete("B50")
 
 // A class to represent each player in the game.
 class Player {
-    constructor (sqlResponse) {
-        this.player_id = sqlResponse.pid
-        this.first_name = sqlResponse.first_name
-        this.last_name = sqlResponse.last_name
-        this.total_thrown = sqlResponse.total_thrown
-        this.number_thrown = sqlResponse.number_thrown
-        this.league_rank = sqlResponse.league_rank
-        this.last_win = sqlResponse.last_win
-        this.num_checkouts_100 = sqlResponse.num_checkouts_100
-        this.num_180s = sqlResponse.num_180s
+    constructor (sqlResponse=undefined) {
+        if(sqlResponse === undefined){
+            this.pid = undefined
+            this.first_name = undefined
+            this.last_name = undefined
+            this.total_thrown = undefined
+            this.number_thrown = undefined
+            this.league_rank = undefined
+            this.num_doubles = undefined
+            this.num_checkouts_100 = undefined
+            this.num_180s = undefined
+        }
+        else {
+            this.pid = sqlResponse.pid
+            this.first_name = sqlResponse.first_name
+            this.last_name = sqlResponse.last_name
+            this.total_thrown = sqlResponse.total_thrown
+            this.number_thrown = sqlResponse.number_thrown
+            this.league_rank = sqlResponse.league_rank
+            this.num_doubles = sqlResponse.num_doubles
+            this.num_checkouts_100 = sqlResponse.num_checkouts_100
+            this.num_180s = sqlResponse.num_180s
+        }
         //other parameters we generate as needed
     };
 
     getStats() {
-        return db.all(`Select * from Matches where player_1 = ? or player_2 = ?`,[this.player_id, this.player_id], (err, result) => {
+        return db.all(`Select * from Matches where player_1 = ? or player_2 = ?`,[this.pid, this.pid], (err, result) => {
             if(err) {
                 return 0;
             }
@@ -31,7 +45,7 @@ class Player {
                 result.forEach((match) => {
                     if (match.winner){
                         total_games++;
-                        if (match.winner == this.player_id){
+                        if (match.winner == this.pid){
                             total_wins++;
                         }
                     }
@@ -39,10 +53,10 @@ class Player {
                 return {
                     league_rank: this.league_rank,
                     average_score: this.total_thrown / this.number_thrown,
-                    last_win: this.last_win,
                     total_thrown: this.total_thrown,
                     num_checkouts_100: this.num_checkouts_100,
                     num_180s: this.num_180s,
+                    num_doubles: this.num_doubles,
                     win_percent: total_wins / total_games,
                     //probably need to discuss what "average season score" means before impl
                 }
@@ -61,14 +75,32 @@ class Player {
 // A class to represent each leg of the match.
 class Leg {
     constructor (sqlResponse) {
-        this.leg_id = sqlResponse.lid
-        this.player_1_score = sqlResponse.player_1_score
-        this.player_2_score = sqlResponse.player_2_score
-        let player_1_turns = sqlResponse.player_1_darts.split("|")
-        this.player_1_darts = Array.from(player_1_turns, a => a.split(","))
-        let player_2_turns = sqlResponse.player_2_darts.split("|")
-        this.player_2_darts = Array.from(player_2_turns, a => a.split(","))
-        this.match = sqlResponse.match
+        if(sqlResponse === undefined){
+            this.lid = undefined
+            this.player_1_score = undefined
+            this.player_2_score = undefined
+            this.player_1_darts = undefined
+            this.player_2_darts = undefined
+            this.match = undefined
+        }
+        else {
+            this.lid = sqlResponse.lid
+            this.player_1_score = sqlResponse.player_1_score
+            this.player_2_score = sqlResponse.player_2_score
+            if(sqlResponse.player_1_darts != ""){
+                let player_1_turns = sqlResponse.player_1_darts.split("|")
+                this.player_1_darts = Array.from(player_1_turns, a => a.split(","))
+            }
+            else this.player_1_darts = []
+            if(sqlResponse.player_1_darts != ""){
+                let player_2_turns = sqlResponse.player_2_darts.split("|")
+                this.player_2_darts = Array.from(player_2_turns, a => a.split(","))
+            }
+            else this.player_2_darts = []
+            this.match = sqlResponse.match
+            console.log(this.player_1_darts);
+            console.log(this.player_2_darts);
+        }
     };
 
     // Pulls from the database
@@ -119,17 +151,38 @@ class Leg {
         })
     }
 
+    getPlayerDartsString(darts) {
+        let str = "";
+        darts.forEach((turn) => {
+            console.log(turn);
+            turn.forEach((player_throw) => {
+                str = str + player_throw + ",";
+            })
+            str = str + "|";
+        })
+        if (str.length > 0)
+        return str.slice(0, -1);
+        else return str;
+    }
+
 
 }
 
 // A class to represent each match.
 class Match {
-    constructor (sqlResponse) {
-        // 
-        this.match_id = sqlResponse.mid;
-        this.winner = sqlResponse.winner;
-        this.legs = sqlResponse.legs === null ? [] : Array.from(sqlResponse.legs, a => a.split(','))
-        this.game = sqlResponse.game
+    constructor (sqlResponse=undefined) {
+        if(sqlResponse === undefined){
+            this.mid = undefined
+            this.winner = undefined
+            this.legs = []
+            this.game = undefined
+        }
+        else{
+            this.mid = sqlResponse.mid;
+            this.winner = sqlResponse.winner;
+            this.legs = sqlResponse.legs === null ? [] : Array.from(sqlResponse.legs, a => a.split(','))
+            this.game = sqlResponse.game
+        }
     };
 
     getLegs() {
@@ -216,19 +269,35 @@ class Match {
 
 // A class to represent the game.
 class Game {
-    constructor (sqlResponse) {
-        this.game_id = sqlResponse.gid;
-        this.name = sqlResponse.name;
-        this.player_1 = sqlResponse.player_1;
-        this.player_2 = sqlResponse.player_2;
-        this.winner = sqlResponse.winner;
-        this.official = sqlResponse.official;
-        this.location = sqlResponse.location;
-        this.date = sqlResponse.date;
-        this.leg_num = sqlResponse.leg_num;
-        this.match_num = sqlResponse.match_num;
-        this.start_score = sqlResponse.start_score;
-        this.matches = sqlResponse.matches === null ? [] : Array.from(sqlResponse.matches, a => a.split(','));
+    constructor (sqlResponse=undefined) {
+        if(sqlResponse === undefined){
+            this.gid = undefined;
+            this.name = undefined;
+            this.player_1 = undefined;
+            this.player_2 = undefined;
+            this.winner = undefined;
+            this.official = undefined;
+            this.location = undefined;
+            this.date = undefined;
+            this.leg_num = undefined;
+            this.match_num = undefined;
+            this.start_score = undefined;
+            this.matches = [];
+        }
+        else{
+            this.gid = sqlResponse.gid;
+            this.name = sqlResponse.name;
+            this.player_1 = sqlResponse.player_1;
+            this.player_2 = sqlResponse.player_2;
+            this.winner = sqlResponse.winner;
+            this.official = sqlResponse.official;
+            this.location = sqlResponse.location;
+            this.date = sqlResponse.date;
+            this.leg_num = sqlResponse.leg_num;
+            this.match_num = sqlResponse.match_num;
+            this.start_score = sqlResponse.start_score;
+            this.matches = sqlResponse.matches === null ? [] : Array.from(sqlResponse.matches, a => a.split(','));
+        }
 
     };
 
