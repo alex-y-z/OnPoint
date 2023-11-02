@@ -94,6 +94,7 @@ const createWindows = () => {
       .then((lid) => {
         database.get_leg_by_id(lid).then((leg) => {
           current_leg = new Leg(leg);
+          database.update_match(current_match);
           resolve(current_leg);
         });
       });
@@ -114,6 +115,7 @@ const createWindows = () => {
       .then((mid) => {
         database.get_match_by_id(mid).then((match) => {
           current_match = new Match(match);
+          database.update_game(current_game);
           resolve(current_match);
         });
       });
@@ -160,13 +162,25 @@ const createWindows = () => {
     })
   });
 
+  ipcMain.handle('set-match-winner', (event, winner) => {
+    current_match.winner = winner;
+    database.update_match(current_match);
+  })
+
+  ipcMain.handle('set-game-winner', (event, winner) => {
+    current_game.winner = winner;
+    database.update_game(current_game);
+  })
+
   ipcMain.handle('update-game-status', (event, player1, player2, leg) => {
-    player_1 = player1;
-    player_2 = player2;
-    current_leg = leg;
+    player_1 = Object.assign(new Player(), player1);
+    player_2 = Object.assign(new Player(), player2);
+    current_leg = Object.assign(new Leg(), leg);
     database.update_player(player_1);
     database.update_player(player_2);
     database.update_leg(current_leg);
+    database.update_match(current_match);
+    database.update_game(current_game);
   });
 
   ipcMain.handle('get-current-scores', (event) => {
