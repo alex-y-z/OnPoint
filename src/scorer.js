@@ -7,6 +7,13 @@ const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
 const stats = $('#statistics');
 
+const VERIFICATION = {
+  BUST: 1,
+  WIN_LEG: 2,
+  NEXT_TURN: 3,
+  NEW_GAME: 4
+}
+
 const scorer = {
   game: null,
   match: null,
@@ -333,21 +340,45 @@ function setThrow(event) {
 }
 
 
-// Update scores and reset
-function nextTurn(event) {
-
-  // Check if all throws have been recorded
-  if (scorer.throws.length < 3 || scorer.changingThrow !== null) {
-    return;
-  }
-  
-  // Calculate turn score
+// Sum of all current throws
+function getTurnScore() {
   let turnScore = 0;
   for (const region of scorer.throws) {
     if (typeof region === 'object') {
       turnScore += parseInt(region.attr('data-value'));
     }
   }
+  return turnScore;
+}
+
+
+// Check win/bust conditions after each throw
+function checkThrow() {
+  const turnScore = getTurnScore();
+  const totalScore = scorer.scores[scorer.currentPlayer - 1] - turnScore;
+  const lastThrow = scorer.throws[scorer.currentThrow].attr('name');
+
+  // Leg won if score reaches 0 on a double/bullseye
+  if (totalScore == 0 && (lastThrow.search('D') || lastThrow == 'B50')) {
+    showVerification(VERIFICATION.WIN_LEG);
+  }
+  // Aside from the win conditions above, scores <= 1 are considered bust
+  else if (totalScore <= 1) {
+    showVerification(VERIFICATION.BUST);
+  }
+}
+
+
+// Update scores and reset
+function nextTurn(event, isBust) {
+
+  // Check if all throws have been recorded or the player went bust
+  if ((scorer.throws.length < 3 || scorer.changingThrow !== null) && !isBust) {
+    return;
+  }
+  
+  // Calculate turn score
+  const turnScore = getTurnScore();
   scorer.scores[scorer.currentPlayer - 1] -= turnScore;
   $(`#p${scorer.currentPlayer}Score`).text(scorer.scores[scorer.currentPlayer - 1]);
   checkPerfectLeg(true);
@@ -362,12 +393,12 @@ function nextTurn(event) {
   console.log('UPDATING PLAYER', player);
 
   const leg = scorer.leg;
-  leg[`player_${scorer.currentPlayer}_darts`] = scorer.throws.map((region) => (typeof region === 'object') ? region.attr('name') : 'S0');
+  leg[`player_${scorer.currentPlayer}_darts`] = scorer.throws.map((region) => (typeof region === 'object') ? region.attr('name') : 'M/B');
   leg[`player_${scorer.currentPlayer}_score`] -= turnScore;
   console.log('UPDATING LEG', leg);
 
-  console.log('UPDATING GAME STATUS');
   window.database.updateGameStatus(scorer.players[0], scorer.players[1], scorer.leg);
+  console.log('UPDATING GAME STATUS');
   
   // Reset for next turn
   scorer.throws = [];
@@ -430,6 +461,12 @@ function changeColor() {
     document.getElementById("p1LegsWon").style.color = "white";
     document.getElementById("p1Score").style.color = "white";
   }
+}
+
+
+// Display confirmation to ensure that the leg has been won
+function verifyLegWinner() {
+  console.log('verifying leg winner')
 }
 
 
