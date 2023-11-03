@@ -7,9 +7,9 @@ const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
 const stats = $('#statistics');
 
-const VERIFICATION = {
+const CONFIRMATION = {
   BUST: 1,
-  WIN_LEG: 2,
+  LEG_WIN: 2,
   NEXT_TURN: 3,
   NEW_GAME: 4
 }
@@ -20,6 +20,8 @@ const scorer = {
   leg: null,
   players: [],
   scores: [0, 0],
+  legWins: [0, 0],
+  setWins: [0, 0],
   throws: [],
   perfectLeg: null,
   startScore: null,
@@ -61,6 +63,10 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
   scorer.startScore = parseInt(startScore);
   scorer.perfectLeg = await window.replication.getPerfectLeg(startScore);
 
+  // Initialize scores
+  scorer.scores[0] = scorer.startScore;
+  scorer.scores[1] = scorer.startScore;
+
   // Set up scoreboard
   const name1 = `${scorer.players[0].first_name} ${scorer.players[0].last_name}`;
   const name2 = `${scorer.players[1].first_name} ${scorer.players[1].last_name}`;
@@ -73,12 +79,13 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
   regions.on('mouseleave', hideDartPreview);
   throwOptions.on('click', setThrow);
   stats.find('.dropdown-content>option').on('click', showStatistic);
-  $('#next-turn-button').on('click', nextTurn);
 
-  // TODO: turn this into a confirmation
+  $('#next-turn-button').on('click', () => {
+    showConfirmation(CONFIRMATION.NEXT_TURN);
+  });
+
   $('#new-game-button').on('click', (event) => {
-    window.replication.resetScreen();
-    location.reload();
+    showConfirmation(CONFIRMATION.NEW_GAME);
   });
 
   // Start first match of the game
@@ -87,7 +94,22 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
 
 
 // This function runs at the beginning of each match
-async function startMatch() {
+async function startMatch(isWin) {
+
+  // Handle match win
+  if (isWin) {
+    scorer.setWins[scorer.currentPlayer - 1]++;
+
+    // Check if game has been won
+    const setWins = scorer.setWins[scorer.currentPlayer - 1];
+    if (setWins == scorer.game.match_num) {
+      loadWinner(winner);
+      return;
+    }
+
+    // Update scoreboard
+    $(`#p${scorer.currentPlayer}SetsWon`).text(setWins);
+  }
 
   // Create a new match within the current game
   scorer.match = await window.database.createMatch(scorer.game);
@@ -99,14 +121,34 @@ async function startMatch() {
 
 
 // This function runs at the beginning of each leg
-async function startLeg() {
+async function startLeg(isWin) {
+
+  // Handle leg win
+  console.log('LEG WIN?', scorer.currentPlayer, scorer.scores[scorer.currentPlayer - 1]);
+  if (isWin) {
+    scorer.legWins[scorer.currentPlayer - 1]++;
+    
+    // Check if match has been won
+    const legWins = scorer.legWins[scorer.currentPlayer - 1];
+    if (legWins == scorer.game.leg_num) {
+      startMatch(true);
+      return;
+    }
+
+    // Reset scores
+    scorer.scores[0] = scorer.startScore;
+    scorer.scores[1] = scorer.startScore;
+
+    // Update scoreboard
+    $(`#p${scorer.currentPlayer}LegsWon`).text(legWins);
+    scoreboard.find('#p1Score').text(scorer.startScore);
+    scoreboard.find('#p2Score').text(scorer.startScore);
+
+    // TODO: alternate who goes first
+  }
 
   // Create a new leg within the current match
   scorer.leg = await window.database.createLeg(scorer.match);
-
-  // Reset scores
-  scorer.scores[0] = scorer.startScore;
-  scorer.scores[1] = scorer.startScore;
   console.log('LEG', scorer.leg);
 }
 
@@ -239,10 +281,6 @@ function addDart(event) {
   region.attr('data-darts', (_, value) => (value === undefined) && 1 || parseInt(value) + 1);
   scorer.throws.splice(index, 0, region);
 
-  // Update indicators
-  checkCombos();
-  checkPerfectLeg(false);
-
   // Update existing marker or add new one
   var markerPosX = 0, markerPosY = 0;
   if (region.attr('data-darts') > 1) {
@@ -266,6 +304,11 @@ function addDart(event) {
 
   // Replicate the result to the spectator
   window.replication.addDart(index, regionId, markerPosX, markerPosY);
+
+  // Update indicators
+  checkCombos();
+  checkPerfectLeg(false);
+  checkThrow();
 }
 
 
@@ -356,15 +399,16 @@ function getTurnScore() {
 function checkThrow() {
   const turnScore = getTurnScore();
   const totalScore = scorer.scores[scorer.currentPlayer - 1] - turnScore;
-  const lastThrow = scorer.throws[scorer.currentThrow].attr('name');
+  const lastThrow = scorer.throws[scorer.currentThrow - 1].attr('name');
+  console.log(turnScore, lastThrow);
 
   // Leg won if score reaches 0 on a double/bullseye
   if (totalScore == 0 && (lastThrow.search('D') || lastThrow == 'B50')) {
-    showVerification(VERIFICATION.WIN_LEG);
+    showConfirmation(CONFIRMATION.LEG_WIN);
   }
   // Aside from the win conditions above, scores <= 1 are considered bust
   else if (totalScore <= 1) {
-    showVerification(VERIFICATION.BUST);
+    showConfirmation(CONFIRMATION.BUST);
   }
 }
 
@@ -393,7 +437,8 @@ function nextTurn(event, isBust) {
   console.log('UPDATING PLAYER', player);
 
   const leg = scorer.leg;
-  leg[`player_${scorer.currentPlayer}_darts`] = scorer.throws.map((region) => (typeof region === 'object') ? region.attr('name') : 'M/B');
+  leg[`player_${scorer.currentPlayer}_darts`].push(new Array(3));
+  leg[`player_${scorer.currentPlayer}_darts`][scorer.currentTurn] = scorer.throws.map((region) => (typeof region === 'object') ? region.attr('name') : 'M/B');
   leg[`player_${scorer.currentPlayer}_score`] -= turnScore;
   console.log('UPDATING LEG', leg);
 
@@ -464,9 +509,62 @@ function changeColor() {
 }
 
 
-// Display confirmation to ensure that the leg has been won
-function verifyLegWinner() {
-  console.log('verifying leg winner')
+// Reset both renderers
+function newGame() {
+  window.replication.resetScreen();
+  location.reload();
+}
+
+
+// Display confirmation to finalize an irreversible action
+function showConfirmation(confirmType) {
+  const confirmPanel = $('#confirm-panel');
+  const message = $('#notice-text');
+  let callback = null;
+
+  // Set notice text according to enumerated type
+  switch (confirmType) {
+    case CONFIRMATION.BUST:
+      console.log('verifying bust');
+      message.text('Bust condition met for current player.');
+      callback = nextTurn;
+      break;
+    case CONFIRMATION.LEG_WIN:
+      console.log('verifying leg win');
+      message.text('Win condition met for current player.');
+      callback = function() { startLeg(true); };
+      break;
+    case CONFIRMATION.NEXT_TURN:
+      console.log('verifying next turn');
+      message.text('Proceed to next turn?');
+      callback = nextTurn;
+      break;
+    case CONFIRMATION.NEW_GAME:
+      console.log('verifying new game');
+      message.text('Proceed to new game setup?');
+      callback = newGame;
+      break;
+  }
+
+  if (!callback) {
+    return;
+  }
+
+  // Show confirmation and register click events
+  confirmPanel.slideDown('fast', () => {
+    confirmPanel.find('#confirm-button').on('click', function() {
+      $('#confirm-button').off('click');
+      $('#cancel-button').off('click');
+      confirmPanel.slideUp('fast');
+      callback();
+    });
+
+    confirmPanel.find('#cancel-button').on('click', function() {
+      $('#confirm-button').off('click');
+      $('#cancel-button').off('click');
+      confirmPanel.slideUp('fast');
+    });
+  });
 }
 
 

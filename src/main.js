@@ -76,10 +76,6 @@ const createWindows = () => {
     return database.create_player(first_name, last_name);
   });
   
-  ipcMain.handle('update-player', (event, player) => {
-    database.update_player(new Player(player));
-  });
-  
   ipcMain.handle('get-player-by-id', (event, pid) => {
     return database.get_player_by_id(pid);
   });
@@ -101,10 +97,6 @@ const createWindows = () => {
     });
   });
   
-  ipcMain.handle('update-leg', (event, leg) => {
-    database.update_leg(new Leg(leg));
-  });
-  
   ipcMain.handle('get-leg-by-id', (event, lid) => {
     return database.get_leg_by_id(lid);
   });
@@ -122,10 +114,6 @@ const createWindows = () => {
     })
   });
   
-  ipcMain.handle('update-match', (event, match) => {
-    database.update_match(new Match(match));
-  });
-  
   ipcMain.handle('get-match-by-id', (event, mid) => {
     return database.get_match_by_id(mid);
   });
@@ -140,10 +128,6 @@ const createWindows = () => {
         });
       });
     })
-  });
-  
-  ipcMain.handle('update-game', (event, game) => {
-    database.update_game(new Game(game));
   });
   
   ipcMain.handle('get-game-by-id', (event, gid) => {

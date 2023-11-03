@@ -50,8 +50,8 @@ async function get_player_by_id(pid) {
 function create_player(first_name, last_name) {
   return new Promise(function(resolve, reject) 
   {
-    db.run(`INSERT INTO Players (first_name, last_name, league_rank, last_win) VALUES(?,?,?,?)`,
-      [first_name, last_name, "Unranked", "None"], function(err) {
+    db.run(`INSERT INTO Players (first_name, last_name, league_rank) VALUES(?,?,?)`,
+      [first_name, last_name, "Unranked"], function(err) {
           if (err) return reject(err.message);
           else resolve(this.lastID);
       }

@@ -20,19 +20,15 @@ contextBridge.exposeInMainWorld('replication', {
 contextBridge.exposeInMainWorld('database', {
     requestPlayers: () => ipcRenderer.invoke('request-players'),
     createPlayer: (...args) => ipcRenderer.invoke('create-player', ...args),
-    updatePlayer: (...args) => ipcRenderer.invoke('update-player', ...args),
     getPlayerByID: (...args) => ipcRenderer.invoke('get-player-by-id', ...args),
     searchPlayersByFirst: (...args) => ipcRenderer.invoke('search-players-by-first', ...args),
     setPlayer1: (...args) => ipcRenderer.invoke('set-player-1', ...args),
     setPlayer2: (...args) => ipcRenderer.invoke('set-player-2', ...args),
     createLeg: (...args) => ipcRenderer.invoke('create-leg', ...args),
-    updateLeg: (...args) => ipcRenderer.invoke('update-leg', ...args),
     getLegByID: (...args) => ipcRenderer.invoke('get-leg-by-id', ...args),
     createMatch: (...args) => ipcRenderer.invoke('create-match', ...args),
-    updateMatch: (...args) => ipcRenderer.invoke('update-match', ...args),
     getMatchById: (...args) => ipcRenderer.invoke('get-match-by-id', ...args),
     createGame: (...args) => ipcRenderer.invoke('create-game', ...args),
-    updateGame: (...args) => ipcRenderer.invoke('update-game', ...args),
     getGameByID: (...args) => ipcRenderer.invoke('get-game-by-id', ...args),
     updateGameStatus: (...args) => ipcRenderer.invoke('update-game-status', ...args)
 });
