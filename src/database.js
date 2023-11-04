@@ -92,7 +92,6 @@ function update_leg(leg) {
   [leg.player_1_score, leg.getPlayerDartsString(leg.player_1_darts), leg.player_2_score, leg.getPlayerDartsString(leg.player_2_darts), leg.lid],
   function (err) {
     if (err) return console.log(err.message);
-    console.log(leg.getPlayerDartsString(leg.player_1_darts));
   }
   )
 }

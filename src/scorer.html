@@ -620,7 +620,7 @@
         <caption>Scoreboard</caption>
         <thead>
           <!--HEADER-->
-          <tr id="score-col-names">
+          <tr>
             <th scope="col">Name</th>
             <th id="set-col" scope="col">Sets</th>
             <th id="leg-col" scope="col">Legs</th>
@@ -633,9 +633,9 @@
             <td id="p1" style="position: relative">
               <img id="perfect-label-1" class="perfect-label" src="images/perfect_label.svg">
             </td>
-            <td id="p1SetsWon"></td>
-            <td id="p1LegsWon"></td>
-            <td id="p1Score"></td>
+            <td id="p1SetsWon" class="table-num"></td>
+            <td id="p1LegsWon" class="table-num"></td>
+            <td id="p1Score" class="table-num"></td>
           </tr>
 
           <!--Row 2-->
@@ -643,29 +643,30 @@
             <td id="p2" style="position: relative">
               <img id="perfect-label-2" class="perfect-label" src="images/perfect_label.svg">
             </td>   
-            <td id="p2SetsWon"></td>
-            <td id="p2LegsWon"></td>
-            <td id="p2Score"></td>
+            <td id="p2SetsWon" class="table-num"></td>
+            <td id="p2LegsWon" class="table-num"></td>
+            <td id="p2Score" class="table-num"></td>
           </tr>
         </tbody>
       </table>
 
       <div id="statistics">
+        <hr width="90%" size="1" color="black" style="position: absolute; top: 0"/>
         <table id="statistics-table">
           <caption>In-Process Statistics</caption>
           <thead>
             <!--HEADER-->
             <tr>
-              <th scope="col" colspan="2">Match Statistics</th>
-              <th scope="col" colspan=2>Player 1 Statistics</th>
-              <th scope="col" colspan="2">Player 2 Statistics</th>
+              <th scope="col">Match Statistics</th>
+              <th scope="col">Player 1 Statistics</th>
+              <th scope="col">Player 2 Statistics</th>
             </tr>
           </thead>
           <tbody>
             <!--ROW 1-->
             <!--Place Dropdown Buttons on Each Row/Column-->
             <tr>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                     <div class="dropdown-content" name="m_1">
@@ -677,7 +678,7 @@
                     </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                     <div class="dropdown-content" name="p1_1">
@@ -689,7 +690,7 @@
                     </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                     <div class="dropdown-content" name="p2_1">
@@ -705,7 +706,7 @@
 
             <!--ROW 2-->
             <tr>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                   <div class="dropdown-content" name="m_2">
@@ -717,7 +718,7 @@
                   </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                   <div class="dropdown-content" name="p1_2">
@@ -729,7 +730,7 @@
                   </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                   <div class="dropdown-content" name="p2_2">
@@ -745,7 +746,7 @@
 
             <!--ROW 3-->
             <tr>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                     <div class="dropdown-content" name="m_3">
@@ -757,7 +758,7 @@
                   </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                   <div class="dropdown-content" name="p1_3">
@@ -769,7 +770,7 @@
                   </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                   <div class="dropdown-content" name="p2_3">
@@ -787,19 +788,21 @@
         </table>
       </div>
 
-      <div id="control-panel">
+      <div id="control-wrapper">
         <div id="confirm-panel">
           <div id="confirm-options">
             <button id="cancel-button">Cancel</button>
             <button id="confirm-button">Confirm</button>
           </div>
           <div id="notice-bar">
-            <img id="notice-icon" src="images/notice.svg">
+            <img id="notice-icon" src="images/warning.svg">
             <span id="notice-text">Bust condition met for current player.</span>
           </div>
         </div>
-        <button id='next-turn-button' class="control-button">Next Turn</button>
-        <button id='new-game-button' class="control-button">New Game</button>
+        <div id="control-panel">
+          <button id='next-turn-button' class="control-button">Next Turn</button>
+          <button id='new-game-button' class="control-button">New Game</button>
+        </div>
       </div>
     </div>
 

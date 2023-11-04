@@ -49,7 +49,7 @@ const createWindows = () => {
   const channels = [
     'add-dart', 'change-dart', 'remove-dart', 'next-turn', 'resize-board',
     'getFormInfo', 'stat-select', 'change-combo', 'change-perfect-leg',
-    'reset-screen', 'showWinner'
+    'set-leg-winner', 'reset-screen', 'showWinner'
   ];
 
   channels.forEach(channel => {
@@ -175,8 +175,6 @@ const createWindows = () => {
   scorerWindow.loadFile(path.join(__dirname, 'scorer.html'));
   spectatorWindow.loadFile(path.join(__dirname, 'spectator.html'));
 };
-
-
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

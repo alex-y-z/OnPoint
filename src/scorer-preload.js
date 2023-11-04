@@ -2,6 +2,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 // Expose remote functions/events to the main process
 contextBridge.exposeInMainWorld('replication', {
+
+    // Events
     addDart: (...args) => ipcRenderer.send('add-dart', ...args),
     changeDart: (...args) => ipcRenderer.send('change-dart', ...args),
     removeDart: (...args) => ipcRenderer.send('remove-dart', ...args),
@@ -9,12 +11,15 @@ contextBridge.exposeInMainWorld('replication', {
     resizeBoard: (...args) => ipcRenderer.send('resize-board', ...args),
     getFormInfo: (...args) => ipcRenderer.send('getFormInfo', ...args),
     statSelect: (...args) => ipcRenderer.send('stat-select', ...args),
-    getWinningMoves: (...args) => ipcRenderer.invoke('get-winning-moves', ...args),
-    getPerfectLeg: (...args) => ipcRenderer.invoke('get-perfect-leg', ...args),
     changeCombo: (...args) => ipcRenderer.send('change-combo', ...args),
     changePerfectLeg: (...args) => ipcRenderer.send('change-perfect-leg', ...args),
+    setLegWinner: (...args) => ipcRenderer.send('set-leg-winner', ...args),
     resetScreen: (...args) => ipcRenderer.send('reset-screen', ...args),
-    showWinner: (...args) => ipcRenderer.send('showWinner', ...args)
+    showWinner: (...args) => ipcRenderer.send('showWinner', ...args),
+
+    // Functions
+    getWinningMoves: (...args) => ipcRenderer.invoke('get-winning-moves', ...args),
+    getPerfectLeg: (...args) => ipcRenderer.invoke('get-perfect-leg', ...args)
 });
 
 contextBridge.exposeInMainWorld('database', {
@@ -30,5 +35,7 @@ contextBridge.exposeInMainWorld('database', {
     getMatchById: (...args) => ipcRenderer.invoke('get-match-by-id', ...args),
     createGame: (...args) => ipcRenderer.invoke('create-game', ...args),
     getGameByID: (...args) => ipcRenderer.invoke('get-game-by-id', ...args),
-    updateGameStatus: (...args) => ipcRenderer.invoke('update-game-status', ...args)
+    updateGameStatus: (...args) => ipcRenderer.invoke('update-game-status', ...args),
+    setMatchWinner: (...args) => ipcRenderer.invoke('set-match-winner', ...args),
+    setGameWinner: (...args) => ipcRenderer.invoke('set-game-winner', ...args)
 });

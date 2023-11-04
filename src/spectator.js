@@ -19,6 +19,7 @@ function init() {
   window.replication.onPerfectLegChanged(changePerfectLeg);
   window.replication.onGetFormInfo(setUpScoreboard);
   window.replication.onStatSelected(showStatistic);
+  window.replication.onLegWon(clearBoard);
   window.replication.onScreenReset(() => { location.reload(); });
   window.replication.onShowWinner(showWinner);
 }
@@ -92,13 +93,7 @@ function nextTurn(event, playerNum, newScore) {
   $(`#p${playerNum}Score`).text(newScore);
 
   // Clear board
-  dartboard.find('.selected-region').removeAttr('data-darts');
-  dartboard.find('.selected-region').removeClass('selected-region');
-  dartboard.find('.dart-marker').fadeOut(100, function() {
-    $(this).remove();
-  });
-  throwPanel.find('.throw-label > button').text('');
-  comboLabels.slideUp('fast');
+  clearBoard();
 }
 
 
@@ -123,7 +118,7 @@ function changeColor() {
     document.getElementById("p2SetsWon").style.color = "white";
     document.getElementById("p2LegsWon").style.color = "white";
     document.getElementById("p2Score").style.color = "white";
-    
+    document.getElementById("p2").style.fontWeight = 'normal';
   }
   else {
     // Change background colors
@@ -140,6 +135,28 @@ function changeColor() {
     document.getElementById("p1SetsWon").style.color = "white";
     document.getElementById("p1LegsWon").style.color = "white";
     document.getElementById("p1Score").style.color = "white";
+    document.getElementById("p1").style.fontWeight = 'normal';
+  }
+}
+
+
+// Clear markers and throw labels
+function clearBoard(event, legWinner, startScore, legWins, setWins) {
+  dartboard.find('.selected-region').removeAttr('data-darts');
+  dartboard.find('.selected-region').removeClass('selected-region');
+  dartboard.find('.dart-marker').fadeOut(100, function() {
+    $(this).remove();
+  });
+  throwPanel.find('.throw-label > button').text('');
+  comboLabels.slideUp('fast');
+
+  // Reset scoreboard for leg win
+  if (legWinner) {
+    $('.perfect-label').removeClass('max-perfect-label min-perfect-label');
+    $(`#p${legWinner}LegsWon`).text(legWins);
+    $(`#p${legWinner}SetsWon`).text(setWins);
+    scoreboard.find('#p1Score').text(startScore);
+    scoreboard.find('#p2Score').text(startScore);
   }
 }
 

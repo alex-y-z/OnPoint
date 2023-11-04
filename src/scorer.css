@@ -19,6 +19,8 @@
   /* Text Colors */
   --tx-color-1: black;
   --tx-color-2: white;
+  --tx-color-3: rgba(0, 0, 0, 0.5);
+  --tx-color-4: rgba(255, 255, 255, 0.75);
 
   /* Border Colors */
   --br-color-1: black;
@@ -107,6 +109,7 @@ caption {
 
 #throw-panel {
   flex: 10%;
+  width: 100%;
   min-height: 5rem;
   background-color: var(--bg-color-5);
   border-radius: 0 0 10px 10px;
@@ -121,7 +124,7 @@ caption {
 .throw-dropdown {
   position: relative;
   flex: 1;
-  max-width: 200px;
+  max-width: 12rem;
   height: 60%;
   margin: 2%;
   text-align: center;
@@ -197,7 +200,6 @@ caption {
   flex-direction: column;
   position: relative;
   background-color: var(--bg-color-4);
-  border: 1px solid var(--br-color-1);
   border-radius: 10px;
   z-index: 2;
 }
@@ -231,8 +233,13 @@ td {
   color: var(--tx-color-2);
 }
 
-#score-col-names {
-  height: 40px;
+tr {
+  height: 2.5rem;
+}
+
+.table-num {
+  font-size: 1.4rem;
+  font-weight: 500;
 }
 
 .perfect-label {
@@ -261,14 +268,14 @@ td {
 /* Statistics */
 
 #statistics {
-  flex: 60%;
-  padding: 1em;
-  border-top: 1px solid var(--br-color-1);
+  flex: 54%;
+  padding: 1rem;
+  position: relative;
 }
 
 #statistics-table {
   width: 100%;
-  height: 80%;
+  height: 90%;
   border: 1px solid var(--br-color-1);
 }
 
@@ -322,14 +329,22 @@ td {
 
 /* Control Panel */
 
-#confirm-panel {
-  display: none;
-  width: 100%;
-  height: 160%;
-  position: absolute;
-  bottom: 0;
-  background-color: var(--ac-color-5);
+#control-wrapper {
+  flex: 16%;
+  min-height: 6rem;
   border-radius: 0 0 10px 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Confirmation Panel */
+#confirm-panel {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  bottom: -100%;
+  background-color: var(--ac-color-5);
+  z-index: 2;
 }
 
 #confirm-options {
@@ -383,12 +398,14 @@ td {
   align-items: center;
 }
 
+/* Control Options */
 #control-panel {
-  flex: 10%;
+  width: 100%;
+  height: 62.5%;
   min-height: 5rem;
-  position: relative;
+  position: absolute;
+  bottom: 0;
   background-color: var(--bg-color-5);
-  border-radius: 0 0 10px 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -403,7 +420,7 @@ td {
   background-color: var(--bg-color-1);
   border-radius: 6px;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: var(--tx-color-2);
   cursor: pointer;

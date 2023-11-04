@@ -98,8 +98,6 @@ class Leg {
             }
             else this.player_2_darts = []
             this.match = sqlResponse.match
-            console.log(this.player_1_darts);
-            console.log(this.player_2_darts);
         }
     };
 
@@ -154,7 +152,6 @@ class Leg {
     getPlayerDartsString(darts) {
         let str = "";
         darts.forEach((turn) => {
-            console.log(turn);
             turn.forEach((player_throw) => {
                 str = str + player_throw + ",";
             })
