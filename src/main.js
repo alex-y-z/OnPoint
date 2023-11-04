@@ -49,7 +49,7 @@ const createWindows = () => {
   const channels = [
     'add-dart', 'change-dart', 'remove-dart', 'next-turn', 'resize-board',
     'getFormInfo', 'stat-select', 'change-combo', 'change-perfect-leg',
-    'reset-screen', 'showWinner'
+    'set-leg-winner', 'reset-screen', 'showWinner'
   ];
 
   channels.forEach(channel => {
@@ -76,10 +76,6 @@ const createWindows = () => {
     return database.create_player(first_name, last_name);
   });
   
-  ipcMain.handle('update-player', (event, player) => {
-    database.update_player(new Player(player));
-  });
-  
   ipcMain.handle('get-player-by-id', (event, pid) => {
     return database.get_player_by_id(pid);
   });
@@ -94,14 +90,11 @@ const createWindows = () => {
       .then((lid) => {
         database.get_leg_by_id(lid).then((leg) => {
           current_leg = new Leg(leg);
+          database.update_match(current_match);
           resolve(current_leg);
         });
       });
     });
-  });
-  
-  ipcMain.handle('update-leg', (event, leg) => {
-    database.update_leg(new Leg(leg));
   });
   
   ipcMain.handle('get-leg-by-id', (event, lid) => {
@@ -114,14 +107,11 @@ const createWindows = () => {
       .then((mid) => {
         database.get_match_by_id(mid).then((match) => {
           current_match = new Match(match);
+          database.update_game(current_game);
           resolve(current_match);
         });
       });
     })
-  });
-  
-  ipcMain.handle('update-match', (event, match) => {
-    database.update_match(new Match(match));
   });
   
   ipcMain.handle('get-match-by-id', (event, mid) => {
@@ -140,10 +130,6 @@ const createWindows = () => {
     })
   });
   
-  ipcMain.handle('update-game', (event, game) => {
-    database.update_game(new Game(game));
-  });
-  
   ipcMain.handle('get-game-by-id', (event, gid) => {
     return database.get_game_by_id(gid);
   });
@@ -160,10 +146,25 @@ const createWindows = () => {
     })
   });
 
-  ipcMain.handle('update-game-status', (event) => {
+  ipcMain.handle('set-match-winner', (event, winner) => {
+    current_match.winner = winner;
+    database.update_match(current_match);
+  })
+
+  ipcMain.handle('set-game-winner', (event, winner) => {
+    current_game.winner = winner;
+    database.update_game(current_game);
+  })
+
+  ipcMain.handle('update-game-status', (event, player1, player2, leg) => {
+    player_1 = Object.assign(new Player(), player1);
+    player_2 = Object.assign(new Player(), player2);
+    current_leg = Object.assign(new Leg(), leg);
     database.update_player(player_1);
     database.update_player(player_2);
     database.update_leg(current_leg);
+    database.update_match(current_match);
+    database.update_game(current_game);
   });
 
   ipcMain.handle('get-current-scores', (event) => {
@@ -174,8 +175,6 @@ const createWindows = () => {
   scorerWindow.loadFile(path.join(__dirname, 'scorer.html'));
   spectatorWindow.loadFile(path.join(__dirname, 'spectator.html'));
 };
-
-
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

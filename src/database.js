@@ -1,14 +1,15 @@
 const sqlite = require('sqlite3').verbose();
 
 let db = new sqlite.Database('./DartsDatabase.db', (err) => {
-    console.log(err)
-  });
+  if (err)
+    console.log(err);
+});
 
 
 function init_db() {
   // Write Database tables here if they do not already exist
   // Players
-  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, num_checkouts_100 TEXT NOT NULL, num_180s INTEGER NOT NULL DEFAULT 0, num_doubles INTEGER NOT NULL DEFAULT 0)")
+  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, num_checkouts_100 INTEGER NOT NULL DEFAULT 0, num_180s INTEGER NOT NULL DEFAULT 0, num_doubles INTEGER NOT NULL DEFAULT 0)")
   // Legs, delimit darts with , and |
   db.run("CREATE TABLE IF NOT EXISTS Legs (lid INTEGER PRIMARY KEY AUTOINCREMENT, player_1_score INTEGER NOT NULL, player_1_darts TEXT NOT NULL, player_2_score INTEGER NOT NULL, player_2_darts TEXT NOT NULL, match INTEGER NOT NULL, Foreign Key(match) references Matches(mid))")
   // Matches
@@ -49,8 +50,8 @@ async function get_player_by_id(pid) {
 function create_player(first_name, last_name) {
   return new Promise(function(resolve, reject) 
   {
-    db.run(`INSERT INTO Players (first_name, last_name, league_rank, last_win) VALUES(?,?,?,?)`,
-      [first_name, last_name, "Unranked", "None"], function(err) {
+    db.run(`INSERT INTO Players (first_name, last_name, league_rank) VALUES(?,?,?)`,
+      [first_name, last_name, "Unranked"], function(err) {
           if (err) return reject(err.message);
           else resolve(this.lastID);
       }
@@ -59,8 +60,8 @@ function create_player(first_name, last_name) {
 }
 
 function update_player(player) {
-    db.run("UPDATE Players Set first_name = ?, last_name = ?, total_thrown = ?, number_thrown = ?, league_rank = ?, last_win = ?, num_180s = ? where pid = ?",
-        [player.first_name, player.last_name, player.total_thrown, player.number_thrown, player.league_rank, player.last_win, player.num_180s, player.player_id],
+    db.run("UPDATE Players Set first_name = ?, last_name = ?, total_thrown = ?, number_thrown = ?, league_rank = ?, num_checkouts_100 = ?, num_180s = ?, num_doubles = ? where pid = ?",
+        [player.first_name, player.last_name, player.total_thrown, player.number_thrown, player.league_rank, player.num_checkouts_100, player.num_180s, player.num_doubles, player.pid],
         function(err) {
         if (err) return console.log(err.message);
         }
@@ -72,7 +73,7 @@ function create_leg(match) {
   {
     match.getParent().then((game) => {
       db.run("INSERT INTO Legs (player_1_score, player_2_score, match, player_1_darts, player_2_darts) Values(?,?,?,?,?)",
-      [game.start_score, game.start_score, match.match_id, "", ""], // need some way to get the initial score of a game
+      [game.start_score, game.start_score, match.mid, "", ""], // need some way to get the initial score of a game
       function (err) {
         if (err) {
           reject(err) 
@@ -88,7 +89,7 @@ function create_leg(match) {
 
 function update_leg(leg) {
   db.run("UPDATE Legs Set player_1_score = ?, player_1_darts = ?, player_2_score = ?, player_2_darts = ? where lid = ?",
-  [leg.player_1_score, leg.player_1_darts, leg.player_2_score, leg.player_2_darts, leg.lid],
+  [leg.player_1_score, leg.getPlayerDartsString(leg.player_1_darts), leg.player_2_score, leg.getPlayerDartsString(leg.player_2_darts), leg.lid],
   function (err) {
     if (err) return console.log(err.message);
   }
@@ -109,7 +110,7 @@ function create_match(game) {
   return new Promise(function(resolve, reject) 
   {
     db.run("INSERT INTO Matches (game) Values(?)",
-    [game.game_id],
+    [game.gid],
     function(err) {
       if (err) {
         return reject(err);
@@ -156,7 +157,7 @@ function create_game(name, player1, player2, official, location, date, leg_num, 
 function update_game(game) {
   // rest of our properties here are readonly past creation
   db.run("UPDATE Games Set winner = ?, matches = ? where gid = ?",
-  [game.winner, game.getMatchString(), game.game_id],
+  [game.winner, game.getMatchString(), game.gid],
   function (err) {
     if (err) return console.log(err.message);
   }
