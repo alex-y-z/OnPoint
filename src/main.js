@@ -68,7 +68,7 @@ const createWindows = () => {
             p1: p1,
             p2: p2
           }
-          spectatorWindow.webContents.send('stat-select', ...args, statObject)
+          spectatorWindow.webContents.send('stat-select', statObject, ...args)
         })
       })
     })

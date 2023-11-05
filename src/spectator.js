@@ -228,7 +228,7 @@ function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum,
 // Display Statistic Scorer Selected
 // Search through the database for player/match history to calculate statistic
 // stat_type can be any keyword associated in the option list (scorer.html)
-function showStatistic(event, loc, stat_type, statistics) {
+function showStatistic(event, statistics, loc, stat_type) {
   // Get stats object from database
   console.log(statistics);
   // statistics.game for game stats
