@@ -367,6 +367,7 @@ function setThrow(event) {
       return; // No throw to change
     }
 
+    hideConfirmation();
     removeDart(index);
     button.text('');
     button.addClass('changing-throw');
@@ -377,6 +378,8 @@ function setThrow(event) {
 
   // Miss, bounce, or foul
   if (scorer.changingThrow) {
+    hideConfirmation();
+    checkThrow();
     button.removeClass('changing-throw');
     scorer.changingThrow = null;
   }
@@ -427,6 +430,12 @@ function updateGameStatus(isBust) {
     const turnScore = getTurnScore();
     scorer.scores[scorer.currentPlayer - 1] -= turnScore;
     $(`#p${scorer.currentPlayer}Score`).text(scorer.scores[scorer.currentPlayer - 1]);
+
+    for (const region of scorer.throws) {
+      if (typeof region === 'object' && region.attr('name').includes('D')) {
+        player.num_doubles++;
+      }
+    }
 
     player.total_thrown += turnScore;
     if (turnScore == 180) {
@@ -548,6 +557,9 @@ function showConfirmation(confirmType) {
   const message = $('#notice-text');
   let callback = null;
 
+  // Disconnect standing click events
+  hideConfirmation();
+
   // Set message according to enumerated type
   switch (confirmType) {
     case CONFIRMATION.BUST:
@@ -585,11 +597,18 @@ function showConfirmation(confirmType) {
     });
 
     confirmPanel.find('#cancel-button').on('click', function() {
-      $('#confirm-button').off('click');
-      $('#cancel-button').off('click');
-      confirmPanel.animate({ bottom: '-100%' }, 'fast');
+      hideConfirmation();
     });
   });
+}
+
+
+// Cancel standing confirmation
+function hideConfirmation() {
+  const confirmPanel = $('#confirm-panel');
+  $('#confirm-button').off('click');
+  $('#cancel-button').off('click');
+  confirmPanel.animate({ bottom: '-100%' }, 'fast');
 }
 
 
