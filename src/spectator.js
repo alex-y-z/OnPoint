@@ -230,8 +230,7 @@ function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum,
 // stat_type can be any keyword associated in the option list (scorer.html)
 function showStatistic(event, loc, stat_type, statistics) {
   // Get stats object from database
-  console.log(statistics)
-  // remove this print once you start using it
+  console.log(statistics);
   // statistics.game for game stats
   // statistics.p1 for player 1
   // statistics.p2 for player 2
@@ -240,67 +239,67 @@ function showStatistic(event, loc, stat_type, statistics) {
   switch(stat_type) {
     case "avgTurn":
       // Execute for average turn score
-      stats.find(`#${loc}`).text("AVG Turn Score: " /*+ matchStats.avgTurn*/)
+      stats.find(`#${loc}`).text("AVG Turn Score: " + statistics.game.avg_turn)
       break;
     case "numOf180":
       // Execute for number of 180s in match
-      stats.find(`#${loc}`).text("180s in Match: " /*+ matchStats.numOf180*/) 
+      stats.find(`#${loc}`).text("180s in Match: " + statistics.game.num_180) 
       break;
-    case "lowTurn":
+    case "highTurn":
       // Execute for lowest turn score
-      stats.find(`#${loc}`).text("Lowest Turn Score: " /*+ matchStats.lowTurn*/) 
+      stats.find(`#${loc}`).text("Hishest Turn Score: " + statistics.game.highest_turn) 
       break;
     case "numOfBE":
       // Execute for number of bull's eyes in match
-      stats.find(`#${loc}`).text("# of Bull's Eyes: " /*+ matchStats.numOfBE*/) 
+      stats.find(`#${loc}`).text("# of Bull's Eyes: " + statistics.game.num_bull) 
       break;
     case "numOfDouble":
       // Execute for number of doubles in match
-      stats.find(`#${loc}`).text("Doubles in Match: " /*+ matchStats.numOfDouble*/) 
+      stats.find(`#${loc}`).text("Doubles in Match: " + statistics.game.num_double) 
       break;
 
     // Get p1 name from New Game submission or database
     case "p1-rank":
       // Execute for player 1's current league rank
-      stats.find(`#${loc}`).text("Rank: " /*+ stats.league_rank*/) 
+      stats.find(`#${loc}`).text("Rank: " + statistics.p1.league_rank) 
       break;
     case "p1-checkouts":
       // Execute for player 1's last match win
-      stats.find(`#${loc}`).text("Number of 100+ Checkouts: " /*+ stats.p1-checkouts*/) 
+      stats.find(`#${loc}`).text("Number of 100+ Checkouts: " + statistics.p1.num_checkouts_100) 
       break;
     case "p1-avgScore":
       // Execute for player 1's average league score for the season
-      stats.find(`#${loc}`).text("AVG Score in Season: " /*+ stats.p1-avgScore*/) 
+      stats.find(`#${loc}`).text("AVG Score in Season: " + statistics.p1.average_score) 
       break; 
     case "p1-180":
       // Execute for player 1's number of 180s in the season
-      stats.find(`#${loc}`).text("180s in Season: " /*+ stats.p1-num_180s*/) 
+      stats.find(`#${loc}`).text("180s in Season: " + statistics.p1.num_180s) 
       break; 
     case "p1-winPercent":
       // Execute for Player 1's overall win percentage
-      stats.find(`#${loc}`).text("Win Percentage: " /*+ stats.p1-winPercent*/) 
+      stats.find(`#${loc}`).text("Win Percentage: " + statistics.p1.win_percent) 
       break; 
 
     // Get p2 name from New Game submission or database  
     case "p2-rank":
       // Execute for player 2's current league rank
-      stats.find(`#${loc}`).text("Rank: " /*+ stats.p2-league_rank*/) 
+      stats.find(`#${loc}`).text("Rank: " + statistics.p2.league_rank) 
       break;
     case "p2-checkouts":
       // Execute for player 2's last match win
-      stats.find(`#${loc}`).text("Number of 100+ Checkouts: " /*+ stats.p2-checkouts*/) 
+      stats.find(`#${loc}`).text("Number of 100+ Checkouts: " + statistics.p2.num_checkouts_100) 
       break;
     case "p2-avgScore":
       // Execute for player 2's average league score for the season
-      stats.find(`#${loc}`).text("AVG Score in Season: " /*+ stats.p2-avgScore*/) 
+      stats.find(`#${loc}`).text("AVG Score in Season: " + statistics.p2.avgerage_score) 
       break; 
     case "p2-180":
       // Execute for player 2's number of 180s in the season
-      stats.find(`#${loc}`).text("180s in Season: " /*+ stats.p2-num_180s*/) 
+      stats.find(`#${loc}`).text("180s in Season: " + statistics.p2.num_180s) 
       break;
     case "p2-winPercent":
       // Execute for Player 2's overall win percentage
-      stats.find(`#${loc}`).text("Win Percentage: " /*+ stats.p2-winPercent*/) 
+      stats.find(`#${loc}`).text("Win Percentage: " + statistics.p2.win_percent) 
       break; 
   }
 }
