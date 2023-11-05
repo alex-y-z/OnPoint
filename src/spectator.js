@@ -249,7 +249,7 @@ function showStatistic(event, statistics, loc, stat_type) {
       break;
     case "highTurn":
       // Execute for lowest turn score
-      stats.find(`#${loc}`).text("Hishest Turn Score: " + statistics.game.highest_turn); 
+      stats.find(`#${loc}`).text("Highest Turn Score: " + statistics.game.highest_turn); 
       break;
     case "numOfBE":
       // Execute for number of bull's eyes in match

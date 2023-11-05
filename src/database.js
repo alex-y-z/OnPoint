@@ -115,7 +115,7 @@ function create_match(game) {
       if (err) {
         return reject(err);
       }
-      game.matches.push(new String(this.lastID))
+      game.matches.push(this.lastID)
       resolve(this.lastID);
     })
   });

@@ -1,10 +1,10 @@
 const {allowed_throws, winning_throws} = require("./winning_move");
 const {db} = require("./database");
 
-throws = new Map(Array.from(allowed_throws, a => a.reverse()))
+let throws = new Map(Array.from(allowed_throws, a => a.reverse()))
 throws["S0"] = 0;
 throws["M/B"] = 0;
-doubles = new Map(Array.from(winning_throws, a => a.reverse()))
+let doubles = new Map(Array.from(winning_throws, a => a.reverse()))
 doubles.delete("B50")
 
 // A class to represent each player in the game.
@@ -184,7 +184,7 @@ class Match {
         else{
             this.mid = sqlResponse.mid;
             this.winner = sqlResponse.winner;
-            this.legs = sqlResponse.legs === null ? [] : Array.from(sqlResponse.legs, a => a.split(','))
+            this.legs = sqlResponse.legs === null ? [] : sqlResponse.legs.split(',');
             this.game = sqlResponse.game
         }
     };
@@ -228,25 +228,25 @@ class Match {
                 legs.forEach((leg) => {
                     leg.player_1_darts.forEach((turn) => {
                         turnNum++;
-                        turn_score = throws[turn[1]] + throws[turn[2]] + throws[turn[3]]
+                        let turn_score = throws.get(turn[0]) + throws.get(turn[1]) + throws.get(turn[2])
                         turnTotal = turnTotal + turn_score
                         if (highestTurn < turn_score) {
                             highestTurn = turn_score
                         }
                         num180 = num180 + (turn.filter(x => x === "T20").length === 3 ? 1 : 0)
                         numBull = numBull + turn.filter(x => x === "B50").length
-                        numDouble = numDouble + turn.filter(x => doubles.includes(x)).length
+                        numDouble = numDouble + turn.filter(x => doubles.has(x)).length
                     })
                     leg.player_2_darts.forEach((turn) => {
                         turnNum++;
-                        turn_score = throws[turn[1]] + throws[turn[2]] + throws[turn[3]]
+                        let turn_score = throws.get(turn[0]) + throws.get(turn[1]) + throws.get(turn[2])
                         turnTotal = turnTotal + turn_score
                         if (highestTurn < turn_score) {
                             highestTurn = turn_score
                         }
                         num180 = num180 + (turn.filter(x => x === "T20").length === 3 ? 1 : 0)
                         numBull = numBull + turn.filter(x => x === "B50").length
-                        numDouble = numDouble + turn.filter(x => doubles.includes(x)).length
+                        numDouble = numDouble + turn.filter(x => doubles.has(x)).length
                     })
                 })
                 let avg_turn = 0
@@ -307,7 +307,7 @@ class Game {
             this.leg_num = sqlResponse.leg_num;
             this.match_num = sqlResponse.match_num;
             this.start_score = sqlResponse.start_score;
-            this.matches = sqlResponse.matches === null ? [] : Array.from(sqlResponse.matches, a => a.split(','));
+            this.matches = sqlResponse.matches === null ? [] : sqlResponse.matches.split(',');
         }
 
     };
@@ -349,24 +349,28 @@ class Game {
                 let numBull = 0
                 let numDouble = 0
                 let avg_turn = 0
-                matches.forEach((match) => {
-                    stats = match.getStats();
-                    matchTotal = matchTotal + stats.avg_turn;
-                    matchNum = matchNum + 1;
-                    highestTurn = highestTurn + stats.highest_turn;
-                    num180 = num180 + stats.num_180;
-                    numBull = numBull + stats.num_bull;
-                    numDouble = numDouble + stats.num_double;
-                })
-                if(matchNum > 0) {
-                    avg_turn = matchTotal / matchNum;
-                }
-                resolve({
-                    avg_turn: avg_turn,
-                    highest_turn: highestTurn,
-                    num_180: num180,
-                    num_bull: numBull,
-                    num_double: numDouble
+                Promise.all(Array.from(matches, m => m.getStats())).then((stats) => {
+                    stats.forEach((stat) => {
+                        matchTotal = matchTotal + stat.avg_turn;
+                        matchNum = matchNum + 1;
+                        if (highestTurn < stat.highest_turn) {
+                            highestTurn = stat.highest_turn
+                        }
+                        num180 = num180 + stat.num_180;
+                        numBull = numBull + stat.num_bull;
+                        numDouble = numDouble + stat.num_double;
+                    })
+                    if(matchNum > 0) {
+                        avg_turn = matchTotal / matchNum;
+                    }
+                    let statsObj = {
+                        avg_turn: avg_turn,
+                        highest_turn: highestTurn,
+                        num_180: num180,
+                        num_bull: numBull,
+                        num_double: numDouble
+                    };
+                    resolve(statsObj)
                 })
             })
         })
