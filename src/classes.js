@@ -3,6 +3,7 @@ const {db} = require("./database");
 
 throws = new Map(Array.from(allowed_throws, a => a.reverse()))
 throws["S0"] = 0;
+throws["M/B"] = 0;
 doubles = new Map(Array.from(winning_throws, a => a.reverse()))
 doubles.delete("B50")
 
@@ -35,32 +36,38 @@ class Player {
     };
 
     getStats() {
-        return db.all(`Select * from Matches where player_1 = ? or player_2 = ?`,[this.pid, this.pid], (err, result) => {
-            if(err) {
-                return 0;
-            }
-            else {
-                let total_games = 0;
-                let total_wins = 0;
-                result.forEach((match) => {
-                    if (match.winner){
-                        total_games++;
-                        if (match.winner == this.pid){
-                            total_wins++;
-                        }
-                    }
-                })
-                return {
-                    league_rank: this.league_rank,
-                    average_score: this.total_thrown / this.number_thrown,
-                    total_thrown: this.total_thrown,
-                    num_checkouts_100: this.num_checkouts_100,
-                    num_180s: this.num_180s,
-                    num_doubles: this.num_doubles,
-                    win_percent: total_wins / total_games,
-                    //probably need to discuss what "average season score" means before impl
+        return new Promise((resolve, reject) => {
+            db.all(`Select * from Games where player_1 = ? or player_2 = ?`,[this.pid, this.pid], (err, result) => {
+                if(err) {
+                    reject(err);
                 }
-            }
+                else {
+                    let total_games = 0;
+                    let total_wins = 0;
+                    let win_percent = 0;
+                    result.forEach((match) => {
+                        if (match.winner){
+                            total_games++;
+                            if (match.winner == this.pid){
+                                total_wins++;
+                            }
+                        }
+                    })
+                    if(total_games > 0){
+                        win_percent = (total_wins / this.total_games) * 100
+                    }
+                    resolve({
+                        league_rank: this.league_rank,
+                        average_score: this.total_thrown / this.number_thrown,
+                        number_thrown: this.number_thrown,
+                        num_checkouts_100: this.num_checkouts_100,
+                        num_180s: this.num_180s,
+                        num_doubles: this.num_doubles,
+                        win_percent: win_percent,
+                        //probably need to discuss what "average season score" means before impl
+                    })
+                }
+            })
         })
     }
 
@@ -184,11 +191,12 @@ class Match {
 
     getLegs() {
         return new Promise((resolve, reject) => {
-            db.all("SELECT * From Legs where lid in ?", [this.legs], (err, rows) => {
+            const placeholders = this.legs.map(() => "?").join(",");
+            db.all(`SELECT * From Legs where lid in (${placeholders})`, this.legs, (err, rows) => {
                 if (err) {
                     reject(err);
                 }
-                legs = []
+                let legs = []
                 rows.forEach((row) => {
                     legs.push(new Leg(row))
                 })
@@ -209,45 +217,51 @@ class Match {
     }
 
     getStats() {
-        legs = this.getLegs()
-        turnTotal = 0
-        turnNum = 0
-        highestTurn = 0
-        num180 = 0
-        numBull = 0
-        numDouble = 0
-        legs.forEach((leg) => {
-            leg.player_1_darts.forEach((turn) => {
-                turnNum++;
-                turn_score = throws[turn[1]] + throws[turn[2]] + throws[turn[3]]
-                turnTotal = turnTotal + turn_score
-                if (highestTurn < turn_score) {
-                    highestTurn = turn_score
+        return new Promise((resolve, reject) => {
+            this.getLegs().then((legs) => {
+                let turnTotal = 0
+                let turnNum = 0
+                let highestTurn = 0
+                let num180 = 0
+                let numBull = 0
+                let numDouble = 0
+                legs.forEach((leg) => {
+                    leg.player_1_darts.forEach((turn) => {
+                        turnNum++;
+                        turn_score = throws[turn[1]] + throws[turn[2]] + throws[turn[3]]
+                        turnTotal = turnTotal + turn_score
+                        if (highestTurn < turn_score) {
+                            highestTurn = turn_score
+                        }
+                        num180 = num180 + (turn.filter(x => x === "T20").length === 3 ? 1 : 0)
+                        numBull = numBull + turn.filter(x => x === "B50").length
+                        numDouble = numDouble + turn.filter(x => doubles.includes(x)).length
+                    })
+                    leg.player_2_darts.forEach((turn) => {
+                        turnNum++;
+                        turn_score = throws[turn[1]] + throws[turn[2]] + throws[turn[3]]
+                        turnTotal = turnTotal + turn_score
+                        if (highestTurn < turn_score) {
+                            highestTurn = turn_score
+                        }
+                        num180 = num180 + (turn.filter(x => x === "T20").length === 3 ? 1 : 0)
+                        numBull = numBull + turn.filter(x => x === "B50").length
+                        numDouble = numDouble + turn.filter(x => doubles.includes(x)).length
+                    })
+                })
+                let avg_turn = 0
+                if(turnNum > 0) {
+                    avg_turn = turnTotal / turnNum;
                 }
-                num180 = num180 + (turn.filter(x => x === "T20").length === 3 ? 1 : 0)
-                numBull = numBull + turn.filter(x => x === "B50").length
-                numDouble = numDouble + turn.filter(x => doubles.includes(x)).length
-            })
-            leg.player_2_darts.forEach((turn) => {
-                turnNum++;
-                turn_score = throws[turn[1]] + throws[turn[2]] + throws[turn[3]]
-                turnTotal = turnTotal + turn_score
-                if (highestTurn < turn_score) {
-                    highestTurn = turn_score
-                }
-                num180 = num180 + (turn.filter(x => x === "T20").length === 3 ? 1 : 0)
-                numBull = numBull + turn.filter(x => x === "B50").length
-                numDouble = numDouble + turn.filter(x => doubles.includes(x)).length
+                resolve({
+                    avg_turn: avg_turn,
+                    highest_turn: highestTurn,
+                    num_180: num180,
+                    num_bull: numBull,
+                    num_double: numDouble
+                })
             })
         })
-        return {
-            avg_turn: turnTotal / turnNum,
-            highest_turn: highestTurn,
-            num_180: num180,
-            num_bull: numBull,
-            num_double: numDouble
-        }
-
     }
 
     getParent() {
@@ -300,11 +314,12 @@ class Game {
 
     getMatches() {
         return new Promise((resolve, reject) => {
-            db.all("SELECT * From Matches where mid in ?", [this.matches], (err, rows) => {
+            const placeholders = this.matches.map(() => "?").join(",");
+            db.all(`SELECT * From Matches where mid in (${placeholders})`, this.matches, (err, rows) => {
                 if (err) {
                     reject(err);
                 }
-                matches = []
+                let matches = []
                 rows.forEach((row) => {
                     matches.push(new Match(row))
                 })
@@ -325,29 +340,36 @@ class Game {
     }
 
     getStats() {
-        matchTotal = 0
-        matchNum = 0
-        highestTurn = 0
-        num180 = 0
-        numBull = 0
-        numDouble = 0
-        matches = getMatches();
-        matches.forEach((match) => {
-            stats = match.getStats();
-            matchTotal = matchTotal + stats.avg_turn;
-            matchNum = matchNum + 1;
-            highestTurn = highestTurn + stats.highest_turn;
-            num180 = num180 + stats.num_180;
-            numBull = numBull + stats.num_bull;
-            numDouble = numDouble + stats.num_double;
+        return new Promise((resolve, reject) => {
+            this.getMatches().then((matches) => {
+                let matchTotal = 0
+                let matchNum = 0
+                let highestTurn = 0
+                let num180 = 0
+                let numBull = 0
+                let numDouble = 0
+                let avg_turn = 0
+                matches.forEach((match) => {
+                    stats = match.getStats();
+                    matchTotal = matchTotal + stats.avg_turn;
+                    matchNum = matchNum + 1;
+                    highestTurn = highestTurn + stats.highest_turn;
+                    num180 = num180 + stats.num_180;
+                    numBull = numBull + stats.num_bull;
+                    numDouble = numDouble + stats.num_double;
+                })
+                if(matchNum > 0) {
+                    avg_turn = matchTotal / matchNum;
+                }
+                resolve({
+                    avg_turn: avg_turn,
+                    highest_turn: highestTurn,
+                    num_180: num180,
+                    num_bull: numBull,
+                    num_double: numDouble
+                })
+            })
         })
-        return {
-            avg_turn: matchTotal / matchNum,
-            highest_turn: highestTurn,
-            num_180: num180,
-            num_bull: numBull,
-            num_double: numDouble
-        }
     }
 }
 
