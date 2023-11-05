@@ -315,6 +315,8 @@ function showWinner(event, playerName) {
 
     winnerDoc.find('#name').text(playerName);
 
+    winnerDoc.find('#exit-button').hide();
+
     // Close modal when exit button is pushed
     winnerDoc.find('#exit-button').on('click', () => {
       modal.remove();
