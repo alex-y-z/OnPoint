@@ -98,13 +98,13 @@ async function startMatch(isWin) {
   // Handle match win
   if (isWin) {
     const winner = scorer.players[scorer.currentPlayer - 1];
-    window.database.setMatchWinner(winner);
+    window.database.setMatchWinner(winner.pid);
     scorer.setWins[scorer.currentPlayer - 1]++;
 
     // Check if game has been won
     const setWins = scorer.setWins[scorer.currentPlayer - 1];
     if (setWins == scorer.game.match_num) {
-      window.database.setGameWinner(winner);
+      window.database.setGameWinner(winner.pid);
       loadWinner(`${winner.first_name} ${winner.last_name}`);
       return;
     }

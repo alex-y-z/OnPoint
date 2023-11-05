@@ -48,7 +48,7 @@ const createWindows = () => {
   // This forwards information from scorer to spectator
   const channels = [
     'add-dart', 'change-dart', 'remove-dart', 'next-turn', 'resize-board',
-    'getFormInfo', 'stat-select', 'change-combo', 'change-perfect-leg',
+    'getFormInfo', 'change-combo', 'change-perfect-leg',
     'set-leg-winner', 'reset-screen', 'showWinner'
   ];
 
@@ -57,6 +57,22 @@ const createWindows = () => {
       spectatorWindow.webContents.send(channel, ...args);
     });
   });
+
+  // Special, we need to pull data for stat-select
+  ipcMain.on('stat-select', (event, ...args) => {
+    current_game.getStats().then((game) => {
+      player_1.getStats().then((p1) => {
+        player_2.getStats().then((p2) => {
+          statObject = {
+            game: game,
+            p1: p1,
+            p2: p2
+          }
+          spectatorWindow.webContents.send('stat-select', ...args, statObject)
+        })
+      })
+    })
+  })
 
   // Remote function handlers
   // These should fulfill requests from either renderer
