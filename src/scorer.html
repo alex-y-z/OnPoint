@@ -617,15 +617,13 @@
     <!--RIGHT PANEL: Scoreboard & Statistics-->
     <div id="right-panel">
       <table id="scoreboard">
-        <caption id="scoreboard-title">Scoreboard</caption>
+        <caption>Scoreboard</caption>
         <thead>
           <!--HEADER-->
-          <tr id="score-col-names">
+          <tr>
             <th scope="col">Name</th>
-            <th scope="col">Sets</th>
-            <th scope="col" id="numOfSets">(0)</th>
-            <th scope="col">Legs</th>
-            <th scope="col" id="numOfLegs">(0)</th>
+            <th id="set-col" scope="col">Sets</th>
+            <th id="leg-col" scope="col">Legs</th>
             <th scope="col">Score</th>
           </tr>
         </thead>
@@ -635,9 +633,9 @@
             <td id="p1" style="position: relative">
               <img id="perfect-label-1" class="perfect-label" src="images/perfect_label.svg">
             </td>
-            <td colspan="2" id="p1SetsWon"></td>
-            <td colspan="2" id="p1LegsWon"></td>
-            <td id="p1Score"></td>
+            <td id="p1SetsWon" class="table-num"></td>
+            <td id="p1LegsWon" class="table-num"></td>
+            <td id="p1Score" class="table-num"></td>
           </tr>
 
           <!--Row 2-->
@@ -645,41 +643,42 @@
             <td id="p2" style="position: relative">
               <img id="perfect-label-2" class="perfect-label" src="images/perfect_label.svg">
             </td>   
-            <td colspan="2" id="p2SetsWon"></td>
-            <td colspan="2" id="p2LegsWon"></td>
-            <td id="p2Score"></td>
+            <td id="p2SetsWon" class="table-num"></td>
+            <td id="p2LegsWon" class="table-num"></td>
+            <td id="p2Score" class="table-num"></td>
           </tr>
         </tbody>
       </table>
 
       <div id="statistics">
+        <hr width="90%" size="1" color="black" style="position: absolute; top: 0"/>
         <table id="statistics-table">
           <caption>In-Process Statistics</caption>
           <thead>
             <!--HEADER-->
             <tr>
-              <th scope="col" colspan="2">Match Statistics</th>
-              <th scope="col" colspan=2>Player 1 Statistics</th>
-              <th scope="col" colspan="2">Player 2 Statistics</th>
+              <th scope="col">Match Statistics</th>
+              <th scope="col">Player 1 Statistics</th>
+              <th scope="col">Player 2 Statistics</th>
             </tr>
           </thead>
           <tbody>
             <!--ROW 1-->
             <!--Place Dropdown Buttons on Each Row/Column-->
             <tr>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                     <div class="dropdown-content" name="m_1">
                       <option value="avgTurn">Average Turn Score</option>
-                      <option value="match180">Number of 180s in the Match</option>
-                      <option value="lowTurn">Lowest Turn Score</option>
+                      <option value="numOf180">Number of 180s in the Match</option>
+                      <option value="highTurn">Highest Turn Score</option>
                       <option value="numOfBE">Number of Bull's Eyes in Match</option>
                       <option value="numOfDouble">Number of Doubles in Match</option>
                     </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                     <div class="dropdown-content" name="p1_1">
@@ -691,7 +690,7 @@
                     </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                     <div class="dropdown-content" name="p2_1">
@@ -707,19 +706,19 @@
 
             <!--ROW 2-->
             <tr>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                   <div class="dropdown-content" name="m_2">
                     <option value="avgTurn">Average Turn Score</option>
-                    <option value="match180">Number of 180s in the Match</option>
-                    <option value="lowTurn">Lowest Turn Score</option>
+                    <option value="numOf180">Number of 180s in the Match</option>
+                    <option value="highTurn">Highest Turn Score</option>
                     <option value="numOfBE">Number of Bull's Eyes in Match</option>
                     <option value="numOfDouble">Number of Doubles in Match</option>
                   </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                   <div class="dropdown-content" name="p1_2">
@@ -731,7 +730,7 @@
                   </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                   <div class="dropdown-content" name="p2_2">
@@ -747,19 +746,19 @@
 
             <!--ROW 3-->
             <tr>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                     <div class="dropdown-content" name="m_3">
                       <option value="avgTurn">Average Turn Score</option>
-                      <option value="match180">Number of 180s in the Match</option>
-                      <option value="lowTurn">Lowest Turn Score</option>
+                      <option value="numOf180">Number of 180s in the Match</option>
+                      <option value="highTurn">Highest Turn Score</option>
                       <option value="numOfBE">Number of Bull's Eyes in Match</option>
                       <option value="numOfDouble">Number of Doubles in Match</option>
                   </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                   <div class="dropdown-content" name="p1_3">
@@ -771,7 +770,7 @@
                   </div>
                 </div>
               </td>
-              <td colspan="2">
+              <td>
                 <div class="dropdown">
                   <button class="dropbtn">Please Select</button>
                   <div class="dropdown-content" name="p2_3">
@@ -789,9 +788,21 @@
         </table>
       </div>
 
-      <div id="control-panel">
-        <button id='next-turn-button' class="control-button">Next Turn</button>
-        <button id='new-game-button' class="control-button">New Game</button>
+      <div id="control-wrapper">
+        <div id="confirm-panel">
+          <div id="confirm-options">
+            <button id="cancel-button">Cancel</button>
+            <button id="confirm-button">Confirm</button>
+          </div>
+          <div id="notice-bar">
+            <img id="notice-icon" src="images/warning.svg">
+            <span id="notice-text">Bust condition met for current player.</span>
+          </div>
+        </div>
+        <div id="control-panel">
+          <button id='next-turn-button' class="control-button">Next Turn</button>
+          <button id='new-game-button' class="control-button">New Game</button>
+        </div>
       </div>
     </div>
 

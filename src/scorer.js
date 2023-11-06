@@ -7,23 +7,28 @@ const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
 const stats = $('#statistics');
 
-/*const PLAYER_TEMPLATE = {
-  name: null,
-  score: 0,
-  hasPerfectLeg: false,
-}*/
+const CONFIRMATION = {
+  BUST: 1,
+  LEG_WIN: 2,
+  NEXT_TURN: 3,
+  NEW_GAME: 4
+}
 
 const scorer = {
-  //players: [Object.assign({}, PLAYER_TEMPLATE), Object.assign({}, PLAYER_TEMPLATE)],
+  game: null,
+  match: null,
+  leg: null,
+  players: [],
   scores: [0, 0],
+  legWins: [0, 0],
+  setWins: [0, 0],
   throws: [],
   perfectLeg: null,
-  startScore: 301,
-  currentThrow: 0,
+  startScore: null,
   currentTurn: 0,
+  currentThrow: 0,
   currentPlayer: 1,
-  changingThrow: null,
-  playerNames: []
+  changingThrow: null
 }
 
 
@@ -44,7 +49,28 @@ $(init());
 
 
 // This function runs at the beginning of each game
-function startGame() {
+async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, setNum) {
+
+  // Initialize game and players
+  scorer.game = await window.database.createGame('Championship', pid1, pid2, offName, loc, date, legNum, setNum, startScore);
+  scorer.players[0] = await window.database.getPlayerByID(pid1);
+  scorer.players[1] = await window.database.getPlayerByID(pid2);
+  window.database.setPlayer1(pid1);
+  window.database.setPlayer2(pid2);
+
+  // Initialize perfect leg for given start score
+  scorer.startScore = parseInt(startScore);
+  scorer.perfectLeg = await window.replication.getPerfectLeg(startScore);
+
+  // Initialize scores
+  scorer.scores[0] = scorer.startScore;
+  scorer.scores[1] = scorer.startScore;
+
+  // Set up scoreboard
+  const name1 = `${scorer.players[0].first_name} ${scorer.players[0].last_name}`;
+  const name2 = `${scorer.players[1].first_name} ${scorer.players[1].last_name}`;
+  setUpScoreboard(name1, name2, offName, loc, date, startScore, legNum, setNum);
+  window.replication.getFormInfo(name1, name2, offName, loc, date, startScore, legNum, setNum);
 
   // Register listeners
   regions.on('click', addDart);
@@ -52,13 +78,95 @@ function startGame() {
   regions.on('mouseleave', hideDartPreview);
   throwOptions.on('click', setThrow);
   stats.find('.dropdown-content>option').on('click', showStatistic);
-  $('#next-turn-button').on('click', nextTurn);
 
-  // TODO: turn this into a confirmation
-  $('#new-game-button').on('click', (event) => {
-    window.replication.resetScreen();
-    location.reload();
+  $('#next-turn-button').on('click', () => {
+    showConfirmation(CONFIRMATION.NEXT_TURN);
   });
+
+  $('#new-game-button').on('click', (event) => {
+    showConfirmation(CONFIRMATION.NEW_GAME);
+  });
+
+  // Start first match of the game
+  startMatch();
+}
+
+
+// This function runs at the beginning of each match
+async function startMatch(isWin) {
+
+  // Handle match win
+  if (isWin) {
+    const winner = scorer.players[scorer.currentPlayer - 1];
+    window.database.setMatchWinner(winner.pid);
+    scorer.setWins[scorer.currentPlayer - 1]++;
+
+    // Check if game has been won
+    const setWins = scorer.setWins[scorer.currentPlayer - 1];
+    if (setWins == scorer.game.match_num) {
+      window.database.setGameWinner(winner.pid);
+      loadWinner(`${winner.first_name} ${winner.last_name}`);
+      return;
+    }
+
+    // Update scoreboard
+    $(`#p${scorer.currentPlayer}SetsWon`).text(setWins);
+  }
+
+  // Create a new match within the current game
+  scorer.match = await window.database.createMatch(scorer.game);
+
+  // Start first leg of the match
+  startLeg();
+}
+
+
+// This function runs at the beginning of each leg
+async function startLeg(isWin) {
+
+  // Handle leg win
+  if (isWin) {
+    scorer.legWins[scorer.currentPlayer - 1]++;
+
+    // Check for 100+ checkout
+    const winner = scorer.players[scorer.currentPlayer - 1];
+    if (getTurnScore() >= 100) {
+      winner.num_checkouts_100++;
+    }
+
+    // Send leg results to database
+    updateGameStatus();
+    window.database.updateGameStatus(scorer.players[0], scorer.players[1], scorer.leg);
+    
+    // Update scoreboard
+    const legWins = scorer.legWins[scorer.currentPlayer - 1];
+    $(`#p${scorer.currentPlayer}LegsWon`).text(legWins);
+    scoreboard.find('#p1Score').text(scorer.startScore);
+    scoreboard.find('#p2Score').text(scorer.startScore);
+    
+    // Reset scoreboard
+    scorer.scores[0] = scorer.startScore;
+    scorer.scores[1] = scorer.startScore;
+    scorer.currentTurn = 0;
+    $('.perfect-label').removeClass('max-perfect-label min-perfect-label');
+    clearBoard();
+
+    const isMatchWin = (legWins % scorer.game.leg_num == 0);
+    let setWins = scorer.setWins[scorer.currentPlayer - 1];
+    setWins = isMatchWin ? (setWins + 1) : setWins;
+    window.replication.setLegWinner(scorer.currentPlayer, scorer.startScore, legWins, setWins);
+    
+    // Check if match has been won
+    if (isMatchWin) {
+      startMatch(true);
+      return;
+    }
+
+    // TODO: alternate who goes first
+  }
+
+  // Create a new leg within the current match
+  scorer.leg = await window.database.createLeg(scorer.match);
 }
 
 
@@ -107,15 +215,15 @@ async function checkCombos() {
 
 
 // Check if player has a perfect leg
-function checkPerfectLeg(isTurnOver) {
+function checkPerfectLeg(isTurnOver, isBust) {
   const scoreThresholds = scorer.perfectLeg.scoreThresholds;
   const throwThreshold = scorer.perfectLeg.throws;
   const perfectLabel = $(`#perfect-label-${scorer.currentPlayer}`);
 
-  // Check if turn count exceeds max
-  if (scorer.currentTurn > scoreThresholds.length) {
+  // Check if bust or turn count exceeds max
+  if (isBust || scorer.currentTurn > scoreThresholds.length) {
     window.replication.changePerfectLeg(scorer.currentPlayer, false);
-    perfectLabel.removeClass('max-perfect-label min-perfect-label');
+    perfectLabel.removeClass('min-perfect-label');
     return;
   }
 
@@ -123,8 +231,7 @@ function checkPerfectLeg(isTurnOver) {
   if (isTurnOver) {
     if (scorer.scores[scorer.currentPlayer - 1] <= scoreThresholds[scorer.currentTurn]) {
       window.replication.changePerfectLeg(scorer.currentPlayer, true);
-      perfectLabel.addClass('max-perfect-label min-perfect-label');
-      setTimeout(() => { perfectLabel.removeClass('max-perfect-label'); }, 3000); // Minimize after a few seconds
+      perfectLabel.addClass('min-perfect-label');
     }
     else {
       window.replication.changePerfectLeg(scorer.currentPlayer, false);
@@ -149,8 +256,8 @@ function previewDart(event) {
     return;
   }
   const region = $(event.target);
-  const throwLabel = $(`#throw-label-${index}`);
-  throwLabel.find('button').text(region.attr('name'));
+  const throwLabel = $(`#throw-label-${index} > button`);
+  throwLabel.text(region.attr('name'));
 }
 
 
@@ -174,7 +281,7 @@ function addDart(event) {
   // Determine throw index
   let index;
   if (scorer.changingThrow !== null) { // Change a previous throw
-    $(`#throw-label-${scorer.changingThrow}`).find('button').removeClass('changing-throw');
+    $(`#throw-label-${scorer.changingThrow} > button`).removeClass('changing-throw');
     index = scorer.changingThrow;
     scorer.changingThrow = null;
   }
@@ -190,18 +297,14 @@ function addDart(event) {
   region.attr('data-darts', (_, value) => (value === undefined) && 1 || parseInt(value) + 1);
   scorer.throws.splice(index, 0, region);
 
-  // Update indicators
-  checkCombos();
-  checkPerfectLeg(false);
-
   // Update existing marker or add new one
   var markerPosX = 0, markerPosY = 0;
   if (region.attr('data-darts') > 1) {
     const marker = $(`#marker-${regionId}`);
     marker.find('tspan').text(region.attr('data-darts'));
   }
+  // Place relative to the dartboard to maintain position upon resize
   else {
-    // Place relative to the dartboard to maintain position upon resize
     const marker = $('#temp-marker').clone().attr('id', `marker-${regionId}`);
     markerPosX = `${((event.pageX - dartboard.offset().left) / dartboard.width()) * 100}%`;
     markerPosY = `${((event.pageY - dartboard.offset().top) / dartboard.height()) * 100}%`;
@@ -212,11 +315,16 @@ function addDart(event) {
   }
   
   // Update throw label
-  const throwLabel = $(`#throw-label-${index}`);
-  throwLabel.find('button').text(region.attr('name'));
+  const throwLabel = $(`#throw-label-${index} > button`);
+  throwLabel.text(region.attr('name'));
 
   // Replicate the result to the spectator
   window.replication.addDart(index, regionId, markerPosX, markerPosY);
+
+  // Update indicators
+  checkCombos();
+  checkPerfectLeg(false);
+  checkThrow();
 }
 
 
@@ -259,6 +367,7 @@ function setThrow(event) {
       return; // No throw to change
     }
 
+    hideConfirmation();
     removeDart(index);
     button.text('');
     button.addClass('changing-throw');
@@ -269,6 +378,8 @@ function setThrow(event) {
 
   // Miss, bounce, or foul
   if (scorer.changingThrow) {
+    hideConfirmation();
+    checkThrow();
     button.removeClass('changing-throw');
     scorer.changingThrow = null;
   }
@@ -291,41 +402,86 @@ function setThrow(event) {
 }
 
 
-// Update scores and reset
-function nextTurn(event) {
-  // Check if all throws have been recorded
-  if (scorer.throws.length < 3 || scorer.changingThrow !== null) {
-    return;
-  }
-  
-  // Calculate turn score
+// Sum of all current throws
+function getTurnScore() {
   let turnScore = 0;
   for (const region of scorer.throws) {
     if (typeof region === 'object') {
       turnScore += parseInt(region.attr('data-value'));
     }
   }
-  scorer.scores[scorer.currentPlayer - 1] -= turnScore;
-  $(`#p${scorer.currentPlayer}Score`).text(scorer.scores[scorer.currentPlayer - 1]);
-  checkPerfectLeg(true);
+  return turnScore;
+}
+
+
+// Update score and set player data
+function updateGameStatus(isBust) {
+  const player = scorer.players[scorer.currentPlayer - 1];
+  const leg = scorer.leg;
+  
+  player.number_thrown += scorer.throws.length;
+
+  // The turn score is nullified if bust
+  if (isBust) {
+    leg[`player_${scorer.currentPlayer}_darts`].push(['M/B', 'M/B', 'M/B']);
+  }
+  // Calculate turn score and update stats
+  else {
+    const turnScore = getTurnScore();
+    scorer.scores[scorer.currentPlayer - 1] -= turnScore;
+    $(`#p${scorer.currentPlayer}Score`).text(scorer.scores[scorer.currentPlayer - 1]);
+
+    for (const region of scorer.throws) {
+      if (typeof region === 'object' && region.attr('name').includes('D')) {
+        player.num_doubles++;
+      }
+    }
+
+    player.total_thrown += turnScore;
+    if (turnScore == 180) {
+      player.num_180s++;
+    }
+    
+    leg[`player_${scorer.currentPlayer}_darts`].push(new Array(3));
+    leg[`player_${scorer.currentPlayer}_darts`][scorer.currentTurn] = scorer.throws.map((region) => (typeof region === 'object') ? region.attr('name') : 'M/B');
+    leg[`player_${scorer.currentPlayer}_score`] -= turnScore;
+  }
+}
+
+
+// Check win/bust conditions after each throw
+function checkThrow() {
+  const turnScore = getTurnScore();
+  const totalScore = scorer.scores[scorer.currentPlayer - 1] - turnScore;
+  const lastThrow = scorer.throws[scorer.currentThrow - 1].attr('name');
+
+  // Leg won if score reaches 0 on a double/bullseye
+  if (totalScore == 0 && (lastThrow.includes('D') || lastThrow == 'B50')) {
+    showConfirmation(CONFIRMATION.LEG_WIN);
+  }
+  // Aside from the win conditions above, scores <= 1 are considered bust
+  else if (totalScore <= 1) {
+    showConfirmation(CONFIRMATION.BUST);
+  }
+}
+
+
+// Update scores and reset
+function nextTurn(event, isBust) {
+  updateGameStatus(isBust);
+  checkPerfectLeg(true, isBust);
   
   // Reset for next turn
-  scorer.throws = [];
-  scorer.currentThrow = 0;
   window.replication.nextTurn(scorer.currentPlayer, scorer.scores[scorer.currentPlayer - 1]);
   scorer.currentPlayer = (scorer.currentPlayer % 2) + 1;
 
+  // Update game status each full turn
   if (scorer.currentPlayer == 1) {
-    scorer.currentTurn += 1;
+    scorer.currentTurn++;
+    window.database.updateGameStatus(scorer.players[0], scorer.players[1], scorer.leg);
   }
   
-  // Clear board
-  dartboard.find('.selected-region').removeAttr('data-darts');
-  dartboard.find('.selected-region').removeClass('selected-region');
-  dartboard.find('.dart-marker').remove();
-  throwPanel.find('.throw-dropdown-button').text('');
-  comboLabels.slideUp('fast');
-  
+  clearBoard();
   checkCombos(); // Check winning moves for next player
   changeColor(); // Change background color to indicate current player
 }
@@ -352,6 +508,7 @@ function changeColor() {
     document.getElementById("p2SetsWon").style.color = "white";
     document.getElementById("p2LegsWon").style.color = "white";
     document.getElementById("p2Score").style.color = "white";
+    document.getElementById("p2").style.fontWeight = 'normal';
     
   }
   else {
@@ -369,7 +526,89 @@ function changeColor() {
     document.getElementById("p1SetsWon").style.color = "white";
     document.getElementById("p1LegsWon").style.color = "white";
     document.getElementById("p1Score").style.color = "white";
+    document.getElementById("p1").style.fontWeight = 'normal';
   }
+}
+
+// Clear markers and throw labels
+function clearBoard() {
+  dartboard.find('.selected-region').removeAttr('data-darts');
+  dartboard.find('.selected-region').removeClass('selected-region');
+  dartboard.find('.dart-marker').remove();
+  throwPanel.find('.throw-dropdown-button').text('');
+  comboLabels.slideUp('fast');
+
+  // Reset throw array and index
+  scorer.throws = [];
+  scorer.currentThrow = 0;
+}
+
+
+// Reset both renderers
+function newGame() {
+  window.replication.resetScreen();
+  location.reload();
+}
+
+
+// Display confirmation to finalize an irreversible action
+function showConfirmation(confirmType) {
+  const confirmPanel = $('#confirm-panel');
+  const message = $('#notice-text');
+  let callback = null;
+
+  // Disconnect standing click events
+  hideConfirmation();
+
+  // Set message according to enumerated type
+  switch (confirmType) {
+    case CONFIRMATION.BUST:
+      message.text('Bust condition met for current player.');
+      callback = function() { nextTurn(null, true); };
+      break;
+    case CONFIRMATION.LEG_WIN:
+      message.text('Win condition met for current player.');
+      callback = function() { startLeg(true); };
+      break;
+    case CONFIRMATION.NEXT_TURN:
+      if (scorer.throws.length < 3 || scorer.changingThrow !== null) {
+        return;
+      }
+      message.text('Proceed to next turn?');
+      callback = nextTurn;
+      break;
+    case CONFIRMATION.NEW_GAME:
+      message.text('Exit current game and proceed to new game setup?');
+      callback = newGame;
+      break;
+  }
+
+  if (!callback) {
+    return;
+  }
+
+  // Show confirmation and register click events
+  confirmPanel.animate({ bottom: 0 }, 300, () => {
+    confirmPanel.find('#confirm-button').on('click', function() {
+      $('#confirm-button').off('click');
+      $('#cancel-button').off('click');
+      confirmPanel.animate({ bottom: '-100%' }, 'fast');
+      callback();
+    });
+
+    confirmPanel.find('#cancel-button').on('click', function() {
+      hideConfirmation();
+    });
+  });
+}
+
+
+// Cancel standing confirmation
+function hideConfirmation() {
+  const confirmPanel = $('#confirm-panel');
+  $('#confirm-button').off('click');
+  $('#cancel-button').off('click');
+  confirmPanel.animate({ bottom: '-100%' }, 'fast');
 }
 
 
@@ -382,9 +621,10 @@ function showNewGameModal() {
   modal.on('load', () => {
     const newGameDoc = modal.contents();
     const gameForm = newGameDoc.find('#game-form');
+    const selectedPlayers = [];
 
     // Pull all player names from the database
-    players = []
+    const players = []
     window.database.requestPlayers().then((pdata) => {
       pdata.forEach((p) => {
         players.push(p)
@@ -394,62 +634,50 @@ function showNewGameModal() {
       updateDropdown(players, newGameDoc);
     });
     
-    // Add listener to new game dropdowns
-    gameForm.on('click', '.dropdown-content1>option', (event) => {
+    // Add listener to player selection dropdowns
+    function selectPlayer(event, playerNum) {
       const option = $(event.target);
       option.selected = true;
 
       // Check if addPlayer
       if (option.text() == "Add New Player") {
         showNewPlayerModal(newGameDoc);
+        return;
       }
 
-      // Change the button text
+      // Change the button text and record selected PID
       option.parent().parent().find('.dropbtn').text(option.text());
+      selectedPlayers[playerNum] = option.val();
+    }
 
-      // Add to playerNames list
-      const selected = option.text();
-      onlyName = selected.substring(0, selected.search('#') - 1);
-      scorer.playerNames[0] = onlyName;
+    gameForm.on('click', '.dropdown-content1>option', (event) => {
+      selectPlayer(event, 0)
     });
 
     // Add listener to new game dropdowns
     gameForm.on('click', '.dropdown-content2>option', (event) => {
-      const option = $(event.target);
-      option.selected = true;
-
-      // Check if addPlayer
-      if (option.text() == "Add New Player") {
-        showNewPlayerModal(newGameDoc);
-      }
-
-      // Change Button Text
-      option.parent().parent().find('.dropbtn').text(option.text());
-
-      // Add to playerNames list without the ID number
-      const selected = option.text();
-      onlyName = selected.substring(0, selected.search('#') - 1);
-      scorer.playerNames[1] = onlyName;
+      selectPlayer(event, 1)
     });
     
     gameForm.on('submit', () => {
       const formData = new FormData(gameForm.get(0), gameForm.find('#submit-button').get(0));
-      setUpScoreboard(...formData.values());
-      window.replication.getFormInfo(scorer.playerNames, ...formData.values());
-      startGame(); // Initialize any states and register listeners
+
+      // Initialize any states and register listeners
+      startGame(...selectedPlayers, ...formData.values());
+
       modal.remove();
     });
 
     // TEMPORARY QUICK START
     gameForm.find('#quick-start-button').on('click', (event) => {
-      scorer.playerNames[0] = 'Wyatt Earp';
-      scorer.playerNames[1] = 'Doc Holliday';
+      selectedPlayers[0] = 1;
+      selectedPlayers[1] = 2;
       gameForm.find('#official').val('Crazy Horse');
       gameForm.find('#location').val('Mariana Trench');
       gameForm.find('#date').val('1984-12-12');
       gameForm.find('#301').prop('checked', true);
-      gameForm.find('#numOfLegs').val(12);
-      gameForm.find('#numOfSets').val(3);
+      gameForm.find('#numOfLegs').val(3);
+      gameForm.find('#numOfSets').val(2);
     });
   });
   
@@ -470,23 +698,24 @@ function showNewPlayerModal(newGameDoc) {
       const playerFormData = new FormData(playerForm.get(0), playerForm.find('#submit-button').get(0));
 
       // Get the new player name
-      let first = playerFormData.get('firstName');
-      let last = playerFormData.get('lastName');  
+      const first = playerFormData.get('firstName');
+      const last = playerFormData.get('lastName');  
       
       // Add the player to the database
-      window.database.createPlayer(first, last).then((newID));
+      window.database.createPlayer(first, last).then((newID) => {
 
-      // Access the dropdowns
-      const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
-      const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0); 
-
-      // Add the player to the dropdown
-      menu1.append(new Option(first + " " + last) + " " + newID);
-      menu2.append(new Option(first + " " + last) + " " + newID);
+        // Access the dropdowns
+        const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
+        const menu2 = newGameDoc.find('#dropdown.dropdown-content2').get(0); 
+  
+        // Add the player to the dropdown
+        const optionText = `${first} ${last} #${newID}`
+        menu1.append(new Option(optionText, newID));
+        menu2.append(new Option(optionText, newID));
+      });
       
       // Close the iframe
       modal2.remove();
-
     });
   
     newPlayerDoc.find('#cancel-button').on('click', () => {
@@ -505,37 +734,28 @@ function updateDropdown(players, newGameDoc) {
 
   // Go through all players in the list
   for (i in players) {
-    let optionVal = players[i].player_id;
-    let optionText = players[i].first_name + " " + players[i].last_name + " #" + players[i].player_id;
-
-    menu1.append(new Option(optionText, optionVal));
-    menu2.append(new Option(optionText, optionVal));
+    const player = players[i];
+    const optionText = player.first_name + " " + player.last_name + " #" + player.pid;
+    menu1.append(new Option(optionText, player.pid));
+    menu2.append(new Option(optionText, player.pid));
   }
 }
 
 
 // Populate scorer scoreboard with new game info
-function setUpScoreboard(offName, loc, date, score, legNum, setNum) {
-
-  // Initialize perfect leg for given score
-  scorer.startScore = parseInt(score);
-  window.replication.getPerfectLeg(scorer.startScore).then((perfectLeg) => {
-    scorer.perfectLeg = perfectLeg;
-  });
+function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum) {
 
   // Populate scoreboard
-  scoreboard.find('#numOfLegs').text('(' + legNum + ')');
-  scoreboard.find('#numOfSets').text('(' + setNum + ')');
-  scoreboard.find('#p1').contents()[0].nodeValue = scorer.playerNames[0];
-  scoreboard.find('#p2').contents()[0].nodeValue = scorer.playerNames[1];
+  scoreboard.find('#set-col').text(`Sets (${setNum})`);
+  scoreboard.find('#leg-col').text(`Legs (${legNum})`);
+  scoreboard.find('#p1').contents()[0].nodeValue = name1;
+  scoreboard.find('#p2').contents()[0].nodeValue = name2;
   scoreboard.find('#p1Score').text(score);
   scoreboard.find('#p2Score').text(score);
   scoreboard.find('#p1SetsWon').text('0');
   scoreboard.find('#p2SetsWon').text('0');
   scoreboard.find('#p1LegsWon').text('0');
   scoreboard.find('#p2LegsWon').text('0');
-  scorer.scores[0] = scorer.startScore;
-  scorer.scores[1] = scorer.startScore;
 
   // Initialize emphasis color
   var table = document.getElementById("scoreboard");

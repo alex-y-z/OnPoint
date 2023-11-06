@@ -11,8 +11,8 @@
   --ac-color-1: rgb(255, 198, 11);
   --ac-color-2: rgb(0, 238, 255);
   --ac-color-3: rgb(0, 128, 0);
-  --ac-color-4: rgb(255, 42, 42);
-  --ac-color-5: rgb(197, 197, 197);
+  --ac-color-4: rgb(235, 47, 6);
+  --ac-color-5: rgb(255, 165, 2);
 
   /* Text Colors */
   --tx-color-1: black;
@@ -30,6 +30,10 @@ body {
     max-width: 38rem;
     padding: 2rem;
     background-color: var(--bg-color-5);
+}
+
+h1 {
+  margin: 0 0 2rem 0;
 }
 
 /* Dropdown Button */
@@ -54,7 +58,7 @@ body {
   display: none;
   position: absolute;
   background-color: var(--bg-color-2);
-  min-width: 160px;
+  min-width: 200px;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   z-index: 1;
   overflow: auto;
@@ -82,48 +86,48 @@ body {
 .dropdown:hover .dropbtn {background-color: var(--ac-color-3);}
 
 #p1, #p2 {
-    background-image: url(images/searchIcon.png);
-    background-size: auto 60%;
-    background-position: 5px;
-    background-repeat: no-repeat;
-    width: 100%;
-    font-size: 16px;
-    padding: 12px 20px 12px 40px;
-    border: 1px solid var(--br-color-2);
-    margin-bottom: 12px;
-  }
+  background-image: url(images/searchIcon.png);
+  background-size: auto 60%;
+  background-position: 5px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid var(--br-color-2);
+  margin-bottom: 12px;
+}
 
 input[type=text] {
-    width: 100%;
-    padding: 12px 20px 12px 40px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: 1px solid var(--br-color-2);
+  width: 100%;
+  padding: 12px 20px 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 1px solid var(--br-color-2);
 }
 
 input[type=date] {
-    width: 100%;
-    padding: 12px 20px 12px 40px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: 1px solid var(--br-color-2);
+  width: 100%;
+  padding: 12px 20px 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 1px solid var(--br-color-2);
 }
 
 input[type=number] {
-    width: 100%;
-    padding: 12px 20px 12px 40px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: 1px solid var(--br-color-2);
+  width: 100%;
+  padding: 12px 20px 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 1px solid var(--br-color-2);
 }
 
 input[type=radio] {
-    width: auto;
-    padding: 12px 20px 12px 40px;
+  width: auto;
+  padding: 12px 20px 12px 20px;
 }
 
 .cancel-button {
-    margin-left: 60%;
+  margin-left: 60%;
 }
 
 
@@ -132,7 +136,9 @@ input[type=radio] {
   width: 80%;
   height: 70%;
   position: absolute;
-  top: 5%;
-  left: 10%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
   border-radius: 10px;
+  z-index: 5;
 }
