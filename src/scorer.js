@@ -752,8 +752,6 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   document.getElementById("p1").style.color = "black";
   document.getElementById("p1").style.fontWeight = 'bold';
 
-  // Send to the database
-  // window.database.function(scorer.playerNames[0], scorer.playerNames[1], offName, loc, date, score, legNum, setNum);
 };
 
 
@@ -761,10 +759,7 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
 function showStatistic(event) {
   const option = $(event.target);
 
-  // Get player from database and send it as the last parameter
-
-
-  window.replication.statSelect(option.parent().attr('name'), option.attr('value')/*, player*/);
+  window.replication.statSelect(option.parent().attr('name'), option.attr('value'));
 }
 
 
