@@ -495,37 +495,25 @@ function changeColor() {
   // Check p1
   if (document.getElementById("p1").style.color == "white") {
     // Change background colors
-    rows[1].style.backgroundColor = "#FFC60B";
-    rows[2].style.backgroundColor = "#343434"; 
+    rows[2].style.backgroundColor = "#FFC60B";
+    rows[4].style.backgroundColor = "#343434"; 
     // Change p1
     document.getElementById("p1").style.color = "black";
-    document.getElementById("p1SetsWon").style.color = "black";
-    document.getElementById("p1LegsWon").style.color = "black";
-    document.getElementById("p1Score").style.color = "black";
     document.getElementById("p1").style.fontWeight = 'bold';
     // Change p2
     document.getElementById("p2").style.color = "white";
-    document.getElementById("p2SetsWon").style.color = "white";
-    document.getElementById("p2LegsWon").style.color = "white";
-    document.getElementById("p2Score").style.color = "white";
     document.getElementById("p2").style.fontWeight = 'normal';
     
   }
   else {
     // Change background colors
-    rows[2].style.backgroundColor = "#FFC60B";
-    rows[1].style.backgroundColor = "#343434"; 
+    rows[4].style.backgroundColor = "#FFC60B";
+    rows[2].style.backgroundColor = "#343434"; 
     // Change p2
     document.getElementById("p2").style.color = "black";
-    document.getElementById("p2SetsWon").style.color = "black";
-    document.getElementById("p2LegsWon").style.color = "black";
-    document.getElementById("p2Score").style.color = "black";
     document.getElementById("p2").style.fontWeight = 'bold';
     // Change p1
     document.getElementById("p1").style.color = "white";
-    document.getElementById("p1SetsWon").style.color = "white";
-    document.getElementById("p1LegsWon").style.color = "white";
-    document.getElementById("p1Score").style.color = "white";
     document.getElementById("p1").style.fontWeight = 'normal';
   }
 }
@@ -760,11 +748,8 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   // Initialize emphasis color
   var table = document.getElementById("scoreboard");
   var rows = table.getElementsByTagName("tr");
-  rows[1].style.backgroundColor = "#FFC60B";
+  rows[2].style.backgroundColor = "#FFC60B";
   document.getElementById("p1").style.color = "black";
-  document.getElementById("p1SetsWon").style.color = "black";
-  document.getElementById("p1LegsWon").style.color = "black";
-  document.getElementById("p1Score").style.color = "black";
   document.getElementById("p1").style.fontWeight = 'bold';
 
   // Send to the database
