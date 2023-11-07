@@ -770,6 +770,7 @@ function showStatistic(event) {
 
 // Load winner page
 function loadWinner(playerName) {
+  // IPC to spectator view
   window.replication.showWinner(playerName);
 
   const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
@@ -785,5 +786,90 @@ function loadWinner(playerName) {
     });
   });
 
+  // Add the iframe to scorer
   $('body').append(modal);
 }
+
+
+// Fill in the table of players
+function updateLeaderTable(playerInfo, leaderDoc) {
+
+  // Find the table
+  const table = leaderDoc.find('#leader-table').get(0);
+
+  // Loop through each player object to add them to the table
+  for (i in players) {
+    // Add a row
+    let row = table.insertRow(-1);
+
+    // Add a Cell for the first name and add its text
+    let firstCell= row.insertCell(0);
+    let firstName = document.createTextNode(players[i].first_name);
+    firstCell.appendChild(firstName);
+
+    // Add a cell for the last name and add its text
+    let lastCell = row.insertCell(1);
+    let lastName = document.createTextNode(players[i].last_name);
+    lastCell.appendChild(lastName);
+
+    // Add a cell for the player ID and add its text
+    let numCell = row.insertCell(2);
+    let idNum = document.createTextNode(players[i].player_id);
+    numCell.appendChild(idNum);
+
+  }
+};
+
+
+// Load Leader Board
+function loadLeaderBoard() {
+  // IPC to spectator view
+
+
+  // Add the iframe
+  const modal = $('iframe id="leaderboard-modal" src="leaderboard.html"></iframe>');
+
+  // Load the iframe
+  modal.on('load', () => {
+    const leaderDoc = modal.contents();
+    const dateForm = leaderDoc.find('#date-form');
+
+    // Show the user input div - Hide the leaderboard div
+    leaderDoc.find('#display').hide();
+
+    // When submit is pushed:
+    dateForm.on('submit', () => {
+      const dateFormData = new FormData(dateForm.get(0), dateForm.find('#submit-button').get(0));
+
+      // Get the new player name
+      const begin = dateFormData.get('begin_date');
+      const end = dateFormData.get('end_date');  
+
+      // Send the dates to the database and retrieve information in the timeframe
+      /*
+        1. First Name
+        2. Last Name
+        3. Number of Wins
+        4. Number of Losses
+        5. Total Number of Games 
+      */
+      
+
+      // Fill the leader board table with all the information
+      updateLeaderTable(playerInfo, leaderDoc);
+
+      // Hide the user input div - Show the leaderboard div
+      leaderDoc.find('#user-input').hide();
+      leaderDoc.find('#display').show();
+    });
+
+    // Close modal when exit button is pushed
+    leaderDoc.find('#exit-button').on('click', () => {
+      modal.remove();
+    });
+  });
+
+  // Add the iframe to scorer
+  $('body').append(modal);
+
+};
