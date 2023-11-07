@@ -39,7 +39,7 @@ input[type=date] {
     flex: 30%;
     background-color: var(--bg-color-4);
     width: 100%;
-  }
+}
   
 #display td {
     min-width: 15%;

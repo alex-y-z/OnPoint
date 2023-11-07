@@ -22,6 +22,7 @@ function init() {
   window.replication.onLegWon(clearBoard);
   window.replication.onScreenReset(() => { location.reload(); });
   window.replication.onShowWinner(showWinner);
+  window.replication.onShowLeader(showLeader);
 }
 
 $(init());
@@ -310,4 +311,35 @@ function showWinner(event, playerName) {
 
   $('body').append(modal);
 }
+
+
+// Show Leader Board
+function showLeader() {
+  // IPC to spectator view
+
+
+  // Add the iframe
+  const modal = $('iframe id="leaderboard-modal" src="leaderboard.html"></iframe>');
+
+  // Load the iframe
+  modal.on('load', () => {
+    const leaderDoc = modal.contents();
+
+    // Hide the user input div - Show the leaderboard div
+    leaderDoc.find('#user-input').hide();
+    leaderDoc.find('#display').show();
+
+    // Hide the exit button
+    leaderDoc.find('#exit-button').hide();
+
+    // Close modal when exit button is pushed
+    leaderDoc.find('#exit-button').on('click', () => {
+      modal.remove();
+    });
+  });
+
+  // Add the iframe to scorer
+  $('body').append(modal);
+
+};
 
