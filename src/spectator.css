@@ -183,6 +183,7 @@ table {
 thead {
   color: var(--ac-color-4);
   background-color: var(--bg-color-1);
+  font-size: 18px;
 }
 
 td {
@@ -195,8 +196,17 @@ tr {
   height: 2.5rem;
 }
 
+#p1SetsWon, #p1LegsWon, #p1Score {
+  font-size: 30px;
+}
+
+#p2SetsWon, #p2LegsWon, #p2Score {
+  font-size: 30px;
+}
+
 #p1, #p2 {
-  font-size: 25px;
+  padding-bottom: 7%;
+  font-size: 22px;
 }
 
 .table-num {
