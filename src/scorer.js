@@ -72,6 +72,10 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
   setUpScoreboard(name1, name2, offName, loc, date, startScore, legNum, setNum);
   window.replication.getFormInfo(name1, name2, offName, loc, date, startScore, legNum, setNum);
 
+  // Set up stat board
+  stats.find('#p1Name').contents()[0].nodeValue = name1 + " Statistics";
+  stats.find('#p2Name').contents()[0].nodeValue = name2 + " Statistics";
+
   // Register listeners
   regions.on('click', addDart);
   regions.on('mouseenter', previewDart);
@@ -687,9 +691,10 @@ function showNewPlayerModal(newGameDoc) {
       // Get the new player name
       const first = playerFormData.get('firstName');
       const last = playerFormData.get('lastName');  
+      const country = playerFormData.get('country');
       
       // Add the player to the database
-      window.database.createPlayer(first, last).then((newID) => {
+      window.database.createPlayer(first, last, country).then((newID) => {
 
         // Access the dropdowns
         const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);

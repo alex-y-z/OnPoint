@@ -208,6 +208,10 @@ function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum,
   scoreboard.find('#p2SetsWon').text('0');
   scoreboard.find('#p1LegsWon').text('0');
   scoreboard.find('#p2LegsWon').text('0');
+
+  // Fill in the names on the stats board
+  stats.find('#p1Name').contents()[0].nodeValue = name1 + " Statistics";
+  stats.find('#p2Name').contents()[0].nodeValue = name2 + " Statistics";
 }
 
 
