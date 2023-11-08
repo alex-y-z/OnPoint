@@ -16,7 +16,7 @@ contextBridge.exposeInMainWorld('replication', {
     setLegWinner: (...args) => ipcRenderer.send('set-leg-winner', ...args),
     resetScreen: (...args) => ipcRenderer.send('reset-screen', ...args),
     showWinner: (...args) => ipcRenderer.send('showWinner', ...args),
-    showLeader: (...args) => ipcRenderer.send('showWinner', ...args),
+    showLeader: (...args) => ipcRenderer.send('showLeader', ...args),
 
     // Functions
     getWinningMoves: (...args) => ipcRenderer.invoke('get-winning-moves', ...args),
