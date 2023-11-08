@@ -23,11 +23,13 @@
     /* Border Colors */
     --br-color-1: black;
     --br-color-2: white;
+    --br-color-3: rgb(100, 100, 100);
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg-color-1);
+    user-select: none;
 }
 
 h1 {
