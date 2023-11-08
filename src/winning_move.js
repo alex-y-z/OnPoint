@@ -1,4 +1,4 @@
-known_checkouts = new Map([
+let known_checkouts = new Map([
     [170, ["T20", "T20", "B50"]],
     [167, ["T20", "T19", "B50"]],
     [164, ["T20", "T18", "B50"]],
@@ -19,7 +19,7 @@ known_checkouts = new Map([
     [146, ["T20", "T18", "D16"]]
 ])
 
-winning_throws = new Map(
+let winning_throws = new Map(
     [
         [2, "D1"],
         [4, "D2"],
@@ -44,7 +44,7 @@ winning_throws = new Map(
         [50, "B50"]
     ]
 )
-allowed_throws = new Map(
+let allowed_throws = new Map(
     [
         [1, "S1"], 
         [2, "S2"], 
@@ -126,6 +126,7 @@ function winning_move(score, remaining_throws) {
                 // if 1 throw remains and it isn't a double, we cannot win
                 return []
             case 2:
+            case 3:
                 for(const x of allowed_throws.keys()){
                     if(winning_throws.has(score - x)){
                         if(best_y < score - x){
@@ -136,12 +137,12 @@ function winning_move(score, remaining_throws) {
                 }
                 if(best_y == -1){
                     //no solution
-                    return []
+                    if (remaining_throws == 2) return []
                 }
                 else {
                     return [allowed_throws.get(best_x), allowed_throws.get(best_y)]
                 }
-            case 3:
+                //
                 for(const x of allowed_throws.keys()){
                     for(const y of allowed_throws.keys()){
                         if(winning_throws.has(score - x - y)){
@@ -164,7 +165,33 @@ function winning_move(score, remaining_throws) {
     }
 }
 
+function perfect_leg(score) {
+    // the idea for thresholds is that the score will need to be equal to or less than the given score for a turn
+    // ie turn 1 needs to be score - 180 to be perfect
+    // we have to allow some flexibility, for the 181 edge case and in general reaching scores below 170
+    // this is why we provide the throw count as well
+    let perfect = [];
+    while(score > 181) {
+        score = score - 180;
+        perfect.push(score);
+    }
+    if (score > 170 || (score > 146 && !known_checkouts.has(score))) {
+        // greater than 170 but less than/equal to 181 means we can always reach a score of 50 from this position, which is the optimal position
+        score = 50;
+        remaining = 2;
+        perfect.push(score);
+    }
+    else remaining = (3 - winning_move(score, 3).length);
+    perfect.push(0);
+    return {
+        scoreThresholds: perfect,
+        throws: (perfect.length * 3) - remaining
+    };
+}
+
 module.exports = {
     winning_move,
-    allowed_throws
+    allowed_throws,
+    winning_throws,
+    perfect_leg
 }

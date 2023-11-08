@@ -6,114 +6,78 @@
     <link rel="stylesheet" href="newGame.css" />
   </head>
   <body>
-    <h1>New Game Setup</h1>
-    <form id="game-form" database="">  <!-- Insert link to database -->
-      
-      <!--
-      <label for="p1">Player 1 Name: </label>
-      <input type="text" id="p1" onkeyup="filterSearch(p1)" placeholder="Search for players.." title="Type in a name">
+    <div>
+      <h1>New Game Setup</h1>
+      <form id="game-form">  
 
-      <label for="p2">Player 2 Name: </label>
-      <input type="text" id="p2" onkeyup="filterSearch(p2)" placeholder="Search for players.." title="Type in a name"><br><br>
+        <div class="dropdown">
+          <button class="dropbtn">Select Player 1</button>
+          <div id="dropdown" class="dropdown-content1" name="dropdown1">
+            <input type="text" placeholder="Type in a name..." id="p1" onkeyup="filterSearch(p1)" maxlength="150">
+            <option class="addPlayer">Add New Player</option>
+          </div>
+        </div><br><br>
 
-      <table id="playerTable">
-        <tr class="header">
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Player ID</th>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td colspan="3" id="addPlayer">Add Player</td>
-        </tr>
-      </table><br><br>
--->
-      
+        <div class="dropdown">
+          <button class="dropbtn">Select Player 2</button>
+          <div id="dropdown" class="dropdown-content2" name="dropdown2">
+            <input type="text" placeholder="Type in a name..." id="p2" onkeyup="filterSearch(p2)" maxlength="150">
+            <option class="addPlayer">Add New Player</option>
+          </div>
+        </div><br><br>     
 
-      <label for="p1">Player 1 Name: </label>
-      <input type="text" id="p1" name="p1" maxlength="150" required><br><br>
+        <label for="official">Official's Name: </label>
+        <input type="text" id="official" name="official" maxlength="150" required><br><br>
 
-      <label for="p2">Player 2 Name: </label>
-      <input type="text" id="p2" name="p2" maxlength="150" required><br><br>
+        <label for="location">Location: </label>
+        <input type="text" id="location" name="location" maxlength="150" required><br><br>
 
-     
+        <label for="date">Date of Match: </label>
+        <input type="date" id="date" name="date" required><br><br>
 
-      <label for="official">Official's Name: </label>
-      <input type="text" id="official" name="official" maxlength="150" required><br><br>
+        <label for="startScore">Please Select Starting Score Value: </label><br>
+        <input type="radio" id="1101" name="startScore" value="1101" required>
+        <label for="1101">1101</label><br>
+        <input type="radio" id="801" name="startScore" value="801">
+        <label for="801">801</label><br>
+        <input type="radio" id="501" name="startScore" value="501">
+        <label for="501">501</label><br>
+        <input type="radio" id="301" name="startScore" value="301">
+        <label for="301">301</label><br><br>
 
-      <label for="location">Location: </label>
-      <input type="text" id="location" name="location" maxlength="150" required><br><br>
+        <label for="numOfLegs">Number of Legs (First to X): </label>
+        <input type="number" id="numOfLegs" name="numOfLegs" min="3" max="29" required><br><br>
 
-      <label for="date">Date of Match: </label>
-      <input type="date" id="date" name="date" required><br><br>
-
-      <label for="startScore">Please Select Starting Score Value: </label><br>
-      <input type="radio" id="1101" name="startScore" value="1101" required>
-      <label for="1101">1101</label><br>
-      <input type="radio" id="801" name="startScore" value="801">
-      <label for="801">801</label><br>
-      <input type="radio" id="501" name="startScore" value="501">
-      <label for="501">501</label><br>
-      <input type="radio" id="301" name="startScore" value="301">
-      <label for="301">301</label><br><br>
-
-      <label for="numOfLegs">Number of Legs: </label>
-      <input type="number" id="numOfLegs" name="numOfLegs" min="3" max="29" required><br><br>
-
-      <label for="numOfSets">Number of Matches: </label>
-      <input type="number" id="numOfSets" name="numOfSets" min="1" max="9" required><br><br>
-      
-      <input id="submit-button" type="submit" value="Submit">
-      
-      <button id='cancel-button' class="cancel-button">Cancel</button>
-    </form>
+        <label for="numOfSets">Number of Matches (First to X): </label>
+        <input type="number" id="numOfSets" name="numOfSets" min="1" max="9" required><br><br>
+        
+        <input id="submit-button" type="submit" value="Submit">
+        
+        <button id="quick-start-button">Quick Start</button>
+      </form>
+    </div>
 
     <!-- Function for user to search through player names-->
     <!--Change tr[i].getElementsByTagName('td')[0] to [1] to search for "Last Name" (index 1) instead of "First Name" (index 0).-->
     <script>
       function filterSearch(player) {
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById(`${player}`);
-        filter = input.value.toUpperCase();
-        table = document.getElementById("playerTable");
-        tr = table.getElementsByTagName("tr");
+        var filter, div, opt, txt;
+        filter = player.value.toUpperCase();
+        div = document.getElementById("dropdown")
+        opt = div.getElementsByTagName("option");
 
-        // Loop through all rows
+        // Loop through all options
         // Hide ones that don't match
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td")[0];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }       
+        for (i = 0; i < opt.length; i++) {
+          txt = opt[i].innerText;
+          if (txt.toUpperCase().indexOf(filter) > -1) {
+            opt[i].style.display = "";
+          } else {
+            opt[i].style.display = "none";
+          }
         }
       }
-    </script>
+    </script>  
 
-    <!-- Function to pull players from the database and fill the table with the information -->
-    <!-- Inserts players to the top of table -->
-    <!-- If alphabetical insert, go backwards (insert Z-A) -->
-    <script>
-      function addRows() {
-        var table = document.getElementById("playerTable");
-        var row = table.insertRow(0);
-        var first = row.insertCell(0);
-        var last = row.insertCell(1);
-        var num = row.insertCell(2);
-        first.innerHTML = "NEW CELL1";
-        last.innerHTML = "NEW CELL2";
-        num.innerHTML = "NEW CELL3";
-      }
-    </script>
-
-    <!-- Add option for user to look at game history -->
   </body>
 </html>
