@@ -107,7 +107,7 @@ function changeColor() {
   if (document.getElementById("p1").style.color == "white") {
     // Change background colors
     rows[2].style.backgroundColor = "#FFC60B";
-    rows[4].style.backgroundColor = "#343434"; 
+    rows[4].style.backgroundColor = "#323232"; 
     // Change p1
     document.getElementById("p1").style.color = "black";
     document.getElementById("p1").style.fontWeight = 'bold';
@@ -118,7 +118,7 @@ function changeColor() {
   else {
     // Change background colors
     rows[4].style.backgroundColor = "#FFC60B";
-    rows[2].style.backgroundColor = "#343434"; 
+    rows[2].style.backgroundColor = "#323232"; 
     // Change p2
     document.getElementById("p2").style.color = "black";
     document.getElementById("p2").style.fontWeight = 'bold';

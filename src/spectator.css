@@ -23,6 +23,7 @@
   /* Border Colors */
   --br-color-1: black;
   --br-color-2: white;
+  --br-color-3: rgb(100, 100, 100);
 }
 
 * {
@@ -40,10 +41,6 @@ body {
   display: flex;
   background-color: var(--bg-color-3);
   user-select: none;
-}
-
-caption {
-  margin: 2%;
 }
 
 /* Left Panel (dartboard + throws) */
@@ -166,8 +163,9 @@ caption {
 
 #scoreboard {
   flex: 30%;
-  background-color: var(--bg-color-4);
   width: 100%;
+  background-color: var(--bg-color-4);
+  border-radius: 10px;
 }
 
 #scoreboard td {
@@ -183,7 +181,7 @@ table {
 thead {
   color: var(--ac-color-4);
   background-color: var(--bg-color-1);
-  font-size: 18px;
+  font-size: 1.1rem;
 }
 
 td {
@@ -196,28 +194,29 @@ tr {
   height: 2.5rem;
 }
 
-#p1SetsWon, #p1LegsWon, #p1Score {
-  font-size: 30px;
+#set-col {
+  border-radius: 10px 0 0 0;
 }
 
-#p2SetsWon, #p2LegsWon, #p2Score {
-  font-size: 30px;
+#score-col {
+  border-radius: 0 10px 0 0;
+}
+
+#p1SetsWon, #p1LegsWon, #p1Score, #p2SetsWon, #p2LegsWon, #p2Score {
+  font-size: 2rem;
+  font-weight: 500;
 }
 
 #p1, #p2 {
-  padding-bottom: 7%;
-  font-size: 22px;
-}
-
-.table-num {
   font-size: 1.4rem;
-  font-weight: 500;
+  position: relative;
+  padding-bottom: 7%;
 }
 
 .perfect-label {
   visibility: hidden;
   position: absolute;
-  height: 50%;
+  height: 90%;
   top: 50%;
   left: 0;
   transform: translate(0, -50%);
@@ -258,6 +257,5 @@ tr {
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: 10px;
   z-index: 10;
 }
