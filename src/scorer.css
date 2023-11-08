@@ -205,8 +205,9 @@ body {
 
 #scoreboard {
   flex: 34%;
-  background-color: var(--bg-color-4);
   width: 100%;
+  background-color: var(--bg-color-4);
+  border-radius: 10px;
 }
 
 #scoreboard td {
@@ -233,6 +234,14 @@ td {
 
 tr {
   height: 2.5rem;
+}
+
+#set-col {
+  border-radius: 10px 0 0 0;
+}
+
+#score-col {
+  border-radius: 0 10px 0 0;
 }
 
 #p1SetsWon, #p1LegsWon, #p1Score, #p2SetsWon, #p2LegsWon, #p2Score {
