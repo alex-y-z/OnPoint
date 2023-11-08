@@ -11,7 +11,8 @@ const CONFIRMATION = {
   BUST: 1,
   LEG_WIN: 2,
   NEXT_TURN: 3,
-  NEW_GAME: 4
+  NEW_GAME: 4,
+  LEADER_BOARD: 5
 }
 
 const scorer = {
@@ -89,6 +90,10 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
 
   $('#new-game-button').on('click', (event) => {
     showConfirmation(CONFIRMATION.NEW_GAME);
+  });
+
+  $('#leaderboard-button').on('click', (event) => {
+    showConfirmation(CONFIRMATION.LEADER_BOARD);
   });
 
   // Start first match of the game
@@ -571,6 +576,10 @@ function showConfirmation(confirmType) {
     case CONFIRMATION.NEW_GAME:
       message.text('Exit current game and proceed to new game setup?');
       callback = newGame;
+      break;
+    case CONFIRMATION.LEADER_BOARD:
+      message.text('Proceed to leader board?');
+      callback = loadLeaderBoard();
       break;
   }
 
