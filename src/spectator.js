@@ -307,7 +307,7 @@ function showWinner(event, playerName, match, leg, throws) {
     winnerDoc.find('#name').text(playerName);
     winnerDoc.find('#numMatch').text("Match Wins: " + match);
     winnerDoc.find('#numLegs').text("Leg Wins: " + leg);
-    winnerDoc.find('#lastThrow').text("Final Throws: " + throws);
+    winnerDoc.find('#lastThrow').text("Final Throws: " + throws[0] + " " + throws[1] + " " + throws[2]);
 
     winnerDoc.find('#exit-button').hide();
 
