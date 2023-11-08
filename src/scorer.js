@@ -768,9 +768,9 @@ function showStatistic(event) {
 
 
 // Load winner page
-function loadWinner(playerName) {
+function loadWinner(playerName, match, leg, throws) {
   // IPC to spectator view
-  window.replication.showWinner(playerName);
+  window.replication.showWinner(playerName, match, leg, throws);
 
   const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
   
@@ -778,6 +778,9 @@ function loadWinner(playerName) {
     const winnerDoc = modal.contents();
 
     winnerDoc.find('#name').text(playerName);
+    winnerDoc.find('#numMatch').text("Match Wins: " + match);
+    winnerDoc.find('#numLegs').text("Leg Wins: " + leg);
+    winnerDoc.find('#lastThrow').text("Final Throws: " + throws);
 
     // Close modal when exit button is pushed
     winnerDoc.find('#exit-button').on('click', () => {

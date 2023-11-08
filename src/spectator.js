@@ -298,13 +298,16 @@ function showStatistic(event, statistics, loc, stat_type) {
 }
 
 
-function showWinner(event, playerName) {
+function showWinner(event, playerName, match, leg, throws) {
   const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
   
   modal.on('load', () => {
     const winnerDoc = modal.contents();
 
     winnerDoc.find('#name').text(playerName);
+    winnerDoc.find('#numMatch').text("Match Wins: " + match);
+    winnerDoc.find('#numLegs').text("Leg Wins: " + leg);
+    winnerDoc.find('#lastThrow').text("Final Throws: " + throws);
 
     winnerDoc.find('#exit-button').hide();
 
