@@ -849,6 +849,7 @@ function loadLeaderBoard() {
     const dateForm = leaderDoc.find('#date-form');
 
     // Show the user input div - Hide the leaderboard div
+    leaderDoc.find('#user-input').show();
     leaderDoc.find('#display').hide();
 
     // When submit is pushed:
@@ -882,6 +883,7 @@ function loadLeaderBoard() {
 
     // Close modal when exit button is pushed
     leaderDoc.find('#exit-button').on('click', () => {
+      window.replication.closeLeader();
       modal.remove();
     });
   });

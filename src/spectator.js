@@ -23,6 +23,7 @@ function init() {
   window.replication.onScreenReset(() => { location.reload(); });
   window.replication.onShowWinner(showWinner);
   window.replication.onShowLeader(showLeader);
+  window.replication.onCloseLeader(closeLeader);
 }
 
 $(init());
@@ -318,7 +319,7 @@ function showWinner(event, playerName) {
 
 
 // Show Leader Board
-function showLeader() {
+function showLeader(event) {
   // IPC to spectator view
 
 
@@ -346,4 +347,9 @@ function showLeader() {
   $('body').append(modal);
 
 };
+
+// Close the leader board when the scorer closes the scorer leader board
+function closeLeader(event) {
+
+}
 
