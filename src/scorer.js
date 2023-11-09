@@ -114,7 +114,7 @@ async function startMatch(isWin) {
     const setWins = scorer.setWins[scorer.currentPlayer - 1];
     if (setWins == scorer.game.match_num) {
       window.database.setGameWinner(winner.pid);
-      loadWinner(`${winner.first_name} ${winner.last_name}`);
+      loadWinner(`${winner.first_name} ${winner.last_name}`); //loadWinner(playerName, match, leg, throws)
       return;
     }
 
