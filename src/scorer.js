@@ -853,7 +853,7 @@ function updateLeaderTable(playerInfo, leaderDoc) {
 // Load Leader Board
 function loadLeaderBoard() {
   // Add the iframe
-  const modal = $('iframe id="leaderboard-modal" src="leaderboard.html"></iframe>');
+  const modal = $('<iframe id="leaderboard-modal" src="leaderboard.html"></iframe>');
 
   // Load the iframe
   modal.on('load', () => {
