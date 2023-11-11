@@ -797,7 +797,7 @@ function loadWinner(playerName, match, leg, throws) {
     winnerDoc.find('#name').text(playerName);
     winnerDoc.find('#numMatch').text("Match Wins: " + match);
     winnerDoc.find('#numLegs').text("Leg Wins: " + leg);
-    winnerDoc.find('#lastThrow').text("Final Throws: " + throws[0] + "," + throws[1]);
+    winnerDoc.find('#lastThrow').text("Final Throws: " + throws[throws.length - 1]);
 
     // Close modal when exit button is pushed
     winnerDoc.find('#exit-button').on('click', () => {
