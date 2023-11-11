@@ -85,9 +85,6 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
   stats.find('.dropdown-content>option').on('click', showStatistic);
 
   $('#next-turn-button').on('click', () => {
-    console.log(scorer.leg);
-    console.log(scorer.match);
-    console.log(scorer.game);
     showConfirmation(CONFIRMATION.NEXT_TURN);
   });
 
@@ -118,7 +115,6 @@ async function startMatch(isWin) {
     if (setWins == scorer.game.match_num) {
       window.database.setGameWinner(winner.pid);
 
-      const throws = [];
       if (scorer.currentPlayer - 1 == 0) {
         throws = scorer.leg.player_1_darts;
       }
@@ -126,7 +122,7 @@ async function startMatch(isWin) {
         throws = scorer.leg.player_2_darts;
       }
 
-      loadWinner(`${winner.first_name} ${winner.last_name}`, scorer.setWins, scorer.legWins, throws); 
+      loadWinner(`${winner.first_name} ${winner.last_name}`, scorer.setWins[scorer.currentPlayer - 1], scorer.legWins[scorer.currentPlayer - 1], throws); 
       return;
     }
 
@@ -801,7 +797,7 @@ function loadWinner(playerName, match, leg, throws) {
     winnerDoc.find('#name').text(playerName);
     winnerDoc.find('#numMatch').text("Match Wins: " + match);
     winnerDoc.find('#numLegs').text("Leg Wins: " + leg);
-    winnerDoc.find('#lastThrow').text("Final Throws: " + throws[0] + " " + throws[1] + " " + throws[2]);
+    winnerDoc.find('#lastThrow').text("Final Throws: " + throws[0] + "," + throws[1]);
 
     // Close modal when exit button is pushed
     winnerDoc.find('#exit-button').on('click', () => {
