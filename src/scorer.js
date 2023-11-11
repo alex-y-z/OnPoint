@@ -113,19 +113,19 @@ async function startMatch(isWin) {
     window.database.setMatchWinner(winner.pid);
     scorer.setWins[scorer.currentPlayer - 1]++;
 
-    const throws = [];
-
-    if (scorer.currentPlayer - 1 == 0) {
-      throws = scorer.leg.player_1_darts;
-    }
-    else {
-      throws = scorer.leg.player_2_darts;
-    }
-
     // Check if game has been won
     const setWins = scorer.setWins[scorer.currentPlayer - 1];
     if (setWins == scorer.game.match_num) {
       window.database.setGameWinner(winner.pid);
+
+      const throws = [];
+      if (scorer.currentPlayer - 1 == 0) {
+        throws = scorer.leg.player_1_darts;
+      }
+      else {
+        throws = scorer.leg.player_2_darts;
+      }
+
       loadWinner(`${winner.first_name} ${winner.last_name}`, scorer.setWins, scorer.legWins, throws); 
       return;
     }
