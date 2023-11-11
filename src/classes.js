@@ -14,6 +14,7 @@ class Player {
             this.pid = undefined
             this.first_name = undefined
             this.last_name = undefined
+            this.country = undefined
             this.total_thrown = undefined
             this.number_thrown = undefined
             this.league_rank = undefined
@@ -25,6 +26,7 @@ class Player {
             this.pid = sqlResponse.pid
             this.first_name = sqlResponse.first_name
             this.last_name = sqlResponse.last_name
+            this.country = sqlResponse.country
             this.total_thrown = sqlResponse.total_thrown
             this.number_thrown = sqlResponse.number_thrown
             this.league_rank = sqlResponse.league_rank
@@ -35,13 +37,21 @@ class Player {
         //other parameters we generate as needed
     };
 
-    getStats() {
+    getStats(range_start = undefined, range_end = undefined) {
+        let inputstr = "Select * from Games where player_1 = ? or player_2 = ?";
+        let args = [this.pid, this.pid];
+        if(range_start !== undefined && range_end !== undefined){
+            inputstr = "Select * from Games where (player_1 = ? or player_2 = ?) and (date between ? and ?)";
+            args.push(range_start);
+            args.push(range_end);
+        }
         return new Promise((resolve, reject) => {
-            db.all(`Select * from Games where player_1 = ? or player_2 = ?`,[this.pid, this.pid], (err, result) => {
+            db.all(inputstr, args, (err, result) => {
                 if(err) {
                     reject(err);
                 }
                 else {
+                    console.log(result);
                     let total_games = 0;
                     let total_wins = 0;
                     let win_percent = 0;
@@ -54,7 +64,7 @@ class Player {
                         }
                     })
                     if(total_games > 0){
-                        win_percent = (total_wins / this.total_games) * 100
+                        win_percent = (total_wins / total_games) * 100
                     }
                     resolve({
                         league_rank: this.league_rank,
@@ -63,6 +73,8 @@ class Player {
                         num_checkouts_100: this.num_checkouts_100,
                         num_180s: this.num_180s,
                         num_doubles: this.num_doubles,
+                        total_wins: total_wins,
+                        total_games: total_games,
                         win_percent: win_percent,
                         //probably need to discuss what "average season score" means before impl
                     })

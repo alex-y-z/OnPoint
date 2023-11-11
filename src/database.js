@@ -9,7 +9,7 @@ let db = new sqlite.Database('./DartsDatabase.db', (err) => {
 function init_db() {
   // Write Database tables here if they do not already exist
   // Players
-  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, num_checkouts_100 INTEGER NOT NULL DEFAULT 0, num_180s INTEGER NOT NULL DEFAULT 0, num_doubles INTEGER NOT NULL DEFAULT 0)")
+  db.run("CREATE TABLE IF NOT EXISTS Players (pid INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, country TEXT NOT NULL DEFAULT \"\", total_thrown INTEGER NOT NULL DEFAULT 0, number_thrown INTEGER NOT NULL DEFAULT 0, league_rank TEXT NOT NULL, num_checkouts_100 INTEGER NOT NULL DEFAULT 0, num_180s INTEGER NOT NULL DEFAULT 0, num_doubles INTEGER NOT NULL DEFAULT 0)")
   // Legs, delimit darts with , and |
   db.run("CREATE TABLE IF NOT EXISTS Legs (lid INTEGER PRIMARY KEY AUTOINCREMENT, player_1_score INTEGER NOT NULL, player_1_darts TEXT NOT NULL, player_2_score INTEGER NOT NULL, player_2_darts TEXT NOT NULL, match INTEGER NOT NULL, Foreign Key(match) references Matches(mid))")
   // Matches
@@ -47,11 +47,11 @@ async function get_player_by_id(pid) {
   });
 }
 
-function create_player(first_name, last_name) {
+function create_player(first_name, last_name, country="None") {
   return new Promise(function(resolve, reject) 
   {
-    db.run(`INSERT INTO Players (first_name, last_name, league_rank) VALUES(?,?,?)`,
-      [first_name, last_name, "Unranked"], function(err) {
+    db.run(`INSERT INTO Players (first_name, last_name, league_rank, country) VALUES(?,?,?,?)`,
+      [first_name, last_name, "Unranked", country], function(err) {
           if (err) return reject(err.message);
           else resolve(this.lastID);
       }
