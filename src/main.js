@@ -49,7 +49,7 @@ const createWindows = () => {
   const channels = [
     'add-dart', 'change-dart', 'remove-dart', 'next-turn', 'resize-board',
     'getFormInfo', 'change-combo', 'change-perfect-leg',
-    'set-leg-winner', 'reset-screen', 'showWinner'
+    'set-leg-winner', 'reset-screen', 'showWinner', 'showLeader'
   ];
 
   channels.forEach(channel => {

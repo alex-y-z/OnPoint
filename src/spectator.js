@@ -22,6 +22,8 @@ function init() {
   window.replication.onLegWon(clearBoard);
   window.replication.onScreenReset(() => { location.reload(); });
   window.replication.onShowWinner(showWinner);
+  window.replication.onShowLeader(showLeader);
+  window.replication.onCloseLeader(closeLeader);
 }
 
 $(init());
@@ -207,6 +209,10 @@ function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum,
   scoreboard.find('#p2SetsWon').text('0');
   scoreboard.find('#p1LegsWon').text('0');
   scoreboard.find('#p2LegsWon').text('0');
+
+  // Fill in the names on the stats board
+  stats.find('#p1Name').contents()[0].nodeValue = name1 + " Statistics";
+  stats.find('#p2Name').contents()[0].nodeValue = name2 + " Statistics";
 }
 
 
@@ -292,13 +298,16 @@ function showStatistic(event, statistics, loc, stat_type) {
 }
 
 
-function showWinner(event, playerName) {
+function showWinner(event, playerName, match, leg, throws) {
   const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
   
   modal.on('load', () => {
     const winnerDoc = modal.contents();
 
     winnerDoc.find('#name').text(playerName);
+    winnerDoc.find('#numMatch').text("Match Wins: " + match);
+    winnerDoc.find('#numLegs').text("Leg Wins: " + leg);
+    winnerDoc.find('#lastThrow').text("Final Throws: " + throws[0] + " " + throws[1] + " " + throws[2]);
 
     winnerDoc.find('#exit-button').hide();
 
@@ -309,5 +318,38 @@ function showWinner(event, playerName) {
   });
 
   $('body').append(modal);
+}
+
+
+// Show Leader Board
+function showLeader(event) {
+  // Add the iframe
+  const modal = $('<iframe id="leaderboard-modal" src="leaderboard.html"></iframe>');
+
+  // Load the iframe
+  modal.on('load', () => {
+    const leaderDoc = modal.contents();
+
+    // Hide the user input div - Show the leaderboard div
+    leaderDoc.find('#user-input').hide();
+    leaderDoc.find('#display').show();
+
+    // Hide the exit button
+    leaderDoc.find('#exit-button').hide();
+
+    // Close modal when exit button is pushed
+    leaderDoc.find('#exit-button').on('click', () => {
+      modal.remove();
+    });
+  });
+
+  // Add the iframe to scorer
+  $('body').append(modal);
+
+};
+
+// Close the leader board when the scorer closes the scorer leader board
+function closeLeader(event) {
+
 }
 

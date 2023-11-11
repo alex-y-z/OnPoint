@@ -11,7 +11,8 @@ const CONFIRMATION = {
   BUST: 1,
   LEG_WIN: 2,
   NEXT_TURN: 3,
-  NEW_GAME: 4
+  NEW_GAME: 4,
+  LEADER_BOARD: 5
 }
 
 const scorer = {
@@ -72,6 +73,10 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
   setUpScoreboard(name1, name2, offName, loc, date, startScore, legNum, setNum);
   window.replication.getFormInfo(name1, name2, offName, loc, date, startScore, legNum, setNum);
 
+  // Set up stat board
+  stats.find('#p1Name').contents()[0].nodeValue = name1 + " Statistics";
+  stats.find('#p2Name').contents()[0].nodeValue = name2 + " Statistics";
+
   // Register listeners
   regions.on('click', addDart);
   regions.on('mouseenter', previewDart);
@@ -85,6 +90,10 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
 
   $('#new-game-button').on('click', (event) => {
     showConfirmation(CONFIRMATION.NEW_GAME);
+  });
+
+  $('#leaderboard-button').on('click', (event) => {
+    showConfirmation(CONFIRMATION.LEADER_BOARD);
   });
 
   // Start first match of the game
@@ -105,7 +114,15 @@ async function startMatch(isWin) {
     const setWins = scorer.setWins[scorer.currentPlayer - 1];
     if (setWins == scorer.game.match_num) {
       window.database.setGameWinner(winner.pid);
-      loadWinner(`${winner.first_name} ${winner.last_name}`);
+
+      if (scorer.currentPlayer - 1 == 0) {
+        throws = scorer.leg.player_1_darts;
+      }
+      else {
+        throws = scorer.leg.player_2_darts;
+      }
+
+      loadWinner(`${winner.first_name} ${winner.last_name}`, scorer.setWins[scorer.currentPlayer - 1], scorer.legWins[scorer.currentPlayer - 1], throws); 
       return;
     }
 
@@ -568,6 +585,10 @@ function showConfirmation(confirmType) {
       message.text('Exit current game and proceed to new game setup?');
       callback = newGame;
       break;
+    case CONFIRMATION.LEADER_BOARD:
+      message.text('Proceed to leader board?');
+      callback = loadLeaderBoard();
+      break;
   }
 
   if (!callback) {
@@ -687,9 +708,10 @@ function showNewPlayerModal(newGameDoc) {
       // Get the new player name
       const first = playerFormData.get('firstName');
       const last = playerFormData.get('lastName');  
+      const country = playerFormData.get('country');
       
       // Add the player to the database
-      window.database.createPlayer(first, last).then((newID) => {
+      window.database.createPlayer(first, last, country).then((newID) => {
 
         // Access the dropdowns
         const menu1 = newGameDoc.find('#dropdown.dropdown-content1').get(0);
@@ -763,8 +785,9 @@ function showStatistic(event) {
 
 
 // Load winner page
-function loadWinner(playerName) {
-  window.replication.showWinner(playerName);
+function loadWinner(playerName, match, leg, throws) {
+  // IPC to spectator view
+  window.replication.showWinner(playerName, match, leg, throws);
 
   const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
   
@@ -772,6 +795,9 @@ function loadWinner(playerName) {
     const winnerDoc = modal.contents();
 
     winnerDoc.find('#name').text(playerName);
+    winnerDoc.find('#numMatch').text("Match Wins: " + match);
+    winnerDoc.find('#numLegs').text("Leg Wins: " + leg);
+    winnerDoc.find('#lastThrow').text("Final Throws: " + throws[0] + "," + throws[1]);
 
     // Close modal when exit button is pushed
     winnerDoc.find('#exit-button').on('click', () => {
@@ -779,5 +805,110 @@ function loadWinner(playerName) {
     });
   });
 
+  // Add the iframe to scorer
   $('body').append(modal);
 }
+
+
+// Fill in the table of players
+function updateLeaderTable(playerInfo, leaderDoc) {
+
+  // Find the table
+  const table = leaderDoc.find('#leader-table').get(0);
+
+  /*
+        1. First Name
+        2. Last Name
+        3. Number of Wins
+        4. Number of Losses
+        5. Total Number of Games
+  */ 
+
+  // Loop through each player object to add them to the table
+  for (i in playerInfo) {
+    // Add a row to the end of the table
+    let row = table.insertRow(-1);
+
+    // Add a Cell for the first name and add its text
+    let firstCell= row.insertCell(0);
+    let firstName = document.createTextNode(playerInfo[i].first_name);
+    firstCell.appendChild(firstName);
+
+    // Add a cell for the last name and add its text
+    let lastCell = row.insertCell(1);
+    let lastName = document.createTextNode(playerInfo[i].last_name);
+    lastCell.appendChild(lastName);
+
+    // Add a cell for the number of wins and add its text
+    let winCell = row.insertCell(2);
+    let wins = document.createTextNode(playerInfo[i].num_wins);
+    winCell.appendChild(wins);
+
+    // Add a cell for the number of losses and add its text
+    let loseCell = row.insertCell(2);
+    let lose = document.createTextNode(playerInfo[i].num_loss);
+    loseCell.appendChild(lose);
+
+    // Add a cell for the number of games and add its text
+    let gamesCell = row.insertCell(2);
+    let games = document.createTextNode(playerInfo[i].num_games);
+    gamesCell.appendChild(games);
+
+  }
+};
+
+
+// Load Leader Board
+function loadLeaderBoard() {
+  // Add the iframe
+  const modal = $('<iframe id="leaderboard-modal" src="leaderboard.html"></iframe>');
+
+  // Load the iframe
+  modal.on('load', () => {
+    const leaderDoc = modal.contents();
+    const dateForm = leaderDoc.find('#date-form');
+
+    // Show the user input div - Hide the leaderboard div
+    //leaderDoc.find('#user-input').show();
+    leaderDoc.find('#display').hide();
+
+    // When submit is pushed:
+    dateForm.on('submit', () => {
+      const dateFormData = new FormData(dateForm.get(0), dateForm.find('#submit-button').get(0));
+
+      // Get the new player name
+      const begin = dateFormData.get('begin_date');
+      const end = dateFormData.get('end_date');  
+
+      // Send the dates to the database and retrieve information in the timeframe
+      /*
+        1. First Name
+        2. Last Name
+        3. Number of Wins
+        4. Number of Losses
+        5. Total Number of Games 
+      */
+      
+
+      // Fill the leader board table with all the information
+      updateLeaderTable(playerInfo, leaderDoc);
+
+      // Hide the user input div - Show the leaderboard div
+      leaderDoc.find('#user-input').hide();
+      leaderDoc.find('#display').show();
+
+      // IPC to spectator view
+      window.replication.showLeader();
+    });
+
+    // Close modal when exit button is pushed
+    leaderDoc.find('#exit-button').on('click', () => {
+      window.replication.closeLeader();
+      modal.remove();
+    });
+  });
+
+  // Add the iframe to scorer
+  $('body').append(modal);
+
+};

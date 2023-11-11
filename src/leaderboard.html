@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Leader Board</title>
+    <link rel="stylesheet" href="leaderboard.css" />
+  </head>
+  <body>
+    <!--Get User Input for Dates-->
+    <div id="user-input">
+        <h1>Select Dates</h1>
+        <form id="date-form" database="">
+            <label for="begin_date">Begin Date: </label>
+            <input type="date" id="begin_date" name="begin_date" maxlength="150" required><br><br>
+
+            <label for="end_date">End Date: </label>
+            <input type="date" id="end_date" name="end_date" maxlength="150" required><br><br>
+
+            <input id="submit-button" type="submit" value="Submit">
+            <button id='cancel-button' class="cancel-button">Cancel</button>
+        </form>
+    </div>
+
+    <!--Leader Board Display-->
+    <div id="display">
+        <table id="leader-table">
+            <thead>
+              <tr class="header">
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th># of Wins</th>
+                <th># of Losses</th>
+                <th># of Games</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+            </tbody>
+          </table>
+          <button id='exit-button' class="exit-button">Exit</button>
+    </div>   
+
+  </body>
+</html>
