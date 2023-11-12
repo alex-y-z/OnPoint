@@ -788,7 +788,26 @@ function loadWinner(playerName, match, leg, throws) {
 
 
 // Fill in the table of players
-function updateLeaderTable(playerInfo, leaderDoc) {
+function updateLeaderTable(leaderDoc, begin, end) {
+  
+  const players = []
+  const playerInfo = []
+
+  // Pull all player names from the database
+  window.database.requestPlayers().then((pdata) => {
+    pdata.forEach((p) => {
+      players.push(p)
+    });
+  });
+
+  // Get stats from database on each player
+  for (i in players) {
+    window.database.getPlayerStats(players[i].pid, begin, end).then((pdata) => {
+      pdata.first_name = players[i].first_name;
+      pdata.last_name = players[i].last_name;
+      playerInfo.push(pdata);
+    });
+  }
 
   // Find the table
   const table = leaderDoc.find('#leader-table').get(0);
@@ -818,17 +837,17 @@ function updateLeaderTable(playerInfo, leaderDoc) {
 
     // Add a cell for the number of wins and add its text
     let winCell = row.insertCell(2);
-    let wins = document.createTextNode(playerInfo[i].num_wins);
+    let wins = document.createTextNode(playerInfo[i].total_wins);
     winCell.appendChild(wins);
 
     // Add a cell for the number of losses and add its text
     let loseCell = row.insertCell(2);
-    let lose = document.createTextNode(playerInfo[i].num_loss);
+    let lose = document.createTextNode(playerInfo[i].total_games - playerInfo[i].total_wins);
     loseCell.appendChild(lose);
 
     // Add a cell for the number of games and add its text
     let gamesCell = row.insertCell(2);
-    let games = document.createTextNode(playerInfo[i].num_games);
+    let games = document.createTextNode(playerInfo[i].total_games);
     gamesCell.appendChild(games);
 
   }
@@ -856,19 +875,9 @@ function loadLeaderBoard() {
       // Get the new player name
       const begin = dateFormData.get('begin_date');
       const end = dateFormData.get('end_date');  
-
-      // Send the dates to the database and retrieve information in the timeframe
-      /*
-        1. First Name
-        2. Last Name
-        3. Number of Wins
-        4. Number of Losses
-        5. Total Number of Games 
-      */
       
-
-      // Fill the leader board table with all the information
-      updateLeaderTable(playerInfo, leaderDoc);
+      // Fill the leader board table with all the information within the timeframe
+      updateLeaderTable(leaderDoc, begin, end);
 
       // Hide the user input div - Show the leaderboard div
       leaderDoc.find('#user-input').hide();
