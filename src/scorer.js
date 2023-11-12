@@ -884,12 +884,12 @@ function loadLeaderBoard() {
       leaderDoc.find('#display').show();
 
       // IPC to spectator view
-      window.replication.showLeader();
+      window.replication.showLeader(false);
     });
 
     // Close modal when exit button is pushed
     leaderDoc.find('#exit-button').on('click', () => {
-      window.replication.closeLeader();
+      window.replication.showLeader(true);
       modal.remove();
     });
   });

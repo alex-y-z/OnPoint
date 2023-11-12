@@ -23,7 +23,6 @@ function init() {
   window.replication.onScreenReset(() => { location.reload(); });
   window.replication.onShowWinner(showWinner);
   window.replication.onShowLeader(showLeader);
-  window.replication.onCloseLeader(closeLeader);
 }
 
 $(init());
@@ -299,7 +298,12 @@ function showWinner(event, playerName, match, leg, throws) {
 
 
 // Show Leader Board
-function showLeader(event) {
+function showLeader(event, hideModal) {
+  if (hideModal == true) {
+    const leaderboard = $('#leaderboard-modal');
+    leaderboard.remove();
+  }
+  
   // Add the iframe
   const modal = $('<iframe id="leaderboard-modal" src="leaderboard.html"></iframe>');
 
@@ -325,8 +329,4 @@ function showLeader(event) {
 
 };
 
-// Close the leader board when the scorer closes the scorer leader board
-function closeLeader(event) {
-
-}
 
