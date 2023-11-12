@@ -29,6 +29,7 @@ const scorer = {
   currentTurn: 0,
   currentThrow: 0,
   currentPlayer: 1,
+  legStarter: 1,
   changingThrow: null
 }
 
@@ -157,7 +158,7 @@ async function startLeg(isWin) {
     
     // Update scoreboard
     const legWins = scorer.legWins[scorer.currentPlayer - 1];
-    $(`#p${scorer.currentPlayer}LegsWon`).text(legWins);
+    $(`#p${scorer.currentPlayer}LegsWon`).text(legWins % scorer.game.leg_num);
     scoreboard.find('#p1Score').text(scorer.startScore);
     scoreboard.find('#p2Score').text(scorer.startScore);
     
@@ -171,19 +172,22 @@ async function startLeg(isWin) {
     const isMatchWin = (legWins % scorer.game.leg_num == 0);
     let setWins = scorer.setWins[scorer.currentPlayer - 1];
     setWins = isMatchWin ? (setWins + 1) : setWins;
-    window.replication.setLegWinner(scorer.currentPlayer, scorer.startScore, legWins, setWins);
-    
+    scorer.legStarter = (scorer.legStarter == 1) ? 2 : 1;
+    window.replication.setLegWinner(scorer.currentPlayer, scorer.startScore, legWins % scorer.game.leg_num, setWins, scorer.legStarter);
+
     // Check if match has been won
     if (isMatchWin) {
       startMatch(true);
       return;
     }
-
-    // TODO: alternate who goes first
   }
 
   // Create a new leg within the current match
   scorer.leg = await window.database.createLeg(scorer.match);
+
+  // Alternate who goes first
+  scorer.currentPlayer = scorer.legStarter;
+  changeColor();
 }
 
 
@@ -506,33 +510,14 @@ function nextTurn(event, isBust) {
 
 // Change player emphasis on turn
 function changeColor() {
-  var table = document.getElementById("scoreboard");   
-  var rows = table.getElementsByTagName("tr");   
-  
-  // Check p1
-  if (document.getElementById("p1").style.color == "white") {
-    // Change background colors
-    rows[2].style.backgroundColor = "#FFC60B";
-    rows[4].style.backgroundColor = "#323232"; 
-    // Change p1
-    document.getElementById("p1").style.color = "black";
-    document.getElementById("p1").style.fontWeight = 'bold';
-    // Change p2
-    document.getElementById("p2").style.color = "white";
-    document.getElementById("p2").style.fontWeight = 'normal';
-  }
-  else {
-    // Change background colors
-    rows[4].style.backgroundColor = "#FFC60B";
-    rows[2].style.backgroundColor = "#323232"; 
-    // Change p2
-    document.getElementById("p2").style.color = "black";
-    document.getElementById("p2").style.fontWeight = 'bold';
-    // Change p1
-    document.getElementById("p1").style.color = "white";
-    document.getElementById("p1").style.fontWeight = 'normal';
-  }
+  const currentCell = $(`#p${scorer.currentPlayer}`);
+  currentCell.parent().addClass('bg-emphasis');
+  currentCell.addClass('text-emphasis');
+  const otherCell = $(`#p${(scorer.currentPlayer % 2) + 1}`);
+  otherCell.parent().removeClass('bg-emphasis');
+  otherCell.removeClass('text-emphasis');
 }
+
 
 // Clear markers and throw labels
 function clearBoard() {
@@ -765,14 +750,6 @@ function setUpScoreboard(name1, name2, offName, loc, date, score, legNum, setNum
   scoreboard.find('#p2SetsWon').text('0');
   scoreboard.find('#p1LegsWon').text('0');
   scoreboard.find('#p2LegsWon').text('0');
-
-  // Initialize emphasis color
-  var table = document.getElementById("scoreboard");
-  var rows = table.getElementsByTagName("tr");
-  rows[2].style.backgroundColor = "#FFC60B";
-  document.getElementById("p1").style.color = "black";
-  document.getElementById("p1").style.fontWeight = 'bold';
-
 };
 
 

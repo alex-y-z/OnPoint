@@ -3,7 +3,7 @@ const dartboard = $('#board-box');
 const throwPanel = $('#throw-panel');
 const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
-const stats = $('#statistics-table')
+const stats = $('#statistics-table');
 
 
 // This function only runs when the file is first loaded
@@ -89,7 +89,7 @@ function changeDart(event, index, labelText) {
 
 // Clear the board and update score
 function nextTurn(event, playerNum, newScore) {
-  changeColor();
+  changeColor((playerNum % 2) + 1);
   
   // Update score
   $(`#p${playerNum}Score`).text(newScore);
@@ -100,38 +100,18 @@ function nextTurn(event, playerNum, newScore) {
 
 
 // Change player emphasis on turn
-function changeColor() {
-  var table = document.getElementById("scoreboard");   
-  var rows = table.getElementsByTagName("tr");   
-  
-  // Check p1
-  if (document.getElementById("p1").style.color == "white") {
-    // Change background colors
-    rows[2].style.backgroundColor = "#FFC60B";
-    rows[4].style.backgroundColor = "#323232"; 
-    // Change p1
-    document.getElementById("p1").style.color = "black";
-    document.getElementById("p1").style.fontWeight = 'bold';
-    // Change p2
-    document.getElementById("p2").style.color = "white";
-    document.getElementById("p2").style.fontWeight = 'normal';
-  }
-  else {
-    // Change background colors
-    rows[4].style.backgroundColor = "#FFC60B";
-    rows[2].style.backgroundColor = "#323232"; 
-    // Change p2
-    document.getElementById("p2").style.color = "black";
-    document.getElementById("p2").style.fontWeight = 'bold';
-    // Change p1
-    document.getElementById("p1").style.color = "white";
-    document.getElementById("p1").style.fontWeight = 'normal';
-  }
+function changeColor(currentPlayer) {
+  const currentCell = $(`#p${currentPlayer}`);
+  currentCell.parent().addClass('bg-emphasis');
+  currentCell.addClass('text-emphasis');
+  const otherCell = $(`#p${(currentPlayer % 2) + 1}`);
+  otherCell.parent().removeClass('bg-emphasis');
+  otherCell.removeClass('text-emphasis');
 }
 
 
 // Clear markers and throw labels
-function clearBoard(event, legWinner, startScore, legWins, setWins) {
+function clearBoard(event, legWinner, startScore, legWins, setWins, legStarter) {
   dartboard.find('.selected-region').removeAttr('data-darts');
   dartboard.find('.selected-region').removeClass('selected-region');
   dartboard.find('.dart-marker').fadeOut(100, function() {
@@ -147,6 +127,7 @@ function clearBoard(event, legWinner, startScore, legWins, setWins) {
     $(`#p${legWinner}SetsWon`).text(setWins);
     scoreboard.find('#p1Score').text(startScore);
     scoreboard.find('#p2Score').text(startScore);
+    changeColor(legStarter);
   }
 }
 
@@ -192,11 +173,7 @@ function changePerfectLeg(event, playerNum, hasPerfectLeg) {
 function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum, setNum) {
   
   // For changing player emphasis color
-  var table = document.getElementById("scoreboard");   
-  var rows = table.getElementsByTagName("tr"); 
-  rows[2].style.backgroundColor = "#FFC60B";
-  document.getElementById("p1").style.color = "black";
-  document.getElementById("p1").style.fontWeight = 'bold';
+  changeColor(1);
 
   // Fill in the text
   scoreboard.find('#set-col').text(`Sets (${setNum})`);
