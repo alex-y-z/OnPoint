@@ -165,11 +165,7 @@ body {
   flex: 30%;
   width: 100%;
   background-color: var(--bg-color-4);
-  border-radius: 10px;
-}
-
-#scoreboard td {
-  min-width: 15%;
+  border-radius: 10px 10px 0 0;
 }
 
 table {
@@ -213,10 +209,20 @@ tr {
   padding-bottom: 7%;
 }
 
+.bg-emphasis {
+  background-color: var(--ac-color-1);
+  transition: 0.5s;
+}
+
+.text-emphasis {
+  color: var(--tx-color-1);
+  font-weight: bold;
+}
+
 .perfect-label {
   visibility: hidden;
   position: absolute;
-  height: 90%;
+  height: 100%;
   top: 50%;
   left: 0;
   transform: translate(0, -50%);
@@ -239,15 +245,13 @@ tr {
 /* Statistics */
 
 #statistics {
-  flex: 70%;
-  padding: 1em;
+  flex: 40%;
   position: relative;
 }
 
 #statistics-table {
   width: 100%;
-  height: 90%;
-  border: 1px solid var(--br-color-1);
+  height: 100%;
 }
 
 /* Winner Modal */

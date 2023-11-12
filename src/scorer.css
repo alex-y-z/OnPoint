@@ -204,14 +204,10 @@ body {
 /* Scoreboard */
 
 #scoreboard {
-  flex: 34%;
+  flex: 30%;
   width: 100%;
   background-color: var(--bg-color-4);
-  border-radius: 10px;
-}
-
-#scoreboard td {
-  min-width: 15%;
+  border-radius: 10px 10px 0 0;
 }
 
 table {
@@ -250,15 +246,24 @@ tr {
 }
 
 #p1, #p2 {
-  font-size: 1.4rem;
   position: relative;
   padding-bottom: 7%;
+  font-size: 1.4rem;
+}
+
+.bg-emphasis {
+  background-color: var(--ac-color-1);
+}
+
+.text-emphasis {
+  color: var(--tx-color-1);
+  font-weight: bold;
 }
 
 .perfect-label {
   visibility: hidden;
   position: absolute;
-  height: 90%;
+  height: 100%;
   top: 50%;
   left: 0;
   transform: translate(0, -50%);
@@ -281,22 +286,20 @@ tr {
 /* Statistics */
 
 #statistics {
-  flex: 50%;
-  padding: 1rem;
+  flex: 40%;
   position: relative;
 }
 
 #statistics-table {
   width: 100%;
-  height: 90%;
-  border: 1px solid var(--br-color-1);
+  height: 100%;
 }
 
 /* Dropdown Button */
 .dropbtn {
   width: 100%;
   height: 100%;
-  padding: 10px;
+  padding: 0.5rem;
   background-color: var(--bg-color-1);
   color: var(--tx-color-2);
   font-size: 1rem;
@@ -344,7 +347,7 @@ tr {
 
 #control-wrapper {
   flex: 16%;
-  min-height: 5rem;
+  min-height: 6rem;
   border-radius: 0 0 10px 10px;
   position: relative;
   overflow: hidden;
