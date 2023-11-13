@@ -299,7 +299,8 @@ function showWinner(event, playerName, match, leg, throws) {
 
 // Show Leader Board
 function showLeader(event, hideModal) {
-  if (hideModal == true) {
+  console.log('LEADER')
+;  if (hideModal == true) {
     const leaderboard = $('#leaderboard-modal');
     leaderboard.remove();
   }
