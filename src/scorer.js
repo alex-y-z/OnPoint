@@ -885,6 +885,7 @@ function loadLeaderBoard() {
 
       // IPC to spectator view
       window.replication.showLeader(false);
+      return false;
     });
 
     // Close modal when exit button is pushed
