@@ -819,6 +819,7 @@ function updateLeaderTable(leaderDoc, begin, end) {
         4. Number of Losses
         5. Total Number of Games
   */ 
+  console.log(playerInfo);
 
   // Loop through each player object to add them to the table
   for (i in playerInfo) {
