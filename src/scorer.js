@@ -791,7 +791,7 @@ function loadWinner(playerName, match, leg, throws) {
 function updateLeaderTable(leaderDoc, begin, end) {
   
   // Pull all player names from the database
-  window.database.requestPlayers().then((players) => {
+  return window.database.requestPlayers().then((players) => {
     const infoPromises = [];
     
     // Get stats from database on each player
@@ -805,7 +805,7 @@ function updateLeaderTable(leaderDoc, begin, end) {
       }));
     });
     
-    Promise.all(infoPromises).then((playerInfo) => {
+    return Promise.all(infoPromises).then((playerInfo) => {
       
       // Find the table
       const table = leaderDoc.find('#leader-table').get(0);
@@ -817,7 +817,6 @@ function updateLeaderTable(leaderDoc, begin, end) {
         4. Number of Losses
         5. Total Number of Games
       */ 
-      console.log('PLAYER INFO', playerInfo);
 
       // Loop through each player object to add them to the table
       playerInfo.forEach((info) => {
@@ -876,16 +875,16 @@ function loadLeaderBoard() {
       const end = dateFormData.get('end_date');  
       
       // Fill the leader board table with all the information within the timeframe
-      playerInfo = updateLeaderTable(leaderDoc, begin, end);
-
-      console.log(playerInfo);
-
-      // Hide the user input div - Show the leaderboard div
-      leaderDoc.find('#user-input').hide();
-      leaderDoc.find('#display').show();
-
-      // IPC to spectator view
-      window.replication.showLeader(false, playerInfo);
+      updateLeaderTable(leaderDoc, begin, end).then((playerInfo) => {
+        
+        // Hide the user input div - Show the leaderboard div
+        leaderDoc.find('#user-input').hide();
+        leaderDoc.find('#display').show();
+        
+        // IPC to spectator view
+        window.replication.showLeader(false, playerInfo);
+      });
+      
       return false;
     });
 

@@ -300,8 +300,6 @@ function updateLeaderTable(leaderDoc, playerInfo) {
   // Find the table
   const table = leaderDoc.find('#leader-table').get(0);
 
-  console.log(playerInfo);
-
   // Loop through each player object to add them to the table
   playerInfo.forEach((info) => {
     
@@ -327,7 +325,6 @@ function updateLeaderTable(leaderDoc, playerInfo) {
     let gamesCell = row.insertCell(3);
     let games = document.createTextNode(info.total_games);
     gamesCell.appendChild(games);
-
   });
 }
 
@@ -353,8 +350,6 @@ function showLeader(event, hideModal, playerInfo) {
     // Hide the exit button
     leaderDoc.find('#exit-button').hide();
 
-    console.log(playerInfo);
-
     // Fill the table
     updateLeaderTable(leaderDoc, playerInfo);    
 
@@ -366,7 +361,4 @@ function showLeader(event, hideModal, playerInfo) {
 
   // Add the iframe to scorer
   $('body').append(modal);
-
-};
-
-
+}
