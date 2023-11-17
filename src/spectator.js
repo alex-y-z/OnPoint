@@ -296,9 +296,44 @@ function showWinner(event, playerName, match, leg, throws) {
   $('body').append(modal);
 }
 
+function updateLeaderTable(leaderDoc, playerInfo) {
+  // Find the table
+  const table = leaderDoc.find('#leader-table').get(0);
+
+  console.log(playerInfo);
+
+  // Loop through each player object to add them to the table
+  playerInfo.forEach((info) => {
+    
+    // Add a row to the end of the table
+    let row = table.insertRow(-1);
+   
+    // Add a Cell for the first name and add its text
+    let firstCell= row.insertCell(0);
+    let name = document.createTextNode(info.first_name + " " + info.last_name);
+    firstCell.appendChild(name);
+    
+    // Add a cell for the number of wins and add its text
+    let winCell = row.insertCell(1);
+    let wins = document.createTextNode(info.total_wins);
+    winCell.appendChild(wins);
+    
+    // Add a cell for the number of losses and add its text
+    let loseCell = row.insertCell(2);
+    let lose = document.createTextNode(info.total_games - info.total_wins);
+    loseCell.appendChild(lose);
+    
+    // Add a cell for the number of games and add its text
+    let gamesCell = row.insertCell(3);
+    let games = document.createTextNode(info.total_games);
+    gamesCell.appendChild(games);
+
+  });
+}
+
 
 // Show Leader Board
-function showLeader(event, hideModal) {
+function showLeader(event, hideModal, playerInfo) {
   if (hideModal == true) {
     const leaderboard = $('#leaderboard-modal');
     leaderboard.remove();
@@ -314,10 +349,14 @@ function showLeader(event, hideModal) {
 
     // Hide the user input div - Show the leaderboard div
     leaderDoc.find('#user-input').hide();
-    leaderDoc.find('#display').show();
 
     // Hide the exit button
     leaderDoc.find('#exit-button').hide();
+
+    console.log(playerInfo);
+
+    // Fill the table
+    updateLeaderTable(leaderDoc, playerInfo);    
 
     // Close modal when exit button is pushed
     leaderDoc.find('#exit-button').on('click', () => {

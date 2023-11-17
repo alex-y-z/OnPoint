@@ -829,12 +829,6 @@ function updateLeaderTable(leaderDoc, begin, end) {
         let firstCell= row.insertCell(0);
         let name = document.createTextNode(info.first_name + " " + info.last_name);
         firstCell.appendChild(name);
-        /*
-        // Add a cell for the last name and add its text
-        let lastCell = row.insertCell(1);
-        let lastName = document.createTextNode(info.last_name);
-        lastCell.appendChild(lastName);
-        */
         
         // Add a cell for the number of wins and add its text
         let winCell = row.insertCell(1);
@@ -851,6 +845,8 @@ function updateLeaderTable(leaderDoc, begin, end) {
         let games = document.createTextNode(info.total_games);
         gamesCell.appendChild(games);
       });
+
+      return playerInfo;
     });
   });
 }
@@ -880,14 +876,16 @@ function loadLeaderBoard() {
       const end = dateFormData.get('end_date');  
       
       // Fill the leader board table with all the information within the timeframe
-      updateLeaderTable(leaderDoc, begin, end);
+      playerInfo = updateLeaderTable(leaderDoc, begin, end);
+
+      console.log(playerInfo);
 
       // Hide the user input div - Show the leaderboard div
       leaderDoc.find('#user-input').hide();
       leaderDoc.find('#display').show();
 
       // IPC to spectator view
-      window.replication.showLeader(false);
+      window.replication.showLeader(false, playerInfo);
       return false;
     });
 
@@ -895,6 +893,7 @@ function loadLeaderBoard() {
     leaderDoc.find('#exit-button').on('click', () => {
       window.replication.showLeader(true);
       modal.remove();
+      return true;
     });
   });
 
