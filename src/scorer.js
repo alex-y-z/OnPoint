@@ -790,76 +790,77 @@ function loadWinner(playerName, match, leg, throws) {
 // Fill in the table of players
 function updateLeaderTable(leaderDoc, begin, end) {
   
-  const players = []
-  const playerInfo = []
-
   // Pull all player names from the database
-  window.database.requestPlayers().then((pdata) => {
-    pdata.forEach((p) => {
-      players.push(p)
+  window.database.requestPlayers().then((players) => {
+    const infoPromises = [];
+    
+    // Get stats from database on each player
+    players.forEach((player) => {
+      infoPromises.push(new Promise((resolve, reject) => {
+        window.database.getPlayerStats(player.pid, begin, end).then((info) => {
+          info.first_name = player.first_name;
+          info.last_name = player.last_name;
+          resolve(info);
+        });
+      }));
     });
-  });
-
-  // Get stats from database on each player
-  for (i in players) {
-    window.database.getPlayerStats(players[i].pid, begin, end).then((pdata) => {
-      pdata.first_name = players[i].first_name;
-      pdata.last_name = players[i].last_name;
-      playerInfo.push(pdata);
-    });
-  }
-
-  // Find the table
-  const table = leaderDoc.find('#leader-table').get(0);
-
-  /*
+    
+    Promise.all(infoPromises).then((playerInfo) => {
+      
+      // Find the table
+      const table = leaderDoc.find('#leader-table').get(0);
+      
+      /*
         1. First Name
         2. Last Name
         3. Number of Wins
         4. Number of Losses
         5. Total Number of Games
-  */ 
-  console.log(playerInfo);
+      */ 
+      console.log('PLAYER INFO', playerInfo);
 
-  // Loop through each player object to add them to the table
-  for (i in playerInfo) {
-    // Add a row to the end of the table
-    let row = table.insertRow(-1);
-
-    // Add a Cell for the first name and add its text
-    let firstCell= row.insertCell(0);
-    let firstName = document.createTextNode(playerInfo[i].first_name);
-    firstCell.appendChild(firstName);
-
-    // Add a cell for the last name and add its text
-    let lastCell = row.insertCell(1);
-    let lastName = document.createTextNode(playerInfo[i].last_name);
-    lastCell.appendChild(lastName);
-
-    // Add a cell for the number of wins and add its text
-    let winCell = row.insertCell(2);
-    let wins = document.createTextNode(playerInfo[i].total_wins);
-    winCell.appendChild(wins);
-
-    // Add a cell for the number of losses and add its text
-    let loseCell = row.insertCell(2);
-    let lose = document.createTextNode(playerInfo[i].total_games - playerInfo[i].total_wins);
-    loseCell.appendChild(lose);
-
-    // Add a cell for the number of games and add its text
-    let gamesCell = row.insertCell(2);
-    let games = document.createTextNode(playerInfo[i].total_games);
-    gamesCell.appendChild(games);
-
-  }
-};
-
-
+      // Loop through each player object to add them to the table
+      playerInfo.forEach((info) => {
+        
+        // Add a row to the end of the table
+        let row = table.insertRow(-1);
+       
+        // Add a Cell for the first name and add its text
+        let firstCell= row.insertCell(0);
+        let firstName = document.createTextNode(info.first_name);
+        firstCell.appendChild(firstName);
+        
+        // Add a cell for the last name and add its text
+        let lastCell = row.insertCell(1);
+        let lastName = document.createTextNode(info.last_name);
+        lastCell.appendChild(lastName);
+        
+        // Add a cell for the number of wins and add its text
+        let winCell = row.insertCell(2);
+        let wins = document.createTextNode(info.total_wins);
+        winCell.appendChild(wins);
+        
+        // Add a cell for the number of losses and add its text
+        let loseCell = row.insertCell(2);
+        let lose = document.createTextNode(info.total_games - info.total_wins);
+        loseCell.appendChild(lose);
+        
+        // Add a cell for the number of games and add its text
+        let gamesCell = row.insertCell(2);
+        let games = document.createTextNode(info.total_games);
+        gamesCell.appendChild(games);
+      });
+    });
+  });
+}
+  
+  
 // Load Leader Board
 function loadLeaderBoard() {
+
   // Add the iframe
   const modal = $('<iframe id="leaderboard-modal" src="leaderboard.html"></iframe>');
-
+  
   // Load the iframe
   modal.on('load', () => {
     const leaderDoc = modal.contents();
@@ -898,5 +899,4 @@ function loadLeaderBoard() {
 
   // Add the iframe to scorer
   $('body').append(modal);
-
-};
+}
