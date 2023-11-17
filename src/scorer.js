@@ -827,16 +827,17 @@ function updateLeaderTable(leaderDoc, begin, end) {
        
         // Add a Cell for the first name and add its text
         let firstCell= row.insertCell(0);
-        let firstName = document.createTextNode(info.first_name);
-        firstCell.appendChild(firstName);
-        
+        let name = document.createTextNode(info.first_name + " " + info.last_name);
+        firstCell.appendChild(name);
+        /*
         // Add a cell for the last name and add its text
         let lastCell = row.insertCell(1);
         let lastName = document.createTextNode(info.last_name);
         lastCell.appendChild(lastName);
+        */
         
         // Add a cell for the number of wins and add its text
-        let winCell = row.insertCell(2);
+        let winCell = row.insertCell(1);
         let wins = document.createTextNode(info.total_wins);
         winCell.appendChild(wins);
         
@@ -846,7 +847,7 @@ function updateLeaderTable(leaderDoc, begin, end) {
         loseCell.appendChild(lose);
         
         // Add a cell for the number of games and add its text
-        let gamesCell = row.insertCell(2);
+        let gamesCell = row.insertCell(3);
         let games = document.createTextNode(info.total_games);
         gamesCell.appendChild(games);
       });

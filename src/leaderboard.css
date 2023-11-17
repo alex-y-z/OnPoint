@@ -54,9 +54,11 @@ input[type=date] {
 }
 
 table {
-    table-layout: fixed;
+    table-layout: auto;
+    width: 100%;
     border-collapse: collapse;
     color: var(--tx-color-2);
+    background-color: var(--bg-color-4);
 }
 
 thead {
@@ -68,7 +70,8 @@ thead {
 td {
     padding: 10px;
     text-align: center;
-    color: var(--tx-color-2);
+    color: var(--tx-color-1);
+    background-color: var(--bg-color-5);
 }
 
 tr {
