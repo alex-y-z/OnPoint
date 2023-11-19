@@ -207,6 +207,7 @@ tr {
   font-size: 1.4rem;
   position: relative;
   padding-bottom: 7%;
+  text-align: right;
 }
 
 .bg-emphasis {
@@ -225,6 +226,7 @@ tr {
   height: 50%;
   top: 20%;
   left: 5%;
+  display: inline;
 }
 
 .perfect-label {
