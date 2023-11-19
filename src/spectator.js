@@ -169,7 +169,7 @@ function changePerfectLeg(event, playerNum, hasPerfectLeg) {
 
 
 // Set the scoreboard info from the new game form
-function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum, setNum) {
+function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum, setNum, source) {
   
   // For changing player emphasis color
   changeColor(1);
@@ -185,6 +185,10 @@ function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum,
   scoreboard.find('#p2SetsWon').text('0');
   scoreboard.find('#p1LegsWon').text('0');
   scoreboard.find('#p2LegsWon').text('0');
+
+  // Add the flag image
+  scoreboard.find('#p1-flag').attr("src", source[0]);
+  scoreboard.find('#p2-flag').attr("src", source[1]);
 
   // Fill in the names on the stats board
   stats.find('#p1Name').contents()[0].nodeValue = name1 + " Statistics";

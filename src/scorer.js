@@ -72,8 +72,8 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
   const name1 = `${scorer.players[0].first_name} ${scorer.players[0].last_name}`;
   const name2 = `${scorer.players[1].first_name} ${scorer.players[1].last_name}`;
   setUpScoreboard(name1, name2, offName, loc, date, startScore, legNum, setNum);
-  addCountryFlag();
-  window.replication.getFormInfo(name1, name2, offName, loc, date, startScore, legNum, setNum);
+  source = addCountryFlag();
+  window.replication.getFormInfo(name1, name2, offName, loc, date, startScore, legNum, setNum, source);
 
   // Set up stat board
   stats.find('#p1Name').contents()[0].nodeValue = name1 + " Statistics";
@@ -910,19 +910,16 @@ function addCountryFlag() {
   source2 = getCountry(scorer.players[1]);
 
   // Add the flag image
-  scoreboard.find('p1-flag').attr("src", source1);
-  scoreboard.find('p2-flag').attr("src", source2);
+  scoreboard.find('#p1-flag').attr("src", source1);
+  scoreboard.find('#p2-flag').attr("src", source2);
 
-  console.log("here");
-
+  return [source1, source2]
 }
 
 
 // Function to check the player's country of origin
 function getCountry(player) {
   source = ""
-
-  console.log(player.country);
 
   if (player.country == "Belgium") {
     source = "images/belgium.png";
@@ -937,8 +934,6 @@ function getCountry(player) {
   } else if (player.country == "USA") {
     source = "images/usa.png";
   }
-
-  console.log(source);
 
   return source;
 }

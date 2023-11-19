@@ -219,6 +219,14 @@ tr {
   font-weight: bold;
 }
 
+.p1-flag, .p2-flag {
+  position: absolute;
+  z-index: 1;
+  height: 50%;
+  top: 20%;
+  left: 5%;
+}
+
 .perfect-label {
   visibility: hidden;
   position: absolute;
