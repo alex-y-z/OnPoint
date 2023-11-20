@@ -165,7 +165,7 @@ body {
 /* Scoreboard */
 
 #scoreboard {
-  flex: 30%;
+  flex: 34%;
   width: 100%;
   background-color: var(--bg-color-4);
   border-radius: 1rem 1rem 0 0;

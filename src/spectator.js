@@ -191,8 +191,10 @@ function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum,
   scoreboard.find('#p2-flag').attr("src", source[1]);
 
   // Fill in the names on the stats board
-  stats.find('#p1Name').contents()[0].nodeValue = `${name1.substring(0, 1)}. ${scorer.players[0].last_name} Statistics`;
-  stats.find('#p2Name').contents()[0].nodeValue = `${name2.substring(0, 1)}. ${scorer.players[1].last_name} Statistics`;
+  const nameTokens1 = name1.split(' ');
+  const nameTokens2 = name2.split(' ');
+  stats.find('#p1Name').contents()[0].nodeValue = `${name1.substring(0, 1)}. ${nameTokens1[nameTokens1.length - 1]} Statistics`;
+  stats.find('#p2Name').contents()[0].nodeValue = `${name2.substring(0, 1)}. ${nameTokens2[nameTokens2.length - 1]} Statistics`;
 }
 
 
