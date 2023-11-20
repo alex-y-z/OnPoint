@@ -76,8 +76,8 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
   window.replication.getFormInfo(name1, name2, offName, loc, date, startScore, legNum, setNum, source);
 
   // Set up stat board
-  stats.find('#p1Name').contents()[0].nodeValue = name1 + " Statistics";
-  stats.find('#p2Name').contents()[0].nodeValue = name2 + " Statistics";
+  stats.find('#p1Name').contents()[0].nodeValue = `${name1.substring(0, 1)}. ${scorer.players[0].last_name} Statistics`;
+  stats.find('#p2Name').contents()[0].nodeValue = `${name2.substring(0, 1)}. ${scorer.players[1].last_name} Statistics`;
 
   // Register listeners
   regions.on('click', addDart);

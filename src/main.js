@@ -1,6 +1,6 @@
 const { app, screen, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const {Player, Leg, Match, Game} = require('./classes');
+const { Player, Leg, Match, Game } = require('./classes');
 const database = require('./database');
 const { winning_move, perfect_leg } = require('./winning_move');
 
@@ -25,8 +25,11 @@ const createWindows = () => {
   const scorerWindow = new BrowserWindow({
     width: width/2,
     height: height,
+    minWidth: 600,
+    minHeight: 400,
     x: 0,
     y: 0,
+    icon: path.join(__dirname, '/icons/icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'scorer-preload.js')
     }
@@ -35,8 +38,11 @@ const createWindows = () => {
   const spectatorWindow = new BrowserWindow({
     width: width/2,
     height: height,
+    minWidth: 600,
+    minHeight: 400,
     x: width/2,
     y: 0,
+    icon: path.join(__dirname, '/icons/icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'spectator-preload.js')
     }
