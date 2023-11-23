@@ -69,8 +69,10 @@ async function startGame(pid1, pid2, offName, loc, date, startScore, legNum, set
   scorer.scores[1] = scorer.startScore;
 
   // Set up scoreboard
-  const name1 = `${scorer.players[0].first_name} ${scorer.players[0].last_name}`;
-  const name2 = `${scorer.players[1].first_name} ${scorer.players[1].last_name}`;
+  const {first_name: player1FirstName, last_name: player1LastName} = scorer.players[0]
+  const {first_name: player2FirstName, last_name: player2LastName} = scorer.players[1]
+  const name1 = `${player1FirstName} ${player1LastName}`;
+  const name2 = `${player2FirstName} ${player2LastName}`;
   setUpScoreboard(name1, name2, offName, loc, date, startScore, legNum, setNum);
   source = addCountryFlag();
   window.replication.getFormInfo(name1, name2, offName, loc, date, startScore, legNum, setNum, source);
@@ -117,7 +119,7 @@ async function startMatch(isWin) {
     if (setWins == scorer.game.match_num) {
       window.database.setGameWinner(winner.pid);
 
-      if (scorer.currentPlayer - 1 == 0) {
+      if (scorer.currentPlayer - 1 === 0) {
         throws = scorer.leg.player_1_darts;
       }
       else {
