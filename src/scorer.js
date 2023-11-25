@@ -664,8 +664,8 @@ function showNewGameModal() {
       modal.remove();
     });
 
-    // TEMPORARY QUICK START
-    gameForm.find('#quick-start-button').on('click', (event) => {
+    // Quick start button for testing
+    /*gameForm.find('#quick-start-button').on('click', (event) => {
       selectedPlayers[0] = 1;
       selectedPlayers[1] = 2;
       gameForm.find('#official').val('Crazy Horse');
@@ -674,7 +674,7 @@ function showNewGameModal() {
       gameForm.find('#301').prop('checked', true);
       gameForm.find('#numOfLegs').val(3);
       gameForm.find('#numOfSets').val(2);
-    });
+    });*/
   });
   
   $('body').append(modal);
