@@ -145,6 +145,8 @@ input[type=radio] {
   transform: translate(-50%, -50%);
   left: 50%;
   top: 50%;
-  border-radius: 10px;
+  border: none;
+  border-radius: 1rem;
   z-index: 5;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.6);
 }

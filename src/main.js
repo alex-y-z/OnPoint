@@ -1,6 +1,6 @@
 const { app, screen, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const {Player, Leg, Match, Game} = require('./classes');
+const { Player, Leg, Match, Game } = require('./classes');
 const database = require('./database');
 const { winning_move, perfect_leg } = require('./winning_move');
 
@@ -25,8 +25,11 @@ const createWindows = () => {
   const scorerWindow = new BrowserWindow({
     width: width/2,
     height: height,
+    minWidth: 600,
+    minHeight: 400,
     x: 0,
     y: 0,
+    icon: path.join(__dirname, 'icons/icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'scorer-preload.js')
     }
@@ -35,8 +38,11 @@ const createWindows = () => {
   const spectatorWindow = new BrowserWindow({
     width: width/2,
     height: height,
+    minWidth: 600,
+    minHeight: 400,
     x: width/2,
     y: 0,
+    icon: path.join(__dirname, 'icons/icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'spectator-preload.js')
     }
@@ -49,7 +55,7 @@ const createWindows = () => {
   const channels = [
     'add-dart', 'change-dart', 'remove-dart', 'next-turn', 'resize-board',
     'getFormInfo', 'change-combo', 'change-perfect-leg',
-    'set-leg-winner', 'reset-screen', 'showWinner'
+    'set-leg-winner', 'reset-screen', 'showWinner', 'showLeader'
   ];
 
   channels.forEach(channel => {
@@ -95,6 +101,17 @@ const createWindows = () => {
   ipcMain.handle('get-player-by-id', (event, pid) => {
     return database.get_player_by_id(pid);
   });
+
+  ipcMain.handle('get-player-stats', (event, pid, range_start=undefined, range_end=undefined) => {
+    return new Promise((resolve, reject) => {
+      database.get_player_by_id(pid).then((player) => {
+        let person = new Player(player);
+        person.getStats(range_start, range_end).then((pstats) => {
+          resolve(pstats);
+        })
+      })
+    })
+  })
   
   ipcMain.handle('search-players-by-first', (event, first_name) => {
     return database.search_players_by_first(first_name);

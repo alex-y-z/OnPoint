@@ -2,10 +2,10 @@
 
 :root {
   /* Background Colors */
-  --bg-color-1: black;
+  --bg-color-1: rgb(10, 10, 10);
   --bg-color-2: white;
   --bg-color-3: rgb(0, 81, 44);
-  --bg-color-4: rgb(50, 50, 50);
+  --bg-color-4: rgb(43, 45, 49);
   --bg-color-5: rgb(200, 200, 200);
   --bg-color-6: rgb(230, 230, 230);
 
@@ -13,7 +13,7 @@
   --ac-color-1: rgb(255, 198, 11);
   --ac-color-2: rgb(0, 238, 255);
   --ac-color-3: rgb(0, 128, 0);
-  --ac-color-4: rgb(235, 47, 6);
+  --ac-color-4: rgb(246, 37, 32);
   --ac-color-5: rgb(255, 165, 2);
 
   /* Text Colors */
@@ -51,13 +51,14 @@ body {
   min-width: 24rem;
   max-width: 60%;
   width: 60%;
-  margin-right: 1em;
+  margin-right: 1.5rem;
   display: flex;
   flex-direction: column;
   background-color: var(--bg-color-6);
-  border-radius: 10px;
+  border-radius: 1rem;
   resize: horizontal;
   overflow: hidden;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
 }
 
 #board-container {
@@ -109,11 +110,11 @@ body {
   width: 100%;
   min-height: 5rem;
   background-color: var(--bg-color-5);
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 1rem 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 0.8rem;
 }
 
 /* Throw Dropdown */
@@ -122,8 +123,9 @@ body {
   position: relative;
   flex: 1;
   max-width: 12rem;
-  height: 60%;
+  height: 65%;
   margin: 2%;
+  font-size: 1.3rem;
   text-align: center;
   cursor: pointer;
 }
@@ -133,7 +135,7 @@ body {
   height: 100%;
   background-color: var(--bg-color-1);
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   font-weight: bold;
   color: var(--tx-color-2);
 }
@@ -161,7 +163,7 @@ body {
   color: var(--tx-color-1);
   border: 1px solid var(--br-color-1);
   border-bottom: none;
-  padding: 10px;
+  padding: 1rem;
   font-weight: bold;
 }
 
@@ -179,10 +181,10 @@ body {
   position: absolute;
   bottom: 100%;
   right: 0;
-  padding: 10px;
+  padding: 1rem;
   background-color: var(--ac-color-1);
   color: var(--tx-color-1);
-  border-radius: 8px 8px 0 0;
+  border-radius: 0.8rem 0.8rem 0 0;
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
@@ -197,21 +199,18 @@ body {
   flex-direction: column;
   position: relative;
   background-color: var(--bg-color-4);
-  border-radius: 10px;
+  border-radius: 1rem;
   z-index: 2;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
 }
 
 /* Scoreboard */
 
 #scoreboard {
-  flex: 34%;
+  flex: 42%;
   width: 100%;
   background-color: var(--bg-color-4);
-  border-radius: 10px;
-}
-
-#scoreboard td {
-  min-width: 15%;
+  border-radius: 1rem 1rem 0 0;
 }
 
 table {
@@ -227,21 +226,21 @@ thead {
 }
 
 td {
-  padding: 10px;
+  padding: 0.8rem;
   text-align: center;
   color: var(--tx-color-2);
 }
 
 tr {
-  height: 2.5rem;
+  height: 3rem;
 }
 
 #set-col {
-  border-radius: 10px 0 0 0;
+  border-radius: 1rem 0 0 0;
 }
 
 #score-col {
-  border-radius: 0 10px 0 0;
+  border-radius: 0 1rem 0 0;
 }
 
 #p1SetsWon, #p1LegsWon, #p1Score, #p2SetsWon, #p2LegsWon, #p2Score {
@@ -250,15 +249,37 @@ tr {
 }
 
 #p1, #p2 {
-  font-size: 1.4rem;
+  height: 5rem;
   position: relative;
-  padding-bottom: 7%;
+  font-size: 1.5rem;
+  text-align: left;
+  padding-left: 10rem;
+}
+
+.bg-emphasis {
+  background-color: var(--ac-color-1);
+}
+
+.text-emphasis {
+  color: var(--tx-color-1);
+  font-weight: bold;
+}
+
+.flag {
+  position: absolute;
+  height: 60%;
+  top: 50%;
+  left: 5%;
+  border: 0.15rem solid var(--br-color-1);
+  border-radius: 0.5rem;
+  transform: translate(0, -50%);
+  display: inline;
 }
 
 .perfect-label {
   visibility: hidden;
   position: absolute;
-  height: 90%;
+  height: 100%;
   top: 50%;
   left: 0;
   transform: translate(0, -50%);
@@ -281,22 +302,21 @@ tr {
 /* Statistics */
 
 #statistics {
-  flex: 50%;
-  padding: 1rem;
+  flex: 42%;
   position: relative;
 }
 
 #statistics-table {
   width: 100%;
-  height: 90%;
-  border: 1px solid var(--br-color-1);
+  height: 100%;
 }
 
 /* Dropdown Button */
 .dropbtn {
   width: 100%;
   height: 100%;
-  padding: 10px;
+  min-height: 3rem;
+  padding: 0.5rem;
   background-color: var(--bg-color-1);
   color: var(--tx-color-2);
   font-size: 1rem;
@@ -344,8 +364,8 @@ tr {
 
 #control-wrapper {
   flex: 16%;
-  min-height: 5rem;
-  border-radius: 0 0 10px 10px;
+  min-height: 6rem;
+  border-radius: 0 0 1rem 1rem;
   position: relative;
   overflow: hidden;
 }
@@ -414,7 +434,7 @@ tr {
 /* Control Options */
 #control-panel {
   width: 100%;
-  height: 62.5%;
+  height: 60%;
   min-height: 5rem;
   position: absolute;
   bottom: 0;
@@ -422,16 +442,16 @@ tr {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 1rem;
 }
 
 .control-button {
   flex: 1;
   max-width: 12rem;
-  height: 60%;
+  height: 65%;
   margin: 2%;
   background-color: var(--bg-color-1);
-  border-radius: 6px;
+  border-radius: 0.5rem;
   border: none;
   font-size: 1.1rem;
   font-weight: bold;
@@ -453,8 +473,10 @@ tr {
   transform: translate(-50%, -50%);
   left: 50%;
   top: 50%;
-  border-radius: 10px;
+  border: none;
+  border-radius: 1rem;
   z-index: 2;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.6);
 }
 
 /* Winner Modal */
@@ -465,4 +487,17 @@ tr {
   top: 0;
   left: 0;
   z-index: 10;
+}
+
+/* Leader Board Modal */
+#leaderboard-modal {
+  width: 80%;
+  height: 80%;
+  max-width: 60rem;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+  border: none;
+  z-index: 9;
 }

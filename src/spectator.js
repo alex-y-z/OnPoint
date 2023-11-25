@@ -3,7 +3,7 @@ const dartboard = $('#board-box');
 const throwPanel = $('#throw-panel');
 const comboLabels = $('.winning-throw-label');
 const scoreboard = $('#scoreboard');
-const stats = $('#statistics-table')
+const stats = $('#statistics-table');
 
 
 // This function only runs when the file is first loaded
@@ -22,6 +22,7 @@ function init() {
   window.replication.onLegWon(clearBoard);
   window.replication.onScreenReset(() => { location.reload(); });
   window.replication.onShowWinner(showWinner);
+  window.replication.onShowLeader(showLeader);
 }
 
 $(init());
@@ -87,7 +88,7 @@ function changeDart(event, index, labelText) {
 
 // Clear the board and update score
 function nextTurn(event, playerNum, newScore) {
-  changeColor();
+  changeColor((playerNum % 2) + 1);
   
   // Update score
   $(`#p${playerNum}Score`).text(newScore);
@@ -98,38 +99,18 @@ function nextTurn(event, playerNum, newScore) {
 
 
 // Change player emphasis on turn
-function changeColor() {
-  var table = document.getElementById("scoreboard");   
-  var rows = table.getElementsByTagName("tr");   
-  
-  // Check p1
-  if (document.getElementById("p1").style.color == "white") {
-    // Change background colors
-    rows[2].style.backgroundColor = "#FFC60B";
-    rows[4].style.backgroundColor = "#323232"; 
-    // Change p1
-    document.getElementById("p1").style.color = "black";
-    document.getElementById("p1").style.fontWeight = 'bold';
-    // Change p2
-    document.getElementById("p2").style.color = "white";
-    document.getElementById("p2").style.fontWeight = 'normal';
-  }
-  else {
-    // Change background colors
-    rows[4].style.backgroundColor = "#FFC60B";
-    rows[2].style.backgroundColor = "#323232"; 
-    // Change p2
-    document.getElementById("p2").style.color = "black";
-    document.getElementById("p2").style.fontWeight = 'bold';
-    // Change p1
-    document.getElementById("p1").style.color = "white";
-    document.getElementById("p1").style.fontWeight = 'normal';
-  }
+function changeColor(currentPlayer) {
+  const currentCell = $(`#p${currentPlayer}`);
+  currentCell.parent().addClass('bg-emphasis');
+  currentCell.addClass('text-emphasis');
+  const otherCell = $(`#p${(currentPlayer % 2) + 1}`);
+  otherCell.parent().removeClass('bg-emphasis');
+  otherCell.removeClass('text-emphasis');
 }
 
 
 // Clear markers and throw labels
-function clearBoard(event, legWinner, startScore, legWins, setWins) {
+function clearBoard(event, legWinner, startScore, legWins, setWins, legStarter) {
   dartboard.find('.selected-region').removeAttr('data-darts');
   dartboard.find('.selected-region').removeClass('selected-region');
   dartboard.find('.dart-marker').fadeOut(100, function() {
@@ -145,6 +126,7 @@ function clearBoard(event, legWinner, startScore, legWins, setWins) {
     $(`#p${legWinner}SetsWon`).text(setWins);
     scoreboard.find('#p1Score').text(startScore);
     scoreboard.find('#p2Score').text(startScore);
+    changeColor(legStarter);
   }
 }
 
@@ -187,14 +169,10 @@ function changePerfectLeg(event, playerNum, hasPerfectLeg) {
 
 
 // Set the scoreboard info from the new game form
-function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum, setNum) {
+function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum, setNum, source) {
   
   // For changing player emphasis color
-  var table = document.getElementById("scoreboard");   
-  var rows = table.getElementsByTagName("tr"); 
-  rows[2].style.backgroundColor = "#FFC60B";
-  document.getElementById("p1").style.color = "black";
-  document.getElementById("p1").style.fontWeight = 'bold';
+  changeColor(1);
 
   // Fill in the text
   scoreboard.find('#set-col').text(`Sets (${setNum})`);
@@ -207,6 +185,16 @@ function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum,
   scoreboard.find('#p2SetsWon').text('0');
   scoreboard.find('#p1LegsWon').text('0');
   scoreboard.find('#p2LegsWon').text('0');
+
+  // Add the flag image
+  scoreboard.find('#p1-flag').attr("src", source[0]);
+  scoreboard.find('#p2-flag').attr("src", source[1]);
+
+  // Fill in the names on the stats board
+  const nameTokens1 = name1.split(' ');
+  const nameTokens2 = name2.split(' ');
+  stats.find('#p1Name').contents()[0].nodeValue = `${name1.substring(0, 1)}. ${nameTokens1[nameTokens1.length - 1]} Statistics`;
+  stats.find('#p2Name').contents()[0].nodeValue = `${name2.substring(0, 1)}. ${nameTokens2[nameTokens2.length - 1]} Statistics`;
 }
 
 
@@ -292,13 +280,16 @@ function showStatistic(event, statistics, loc, stat_type) {
 }
 
 
-function showWinner(event, playerName) {
+function showWinner(event, playerName, match, leg, throws) {
   const modal = $('<iframe id="winner-modal" src="winner.html"></iframe>');
   
   modal.on('load', () => {
     const winnerDoc = modal.contents();
 
     winnerDoc.find('#name').text(playerName);
+    winnerDoc.find('#numMatch').text("Match Wins: " + match);
+    winnerDoc.find('#numLegs').text("Leg Wins: " + leg);
+    winnerDoc.find('#lastThrow').text("Final Throws: " + throws[throws.length - 1]);
 
     winnerDoc.find('#exit-button').hide();
 
@@ -311,3 +302,69 @@ function showWinner(event, playerName) {
   $('body').append(modal);
 }
 
+function updateLeaderTable(leaderDoc, playerInfo) {
+  // Find the table
+  const table = leaderDoc.find('#leader-table').get(0);
+
+  // Loop through each player object to add them to the table
+  playerInfo.forEach((info) => {
+    
+    // Add a row to the end of the table
+    let row = table.insertRow(-1);
+   
+    // Add a Cell for the first name and add its text
+    let firstCell= row.insertCell(0);
+    let name = document.createTextNode(info.first_name + " " + info.last_name);
+    firstCell.appendChild(name);
+    
+    // Add a cell for the number of wins and add its text
+    let winCell = row.insertCell(1);
+    let wins = document.createTextNode(info.total_wins);
+    winCell.appendChild(wins);
+    
+    // Add a cell for the number of losses and add its text
+    let loseCell = row.insertCell(2);
+    let lose = document.createTextNode(info.total_games - info.total_wins);
+    loseCell.appendChild(lose);
+    
+    // Add a cell for the number of games and add its text
+    let gamesCell = row.insertCell(3);
+    let games = document.createTextNode(info.total_games);
+    gamesCell.appendChild(games);
+  });
+}
+
+
+// Show Leader Board
+function showLeader(event, hideModal, playerInfo) {
+  if (hideModal == true) {
+    const leaderboard = $('#leaderboard-modal');
+    leaderboard.remove();
+    return;
+  }
+  
+  // Add the iframe
+  const modal = $('<iframe id="leaderboard-modal" src="leaderboard.html"></iframe>');
+
+  // Load the iframe
+  modal.on('load', () => {
+    const leaderDoc = modal.contents();
+
+    // Hide the user input div - Show the leaderboard div
+    leaderDoc.find('#user-input').hide();
+
+    // Hide the exit button
+    leaderDoc.find('#exit-button').hide();
+
+    // Fill the table
+    updateLeaderTable(leaderDoc, playerInfo);    
+
+    // Close modal when exit button is pushed
+    leaderDoc.find('#exit-button').on('click', () => {
+      modal.remove();
+    });
+  });
+
+  // Add the iframe to scorer
+  $('body').append(modal);
+}

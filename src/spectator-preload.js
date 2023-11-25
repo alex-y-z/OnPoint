@@ -13,5 +13,6 @@ contextBridge.exposeInMainWorld('replication', {
     onPerfectLegChanged: (...args) => ipcRenderer.on('change-perfect-leg', ...args),
     onLegWon: (...args) => ipcRenderer.on('set-leg-winner', ...args),
     onScreenReset: (...args) => ipcRenderer.on('reset-screen', ...args),
-    onShowWinner: (...args) => ipcRenderer.on('showWinner', ...args)
+    onShowWinner: (...args) => ipcRenderer.on('showWinner', ...args),
+    onShowLeader: (...args) => ipcRenderer.on('showLeader', ...args)
 });
