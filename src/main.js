@@ -29,7 +29,7 @@ const createWindows = () => {
     minHeight: 400,
     x: 0,
     y: 0,
-    icon: path.join(__dirname, '/icons/icon.ico'),
+    icon: path.join(__dirname, 'icons/icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'scorer-preload.js')
     }
@@ -42,7 +42,7 @@ const createWindows = () => {
     minHeight: 400,
     x: width/2,
     y: 0,
-    icon: path.join(__dirname, '/icons/icon.ico'),
+    icon: path.join(__dirname, 'icons/icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'spectator-preload.js')
     }

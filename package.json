@@ -1,6 +1,6 @@
 {
-  "name": "dartboard",
-  "productName": "dartboard",
+  "name": "on-point",
+  "productName": "OnPoint",
   "version": "1.0.0",
   "description": "A responsive interface for visualizing and recording Premier League dart matches.",
   "main": "src/main.js",
