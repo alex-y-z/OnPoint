@@ -12,16 +12,16 @@
 
         <div class="dropdown">
           <button class="dropbtn">Select Player 1</button>
-          <div id="dropdown" class="dropdown-content1" name="dropdown1">
-            <input type="text" placeholder="Type in a name..." id="p1" onkeyup="filterSearch(p1)" maxlength="150">
+          <div id="dropdown-content1" name="dropdown1">
+            <input type="text" placeholder="Type in a name..." id="p1" onkeyup="filterSearch(p1, 1)" maxlength="150">
             <option class="addPlayer">Add New Player</option>
           </div>
         </div><br><br>
 
         <div class="dropdown">
           <button class="dropbtn">Select Player 2</button>
-          <div id="dropdown" class="dropdown-content2" name="dropdown2">
-            <input type="text" placeholder="Type in a name..." id="p2" onkeyup="filterSearch(p2)" maxlength="150">
+          <div id="dropdown-content2" name="dropdown2">
+            <input type="text" placeholder="Type in a name..." id="p2" onkeyup="filterSearch(p2, 2)" maxlength="150">
             <option class="addPlayer">Add New Player</option>
           </div>
         </div><br><br>     
@@ -60,11 +60,11 @@
     <!-- Function for user to search through player names-->
     <!--Change tr[i].getElementsByTagName('td')[0] to [1] to search for "Last Name" (index 1) instead of "First Name" (index 0).-->
     <script>
-      function filterSearch(player) {
-        var filter, div, opt, txt;
-        filter = player.value.toUpperCase();
-        div = document.getElementById("dropdown")
-        opt = div.getElementsByTagName("option");
+      function filterSearch(player, playerNum) {
+        const filter = player.value.toUpperCase();
+        const div = document.getElementById(`dropdown-content${playerNum}`);
+        const opt = div.getElementsByTagName("option");
+        let txt;
 
         // Loop through all options
         // Hide ones that don't match

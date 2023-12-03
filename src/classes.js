@@ -51,7 +51,6 @@ class Player {
                     reject(err);
                 }
                 else {
-                    console.log(result);
                     let total_games = 0;
                     let total_wins = 0;
                     let win_percent = 0;
