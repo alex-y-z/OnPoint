@@ -246,6 +246,7 @@ function checkPerfectLeg(isTurnOver, isBust) {
 
   // Check if bust or turn count exceeds max
   if (isBust || scorer.currentTurn > scoreThresholds.length) {
+    console.log('here')
     window.replication.changePerfectLeg(scorer.currentPlayer, false);
     perfectLabel.removeClass('min-perfect-label');
     return;
@@ -253,11 +254,14 @@ function checkPerfectLeg(isTurnOver, isBust) {
 
   // Compare scores after each turn
   if (isTurnOver) {
+    console.log(scorer.scores[scorer.currentPlayer - 1], '    ', scoreThresholds[scorer.currentTurn])
     if (scorer.scores[scorer.currentPlayer - 1] <= scoreThresholds[scorer.currentTurn]) {
+      console.log('there')
       window.replication.changePerfectLeg(scorer.currentPlayer, true);
       perfectLabel.addClass('min-perfect-label');
     }
     else {
+      console.log('everywhere')
       window.replication.changePerfectLeg(scorer.currentPlayer, false);
       perfectLabel.removeClass('max-perfect-label min-perfect-label');
     }
@@ -267,6 +271,7 @@ function checkPerfectLeg(isTurnOver, isBust) {
   // Compare number of throws after each throw
   const totalThrows = ((scorer.currentTurn - 1) * 3) + scorer.currentThrow + 1;
   if (totalThrows > throwThreshold) {
+    console.log('also here')
     window.replication.changePerfectLeg(scorer.currentPlayer, false);
     perfectLabel.removeClass('max-perfect-label min-perfect-label');
   }
@@ -500,7 +505,7 @@ function nextTurn(event, isBust) {
   scorer.currentPlayer = (scorer.currentPlayer % 2) + 1;
 
   // Update game status each full turn
-  if (scorer.currentPlayer == 1) {
+  if (scorer.currentPlayer == scorer.legStarter) {
     scorer.currentTurn++;
     window.database.updateGameStatus(scorer.players[0], scorer.players[1], scorer.leg);
   }
@@ -856,6 +861,9 @@ function updateLeaderTable(leaderDoc, begin, end) {
   
 // Load Leader Board
 function loadLeaderBoard() {
+  if ($('#leaderboard-modal').length) {
+    return;
+  }
 
   // Add the iframe
   const modal = $('<iframe id="leaderboard-modal" src="leaderboard.html"></iframe>');
@@ -891,7 +899,11 @@ function loadLeaderBoard() {
       return false;
     });
 
-    // Close modal when exit button is pushed
+    // Close modal when cancel/exit button is pushed
+    leaderDoc.find('#cancel-button').on('click', () => {
+      modal.remove();
+    });
+
     leaderDoc.find('#exit-button').on('click', () => {
       window.replication.showLeader(true);
       modal.remove();

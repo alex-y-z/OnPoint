@@ -203,9 +203,6 @@ function setUpScoreboard(event, name1, name2, offName, loc, date, score, legNum,
 // stat_type can be any keyword associated in the option list (scorer.html)
 function showStatistic(event, statistics, loc, stat_type) {
   // Get stats object from database
-  console.log(statistics);
-  console.log("Location: " + loc);
-  console.log("Stat Type: " + stat_type);
   // statistics.game for game stats
   // statistics.p1 for player 1
   // statistics.p2 for player 2
