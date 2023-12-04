@@ -6,7 +6,7 @@ Built with [Electron](https://www.electronjs.org/), [jQuery](https://jquery.com/
 Authored by Shannon Baker, Tristan Lyon, and Alex Turner.
 
 # Build Instructions
-A pre-built executable can be found at `./out/OnPoint.exe`.
+A pre-built executable can be found at `./out/OnPoint-win32-x64/OnPoint.exe`.
 
 - Install `node 18.17.1` and `npm 9.6.7` or later (<https://docs.npmjs.com/downloading-and-installing-node-js-and-npm>).
 - Open terminal and navigate to folder.
